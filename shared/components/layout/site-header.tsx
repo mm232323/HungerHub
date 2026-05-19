@@ -1,23 +1,21 @@
-import { Link, useRoute, useLocation } from "wouter";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useUser, useClerk, Show } from "@clerk/react";
 
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const basePath = "";
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const [isActive] = useRoute(href === "/" ? "/" : href + "/:rest*");
-  const exact = href === "/";
-  const [isExactActive] = useRoute(href);
-  const active = exact ? isExactActive : isActive || false;
+  const pathname = usePathname();
+  const active = href === "/" ? pathname === "/" : pathname?.startsWith(href);
 
   return (
     <Link
       href={href}
-      className={`relative text-sm font-medium transition-colors hover:text-primary ${
-        active ? "text-primary" : "text-muted-foreground"
-      }`}
+      className={`relative text-sm font-medium transition-colors hover:text-primary ${active ? "text-primary" : "text-muted-foreground"
+        }`}
     >
       {children}
       {active && (
@@ -31,7 +29,7 @@ function UserAvatar() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const [open, setOpen] = useState(false);
-  const [, setLocation] = useLocation();
+  const router = useRouter();
   const isMerchant = user?.unsafeMetadata?.role === "merchant";
 
   const handleSignOut = () => {
@@ -78,7 +76,7 @@ function UserAvatar() {
             </div>
             {isMerchant && (
               <button
-                onClick={() => { setOpen(false); setLocation("/dashboard"); }}
+                onClick={() => { setOpen(false); router.push("/dashboard"); }}
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left"
               >
                 <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
@@ -112,7 +110,7 @@ export function SiteHeader() {
           <div className="bg-primary p-1.5 rounded-xl">
             <Utensils className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold tracking-tight">FoodHub</span>
+          <span className="text-xl font-bold tracking-tight">HungerHub</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -132,12 +130,12 @@ export function SiteHeader() {
 
           {/* Signed out: Login + Sign up */}
           <Show when="signed-out">
-            <Link href="/sign-in">
+            <Link href="/auth/sign-in">
               <Button variant="ghost" size="sm" className="rounded-full font-medium">
                 Sign in
               </Button>
             </Link>
-            <Link href="/sign-up">
+            <Link href="/auth/sign-up">
               <Button size="sm" className="rounded-full font-semibold">
                 Sign up
               </Button>
@@ -206,17 +204,17 @@ export function SiteHeader() {
 
             <Show when="signed-out">
               <div className="pt-3 border-t mt-2 flex flex-col gap-2">
-                <Link href="/sign-in" onClick={() => setMobileOpen(false)}>
+                <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full rounded-full font-semibold">
                     Sign in
                   </Button>
                 </Link>
-                <Link href="/sign-up" onClick={() => setMobileOpen(false)}>
+                <Link href="/auth/sign-up" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full rounded-full font-semibold">
                     Create account
                   </Button>
                 </Link>
-                <Link href="/merchant/sign-up" onClick={() => setMobileOpen(false)}>
+                <Link href="//auth/merchant-sign-up" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full rounded-full text-muted-foreground font-medium text-sm">
                     Register as a merchant
                   </Button>
@@ -241,16 +239,16 @@ function MobileNavLink({
   children: React.ReactNode;
   onClick: () => void;
 }) {
-  const [isExactActive] = useRoute(href);
+  const pathname = usePathname();
+  const isExactActive = pathname === href;
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-        isExactActive
-          ? "bg-primary/10 text-primary"
-          : "text-foreground hover:bg-muted"
-      }`}
+      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isExactActive
+        ? "bg-primary/10 text-primary"
+        : "text-foreground hover:bg-muted"
+        }`}
     >
       {icon}
       {children}

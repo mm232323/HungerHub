@@ -1,4 +1,5 @@
-import { Link, useRoute } from "wouter";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useUser, useClerk } from "@clerk/react";
 import {
   LayoutDashboard, Package, Megaphone, BarChart3,
@@ -6,24 +7,22 @@ import {
   ClipboardList, Utensils, ExternalLink, ChevronRight,
 } from "lucide-react";
 
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+const basePath = "";
 
 function NavItem({
   href, icon: Icon, label, exact = false, badge,
 }: {
   href: string; icon: React.ElementType; label: string; exact?: boolean; badge?: number;
 }) {
-  const [exactMatch] = useRoute(href);
-  const [prefixMatch] = useRoute(href + "/:rest*");
-  const active = exact ? exactMatch : (exactMatch || prefixMatch);
+  const pathname = usePathname();
+  const active = exact ? pathname === href : pathname?.startsWith(href);
 
   return (
     <Link href={href}>
-      <div className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 cursor-pointer group ${
-        active
+      <div className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 cursor-pointer group ${active
           ? "bg-orange-500/15 text-orange-400"
           : "text-white/45 hover:text-white/90 hover:bg-white/[0.06]"
-      }`}>
+        }`}>
         <Icon className={`h-[18px] w-[18px] shrink-0 transition-colors ${active ? "text-orange-400" : "group-hover:text-white/80"}`} />
         <span className={`text-sm flex-1 ${active ? "font-semibold text-orange-300" : "font-medium"}`}>{label}</span>
         {badge != null && badge > 0 && (
@@ -53,7 +52,7 @@ function ConsumerNavItem({ href, icon: Icon, label }: {
   );
 }
 
-export function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user } = useUser();
   const { signOut } = useClerk();
 
@@ -70,7 +69,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="bg-orange-500 p-[7px] rounded-[10px] shadow-lg shadow-orange-500/25">
               <Utensils className="h-[15px] w-[15px] text-white" />
             </div>
-            <span className="text-white font-bold text-lg tracking-tight">FoodHub</span>
+            <span className="text-white font-bold text-lg tracking-tight">HungerHub</span>
           </Link>
           <div className="flex items-center gap-1.5 mt-2 ml-[3px]">
             <span className="h-1.5 w-1.5 bg-green-400 rounded-full animate-pulse" />
@@ -86,11 +85,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             My Restaurant
           </p>
           <nav className="space-y-0.5 mb-5">
-            <NavItem href="/dashboard"          icon={LayoutDashboard} label="Overview"   exact />
-            <NavItem href="/dashboard/orders"   icon={ClipboardList}   label="Orders" />
-            <NavItem href="/dashboard/products" icon={Package}         label="Products" />
-            <NavItem href="/dashboard/marketing"icon={Megaphone}       label="Marketing" />
-            <NavItem href="/dashboard/analytics"icon={BarChart3}       label="Analytics" />
+            <NavItem href="/dashboard" icon={LayoutDashboard} label="Overview" exact />
+            <NavItem href="/dashboard/orders" icon={ClipboardList} label="Orders" />
+            <NavItem href="/dashboard/products" icon={Package} label="Products" />
+            <NavItem href="/dashboard/marketing" icon={Megaphone} label="Marketing" />
+            <NavItem href="/dashboard/analytics" icon={BarChart3} label="Analytics" />
           </nav>
 
           {/* Divider */}
@@ -98,12 +97,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
           {/* Consumer section */}
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/25 px-3 mb-2">
-            Browse FoodHub
+            Browse HungerHub
           </p>
           <nav className="space-y-0.5">
-            <ConsumerNavItem href="/"         icon={Home}         label="Home" />
-            <ConsumerNavItem href="/discover" icon={Compass}      label="Discover Food" />
-            <ConsumerNavItem href="/cart"     icon={ShoppingCart} label="My Cart" />
+            <ConsumerNavItem href="/" icon={Home} label="Home" />
+            <ConsumerNavItem href="/discover" icon={Compass} label="Discover Food" />
+            <ConsumerNavItem href="/cart" icon={ShoppingCart} label="My Cart" />
           </nav>
         </div>
 
@@ -136,7 +135,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           ) : (
-            <Link href="/sign-in">
+            <Link href="/auth/sign-in">
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-white/30 hover:text-white/60 hover:bg-white/5 transition-colors text-sm">
                 <User className="h-4 w-4" /> Sign in
               </div>

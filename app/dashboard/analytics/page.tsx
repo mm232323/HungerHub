@@ -1,13 +1,13 @@
-import { useGetCustomerAnalytics } from "@workspace/api-client-react";
-import { DashboardLayout } from "./layout";
+import { useGetCustomerAnalytics } from "@/utils/api";
+import DashboardLayout from "../layout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/alerts/skeleton";
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from "recharts";
 import { Users, Heart, Star } from "lucide-react";
 
 export default function DashboardAnalytics() {
   const { data: analytics, isLoading } = useGetCustomerAnalytics({
-    query: { queryKey: ["/api/dashboard/analytics"] }
+    query: { queryKey: ["/dashboard/analytics"] }
   });
 
   const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))'];
@@ -33,7 +33,7 @@ export default function DashboardAnalytics() {
               <p className="text-xs text-muted-foreground mt-1">Customers who ordered again</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Repeat Buyers</CardTitle>
@@ -46,7 +46,7 @@ export default function DashboardAnalytics() {
               <p className="text-xs text-muted-foreground mt-1">3+ orders all-time</p>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">New Customers</CardTitle>
@@ -72,14 +72,14 @@ export default function DashboardAnalytics() {
                 {isLoading ? <Skeleton className="h-full w-full" /> : (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={analytics?.topOrderTimes}>
-                      <XAxis 
-                        dataKey="hour" 
+                      <XAxis
+                        dataKey="hour"
                         tickFormatter={(val) => `${val}:00`}
                         axisLine={false}
                         tickLine={false}
                         tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
                       />
-                      <Tooltip 
+                      <Tooltip
                         cursor={{ fill: 'hsl(var(--muted))' }}
                         contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))' }}
                         formatter={(value: number) => [`${value} orders`, "Orders"]}

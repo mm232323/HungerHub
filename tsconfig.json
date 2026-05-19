@@ -5,6 +5,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "noImplicitAny": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -19,7 +20,13 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/components/*": ["./shared/components/*"],
+      "@/layout/*": ["./shared/components/layout/*"],
+      "@/alerts/*": ["./shared/components/alerts/*"],
+      "@/ui/*": ["./shared/components/ui/*"],
+      "@/types/*": ["./types/*"],
+      "@workspace/api-client-react": ["./lib/api-client-react/src/index.ts"]
     }
   },
   "include": [

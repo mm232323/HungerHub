@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useGetDashboardProducts, useCreateProduct, useDeleteProduct } from "@workspace/api-client-react";
-import { DashboardLayout } from "./layout";
+import { useGetDashboardProducts, useCreateProduct, useDeleteProduct } from "@/utils/api";
+import DashboardLayout from "../layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/alerts/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/alerts/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -18,7 +18,7 @@ export default function DashboardProducts() {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   const { data: products, isLoading, refetch } = useGetDashboardProducts({
-    query: { queryKey: ["/api/dashboard/products"] }
+    query: { queryKey: ["/dashboard/products"] }
   });
 
   const deleteProduct = useDeleteProduct({
@@ -78,15 +78,15 @@ export default function DashboardProducts() {
           <div className="p-4 border-b flex items-center gap-4">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search products..." 
+              <Input
+                placeholder="Search products..."
                 className="pl-9"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
               />
             </div>
           </div>
-          
+
           <Table>
             <TableHeader>
               <TableRow>
@@ -141,7 +141,7 @@ export default function DashboardProducts() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem><Edit className="h-4 w-4 mr-2" /> Edit</DropdownMenuItem>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="text-destructive focus:bg-destructive/10"
                           onClick={() => deleteProduct.mutate({ id: product.id })}
                         >

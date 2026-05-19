@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useListOrders, useUpdateOrderStatus } from "@workspace/api-client-react";
-import { DashboardLayout } from "./layout";
+import { useListOrders, useUpdateOrderStatus } from "@/utils/api";
+import DashboardLayout from "../layout";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/alerts/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, User, RefreshCw, CheckCircle2, ChefHat, Bike, PackageCheck, Bell } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -70,7 +70,7 @@ export default function DashboardOrders() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { data: orders, isLoading, refetch } = useListOrders({}, {
-    query: { queryKey: ["/api/orders"] }
+    query: { queryKey: ["/orders"] }
   });
 
   const updateStatus = useUpdateOrderStatus({
@@ -204,11 +204,10 @@ export default function DashboardOrders() {
                                 id: order.id,
                                 data: { status: stage.action.next as any },
                               })}
-                              className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-all ${
-                                stage.action.variant === "outline"
+                              className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-all ${stage.action.variant === "outline"
                                   ? "border border-stone-200 text-stone-600 hover:bg-stone-50 hover:border-stone-300"
                                   : "bg-orange-500 text-white hover:bg-orange-600 shadow-sm shadow-orange-200"
-                              }`}
+                                }`}
                             >
                               {stage.action.label}
                             </button>

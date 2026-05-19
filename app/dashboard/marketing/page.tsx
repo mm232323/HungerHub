@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { useListPromotions, useCreatePromotion } from "@workspace/api-client-react";
-import { DashboardLayout } from "./layout";
+import { useListPromotions, useCreatePromotion } from "@/utils/api";
+import DashboardLayout from "../layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/alerts/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/alerts/dialog";
 import { Ticket, Percent, Truck, Megaphone, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 

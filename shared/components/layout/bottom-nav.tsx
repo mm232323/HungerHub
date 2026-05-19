@@ -1,13 +1,13 @@
-import { Link, useRoute } from "wouter";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, Compass, ShoppingBag, LayoutDashboard } from "lucide-react";
 
 export function BottomNav() {
-  const [isHome] = useRoute("/");
-  const [isDiscover] = useRoute("/discover");
-  const [isCart] = useRoute("/cart");
-  const [isDashboard] = useRoute("/dashboard/:rest*");
-  const [isDashboardHome] = useRoute("/dashboard");
-  const dashActive = isDashboard || isDashboardHome;
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const isDiscover = pathname === "/discover";
+  const isCart = pathname === "/cart";
+  const dashActive = pathname?.startsWith("/dashboard");
 
   const items = [
     { href: "/", label: "Home", icon: Home, active: isHome },
