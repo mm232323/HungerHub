@@ -18,6 +18,7 @@ import type {
   PromotionInput,
   RevenueDataPoint,
   TopProduct,
+  Merchant,
 } from "@/types";
 import type { ErrorType } from "@/types/api-fetch";
 import { buildQueryParams } from "@/utils/buildQueryParams";
@@ -310,5 +311,100 @@ export function useCreatePromotion<
 > {
   const mutationFn = ({ data }: { data: PromotionInput }) =>
     createPromotion(data, options?.request);
+  return useMutation({ mutationFn, ...options?.mutation });
+}
+
+export const updateProduct = async (
+  id: number,
+  data: ProductInput,
+  options?: RequestInit,
+): Promise<Product> => {
+  return customFetch<Product>(`/dashboard/products/${id}`, {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(data),
+  });
+};
+
+export function useUpdateProduct<
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateProduct>>,
+    TError,
+    { id: number, data: ProductInput },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateProduct>>,
+  TError,
+  { id: number, data: ProductInput },
+  TContext
+> {
+  const mutationFn = ({ id, data }: { id: number, data: ProductInput }) =>
+    updateProduct(id, data, options?.request);
+  return useMutation({ mutationFn, ...options?.mutation });
+}
+
+export const getMerchantProfile = async (
+  options?: RequestInit,
+): Promise<Merchant> => {
+  return customFetch<Merchant>("/dashboard/merchant", {
+    ...options,
+    method: "GET",
+  });
+};
+
+export function useGetMerchantProfile<
+  TData = Awaited<ReturnType<typeof getMerchantProfile>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getMerchantProfile>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryKey = options?.query?.queryKey ?? ["/dashboard/merchant"];
+  const queryFn = () => getMerchantProfile(options?.request);
+  const query = useQuery({ queryKey, queryFn, ...options?.query }) as any;
+  return { ...query, queryKey };
+}
+
+export const updateMerchantProfile = async (
+  data: Partial<Merchant>,
+  options?: RequestInit,
+): Promise<Merchant> => {
+  return customFetch<Merchant>("/dashboard/merchant", {
+    ...options,
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(data),
+  });
+};
+
+export function useUpdateMerchantProfile<
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateMerchantProfile>>,
+    TError,
+    { data: Partial<Merchant> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateMerchantProfile>>,
+  TError,
+  { data: Partial<Merchant> },
+  TContext
+> {
+  const mutationFn = ({ data }: { data: Partial<Merchant> }) =>
+    updateMerchantProfile(data, options?.request);
   return useMutation({ mutationFn, ...options?.mutation });
 }

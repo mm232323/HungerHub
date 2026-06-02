@@ -2,11 +2,13 @@ import "server-only";
 
 import type {
   Category,
+  CustomerAnalytics,
   FeedPost,
   Merchant,
   MerchantStory,
   Order,
   Product,
+  Promotion,
   Review,
 } from "@/types";
 
@@ -43,12 +45,23 @@ export async function getCategories(): Promise<Category[]> {
   return (await fetchJsonSafe<Category[]>("/categories")) ?? [];
 }
 
+export async function getPromotions(): Promise<Promotion[]> {
+  return (await fetchJsonSafe<Promotion[]>("/promotions")) ?? [];
+}
+export async function GetAnalysis(): Promise<CustomerAnalytics> {
+  return (await fetchJsonSafe<CustomerAnalytics>("/dashboard/analytics")) ?? {} as CustomerAnalytics;
+}
+
 export async function getTrendingMerchants(): Promise<Merchant[]> {
   return (await fetchJsonSafe<Merchant[]>("/merchants/trending")) ?? [];
 }
 
 export async function getTrendingProducts(): Promise<Product[]> {
   return (await fetchJsonSafe<Product[]>("/products/trending")) ?? [];
+}
+
+export async function getProducts(): Promise<Product[]> {
+  return (await fetchJsonSafe<Product[]>("/products")) ?? [];
 }
 
 export async function getFeedStories(): Promise<MerchantStory[]> {

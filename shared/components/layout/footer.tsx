@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { Utensils, ArrowRight, Play, Sparkles, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   showMerchantCTA?: boolean;
 }
 
 export function Footer({ showMerchantCTA = false }: FooterProps) {
+  const t = useTranslations("Footer");
   return (
     <footer className="relative bg-background border-t pt-16 pb-8 overflow-hidden z-10">
       
@@ -55,13 +57,13 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
                 <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3.5 py-1.5 mb-6 backdrop-blur-md">
                   <Sparkles className="h-4 w-4 text-orange-400" />
                   <span className="text-white/80 text-xs font-semibold tracking-wider uppercase">
-                    Partner With HungerHub
+                    {t("partnerBadge")}
                   </span>
                 </div>
                 <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1] tracking-tight">
-                  Expand your restaurant's <br />
+                  {t("partnerTitle1")} <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-orange-400 bg-300% animate-gradient-shift">
-                    reach and double your sales
+                    {t("partnerTitle2")}
                   </span>
                 </h2>
               </div>
@@ -69,7 +71,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
               {/* Right Column: Description & Premium Actions */}
               <div className="max-w-md space-y-6 lg:text-right flex flex-col lg:items-end">
                 <p className="text-white/60 text-base md:text-lg leading-relaxed">
-                  Manage orders live, utilize automatic delivery matching, and connect directly with thousands of hungry local food lovers.
+                  {t("partnerDesc")}
                 </p>
                 <div className="flex flex-wrap gap-4 pt-2">
                   <Button 
@@ -77,7 +79,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
                     className="rounded-full bg-white hover:bg-white/95 text-black font-extrabold px-6 h-12 text-sm shadow-xl flex items-center gap-2 group/btn"
                   >
                     <Link href="/auth/merchant-sign-up">
-                      Get started
+                      {t("btnGetStarted")}
                       <Sparkles className="h-4 w-4 text-orange-500 transition-transform group-hover/btn:scale-125" />
                     </Link>
                   </Button>
@@ -88,7 +90,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
                   >
                     <Link href="/discover">
                       <Play className="h-4 w-4 fill-white text-white" />
-                      Watch how it works
+                      {t("btnWatch")}
                     </Link>
                   </Button>
                 </div>
@@ -110,20 +112,20 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
               <span className="text-2xl font-black tracking-tight">HungerHub</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">
-              Delivering premium local culinary experiences, home-cooked food gems, and passionate food creations right to your doorstep.
+              {t("slogan")}
             </p>
           </div>
 
           {/* Links Column 1 */}
           <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">Company</h3>
+            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">{t("colCompany")}</h3>
             <ul className="space-y-3">
               {[
-                { label: "About Us", href: "/about" },
-                { label: "Features", href: "/features" },
-                { label: "Pricing", href: "/pricing" },
-                { label: "Contact Us", href: "/contact" },
-                { label: "Blog", href: "/blog" }
+                { label: t("aboutUs"), href: "/about" },
+                { label: t("features"), href: "/features" },
+                { label: t("pricing"), href: "/pricing" },
+                { label: t("contactUs"), href: "/contact" },
+                { label: t("blog"), href: "/blog" }
               ].map(link => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
@@ -136,13 +138,13 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
 
           {/* Links Column 2 */}
           <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">Platform</h3>
+            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">{t("colPlatform")}</h3>
             <ul className="space-y-3">
               {[
-                { label: "Documentation", href: "/docs" },
-                { label: "API Reference", href: "/api-docs" },
-                { label: "Help Center", href: "/help" },
-                { label: "Merchant Dashboard", href: "/dashboard" }
+                { label: t("docs"), href: "/docs" },
+                { label: t("apiRef"), href: "/api-docs" },
+                { label: t("helpCenter"), href: "/help" },
+                { label: t("merchantDashboard"), href: "/dashboard" }
               ].map(link => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
@@ -155,7 +157,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
 
           {/* Links Column 3 */}
           <div className="space-y-4">
-            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">Connect</h3>
+            <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">{t("colConnect")}</h3>
             <ul className="space-y-3">
               {[
                 { label: "X (Twitter)", href: "https://x.com" },
@@ -184,15 +186,15 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
             </span>
             <span className="text-green-600 dark:text-green-400 text-xs font-bold tracking-wide">
-              All systems operational
+              {t("systemsStatus")}
             </span>
           </div>
 
           {/* Copyright & Legal Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
-            <span className="font-medium">© 2026 HungerHub. All rights reserved.</span>
-            <Link href="/privacy" className="hover:text-foreground font-medium transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-foreground font-medium transition-colors">Terms of Use</Link>
+            <span className="font-medium">{t("copyright")}</span>
+            <Link href="/privacy" className="hover:text-foreground font-medium transition-colors">{t("privacy")}</Link>
+            <Link href="/terms" className="hover:text-foreground font-medium transition-colors">{t("terms")}</Link>
           </div>
 
         </div>

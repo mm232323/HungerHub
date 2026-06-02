@@ -4,6 +4,7 @@ import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut,
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useUser, useClerk, Show } from "@clerk/react";
+import { useTranslations, useLocale } from "next-intl";
 
 const basePath = "";
 
@@ -30,6 +31,9 @@ function UserAvatar() {
   const { signOut } = useClerk();
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("Nav");
+  const isRTL = locale === "ar";
   const isMerchant = user?.unsafeMetadata?.role === "merchant";
 
   const handleSignOut = () => {
@@ -64,13 +68,13 @@ function UserAvatar() {
             onClick={() => setOpen(false)}
           />
           {/* Dropdown */}
-          <div className="absolute right-0 top-11 z-50 bg-background border rounded-xl shadow-lg w-52 py-2 overflow-hidden">
+          <div className={`absolute ${isRTL ? "left-0" : "right-0"} top-11 z-50 bg-background border rounded-xl shadow-lg w-52 py-2 overflow-hidden`}>
             <div className="px-4 py-2 border-b">
               <p className="text-sm font-semibold truncate">{user?.firstName} {user?.lastName}</p>
               <p className="text-xs text-muted-foreground truncate">{user?.primaryEmailAddress?.emailAddress}</p>
               {isMerchant && (
                 <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">
-                  <LayoutDashboard className="h-3 w-3" /> Merchant
+                  <LayoutDashboard className="h-3 w-3" /> {t("badgeMerchant")}
                 </span>
               )}
             </div>
@@ -80,7 +84,7 @@ function UserAvatar() {
                 className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left"
               >
                 <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                Merchant Dashboard
+                {t("btnMerchantDashboard")}
               </button>
             )}
             <button
@@ -88,7 +92,7 @@ function UserAvatar() {
               className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted transition-colors text-left text-destructive"
             >
               <LogOut className="h-4 w-4" />
-              Sign out
+              {t("btnSignOut")}
             </button>
           </div>
         </>
@@ -100,6 +104,8 @@ function UserAvatar() {
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user } = useUser();
+  const t = useTranslations("Nav");
+  const tGlobal = useTranslations("Global");
   const isMerchant = user?.unsafeMetadata?.role === "merchant";
 
   return (
@@ -110,34 +116,37 @@ export function SiteHeader() {
           <div className="bg-primary p-1.5 rounded-xl">
             <Utensils className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="text-xl font-bold tracking-tight">HungerHub</span>
+          <span className="text-xl font-bold tracking-tight">{tGlobal("brand")}</span>
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 border-b-0 h-full">
-          <NavLink href="/">Home</NavLink>
-          <NavLink href="/discover">Discover</NavLink>
+          <NavLink href="/">{t("linkHome")}</NavLink>
+          <NavLink href="/discover">{t("linkDiscover")}</NavLink>
+          <NavLink href="/meals">{t("linkMeals")}</NavLink>
         </nav>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
-            </Button>
-          </Link>
+          <Show when="signed-in">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
+              </Button>
+            </Link>
+          </Show>
 
           {/* Signed out: Login + Sign up */}
           <Show when="signed-out">
             <Link href="/auth/sign-in">
               <Button variant="ghost" size="sm" className="rounded-full font-medium">
-                Sign in
+                {t("btnSignIn")}
               </Button>
             </Link>
             <Link href="/auth/sign-up">
               <Button size="sm" className="rounded-full font-semibold">
-                Sign up
+                {t("btnSignUp")}
               </Button>
             </Link>
           </Show>
@@ -148,7 +157,7 @@ export function SiteHeader() {
               <Link href="/dashboard">
                 <Button size="sm" className="rounded-full gap-2 font-semibold">
                   <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
+                  {t("btnDashboard")}
                 </Button>
               </Link>
             )}
@@ -158,12 +167,14 @@ export function SiteHeader() {
 
         {/* Mobile: cart + hamburger */}
         <div className="flex md:hidden items-center gap-1">
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
-            </Button>
-          </Link>
+          <Show when="signed-in">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon" className="relative">
+                <ShoppingBag className="h-5 w-5" />
+                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
+              </Button>
+            </Link>
+          </Show>
           <Button
             variant="ghost"
             size="icon"
@@ -180,14 +191,19 @@ export function SiteHeader() {
         <div className="md:hidden border-t bg-background/95 backdrop-blur-md">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-1">
             <MobileNavLink href="/" icon={<Home className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
-              Home
+              {t("linkHome")}
             </MobileNavLink>
             <MobileNavLink href="/discover" icon={<Compass className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
-              Discover
+              {t("linkDiscover")}
             </MobileNavLink>
-            <MobileNavLink href="/cart" icon={<ShoppingBag className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
-              Cart
+            <MobileNavLink href="/meals" icon={<Utensils className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
+              {t("linkMeals")}
             </MobileNavLink>
+            <Show when="signed-in">
+              <MobileNavLink href="/cart" icon={<ShoppingBag className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
+                {t("linkCart")}
+              </MobileNavLink>
+            </Show>
 
             <Show when="signed-in">
               {isMerchant && (
@@ -195,7 +211,7 @@ export function SiteHeader() {
                   <Link href="/dashboard" onClick={() => setMobileOpen(false)}>
                     <Button className="w-full rounded-full gap-2 font-semibold">
                       <LayoutDashboard className="h-4 w-4" />
-                      Open Merchant Dashboard
+                      {t("btnOpenMerchantDashboard")}
                     </Button>
                   </Link>
                 </div>
@@ -206,17 +222,17 @@ export function SiteHeader() {
               <div className="pt-3 border-t mt-2 flex flex-col gap-2">
                 <Link href="/auth/sign-in" onClick={() => setMobileOpen(false)}>
                   <Button variant="outline" className="w-full rounded-full font-semibold">
-                    Sign in
+                    {t("btnSignIn")}
                   </Button>
                 </Link>
                 <Link href="/auth/sign-up" onClick={() => setMobileOpen(false)}>
                   <Button className="w-full rounded-full font-semibold">
-                    Create account
+                    {t("btnCreateAccount")}
                   </Button>
                 </Link>
                 <Link href="//auth/merchant-sign-up" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full rounded-full text-muted-foreground font-medium text-sm">
-                    Register as a merchant
+                    {t("btnRegisterMerchant")}
                   </Button>
                 </Link>
               </div>

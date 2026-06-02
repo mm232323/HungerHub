@@ -1,19 +1,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, ShoppingBag, LayoutDashboard } from "lucide-react";
+import { Home, Compass, ShoppingBag, LayoutDashboard, Utensils } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export function BottomNav() {
+  const t = useTranslations("BottomNav");
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isDiscover = pathname === "/discover";
+  const isMeals = pathname === "/meals";
   const isCart = pathname === "/cart";
   const dashActive = pathname?.startsWith("/dashboard");
 
   const items = [
-    { href: "/", label: "Home", icon: Home, active: isHome },
-    { href: "/discover", label: "Discover", icon: Compass, active: isDiscover },
-    { href: "/cart", label: "Cart", icon: ShoppingBag, active: isCart },
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, active: dashActive },
+    { href: "/", label: t("home"), icon: Home, active: isHome },
+    { href: "/discover", label: t("discover"), icon: Compass, active: isDiscover },
+    { href: "/meals", label: t("meals"), icon: Utensils, active: isMeals },
+    { href: "/cart", label: t("cart"), icon: ShoppingBag, active: isCart },
+    { href: "/dashboard", label: t("dashboard"), icon: LayoutDashboard, active: dashActive },
   ];
 
   return (

@@ -3,13 +3,14 @@
 import { SignUp } from "@clerk/react";
 import Link from "next/link";
 import { Utensils, TrendingUp, Users, BarChart3 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const basePath = "";
 
 const clerkAppearance = {
   variables: {
-    colorPrimary: "#F97316", // Beautiful brand orange accent
-    colorBackground: "#FFFFFF", // Light background inside the form
+    colorPrimary: "#F97316", 
+    colorBackground: "#FFFFFF",
     colorInputBackground: "#FFFFFF",
     colorInputText: "#1F2937",
     colorText: "#1F2937",
@@ -138,6 +139,9 @@ const clerkAppearance = {
 
 
 export function MerchantSignUpView() {
+  const t = useTranslations("Auth.MerchantSignUp");
+  const tShared = useTranslations("Auth.shared");
+
   return (
     <div className="min-h-[100dvh] flex">
       {/* Left Panel — merchant-themed */}
@@ -155,7 +159,7 @@ export function MerchantSignUpView() {
             </div>
             <span className="text-2xl font-bold tracking-tight">HungerHub</span>
             <span className="text-sm font-semibold px-2.5 py-1 bg-orange-500/20 text-orange-300 rounded-full">
-              For Merchants
+              {t("forMerchants")}
             </span>
           </Link>
         </div>
@@ -163,10 +167,10 @@ export function MerchantSignUpView() {
         <div className="relative space-y-6">
           <div className="space-y-3">
             <h1 className="text-4xl font-bold leading-tight">
-              Grow your<br />restaurant business
+              {t("growYour")}<br />{t("restaurantBusiness")}
             </h1>
             <p className="text-white/70 text-lg leading-relaxed">
-              Join HungerHub as a merchant and reach thousands of hungry customers in your area.
+              {t("joinDesc")}
             </p>
           </div>
 
@@ -174,29 +178,29 @@ export function MerchantSignUpView() {
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3">
               <TrendingUp className="h-5 w-5 text-orange-400 shrink-0" />
               <div>
-                <span className="text-sm font-medium block">Real-time revenue analytics</span>
-                <span className="text-xs text-white/50">AI-powered insights to grow faster</span>
+                <span className="text-sm font-medium block">{t("analytics")}</span>
+                <span className="text-xs text-white/50">{t("analyticsDesc")}</span>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3">
               <Users className="h-5 w-5 text-orange-400 shrink-0" />
               <div>
-                <span className="text-sm font-medium block">Live order management</span>
-                <span className="text-xs text-white/50">Kanban board from new to delivered</span>
+                <span className="text-sm font-medium block">{t("orderMgmt")}</span>
+                <span className="text-xs text-white/50">{t("orderMgmtDesc")}</span>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-3">
               <BarChart3 className="h-5 w-5 text-orange-400 shrink-0" />
               <div>
-                <span className="text-sm font-medium block">Promotional campaigns</span>
-                <span className="text-xs text-white/50">Run deals and track performance</span>
+                <span className="text-sm font-medium block">{t("campaigns")}</span>
+                <span className="text-xs text-white/50">{t("campaignsDesc")}</span>
               </div>
             </div>
           </div>
         </div>
 
         <p className="relative text-white/40 text-sm">
-          © 2026 HungerHub. All rights reserved.
+          {tShared("copyright")}
         </p>
       </div>
 
@@ -210,14 +214,14 @@ export function MerchantSignUpView() {
             </div>
             <span className="text-xl font-bold text-stone-900">HungerHub</span>
           </Link>
-          <p className="text-sm text-stone-400 mt-1">Merchant Registration</p>
+          <p className="text-sm text-stone-400 mt-1">{t("merchantReg")}</p>
         </div>
 
         <div className="w-full flex flex-col items-center auth-slide-up">
           {/* Label above form */}
           <div className="hidden lg:block mb-2 w-[440px] max-w-full text-center lg:text-left">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#F97316]">
-              Merchant Registration
+              {t("merchantReg")}
             </span>
           </div>
 
@@ -232,9 +236,9 @@ export function MerchantSignUpView() {
 
         {/* Customer link */}
         <div className="mt-6 text-center text-sm text-stone-400">
-          Looking to order food?{" "}
+          {t("lookingToOrder")}{" "}
           <Link href="/auth/sign-up" className="font-semibold text-[#F97316] hover:text-[#EA580C] transition-colors">
-            Create a customer account
+            {t("createCustomer")}
           </Link>
         </div>
       </div>

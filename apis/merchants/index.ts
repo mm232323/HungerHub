@@ -64,6 +64,43 @@ export function useGetMerchant<
   return { ...query, queryKey };
 }
 
+export const createMerchant = async (
+  merchantData: any,
+  options?: RequestInit,
+): Promise<Merchant> => {
+  return customFetch<Merchant>(`/merchants`, {
+    ...options,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options?.headers || {}),
+    },
+    body: JSON.stringify(merchantData),
+  });
+};
+
+export function useCreateMerchant<
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createMerchant>>,
+    TError,
+    { data: any },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof createMerchant>>,
+  TError,
+  { data: any },
+  TContext
+> {
+  const mutationFn = ({ data }: { data: any }) =>
+    createMerchant(data, options?.request);
+  return useMutation({ mutationFn, ...options?.mutation });
+}
+
 export const followMerchant = async (
   id: number,
   options?: RequestInit,

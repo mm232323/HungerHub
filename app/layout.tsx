@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono, Tajawal } from "next/font/google";
+import {NextIntlClientProvider} from 'next-intl';
+import {getMessages} from 'next-intl/server';
 import "./globals.css";
 
-import { Providers } from "./providers";
+import { Providers } from "./[locale]/providers";
 import { Toaster } from "@/alerts/toaster";
 
 const inter = Inter({
@@ -11,32 +13,53 @@ const inter = Inter({
   display: "swap",
 });
 
+const tajawal = Tajawal({
+  variable: "--tajawal-font",
+  subsets: ["arabic", "latin"],
+  weight: ["200", "300", "400", "500", "700", "800", "900"],
+  display: "swap",
+});
+
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "HungerHub - Food You'll Actually Love",
-  description: "Discover local gems, order in minutes, and track your delivery live.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getMessages({ locale });
+  const layout = (t as any).Layout;
+  
+  return {
+    title: layout?.title || "HungerHub",
+    description: layout?.description || "Food Delivery",
+  };
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+export default async function RootLayout(props: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const params = await props.params;
+  const { locale } = params;
+  const { children } = props;
+  const messages = await getMessages();
   return (
     <html
-      lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
-      style={{ "--app-font-sans": `var(${inter.variable})` } as React.CSSProperties}
+      lang={locale}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      className={`${inter.variable} ${geistMono.variable} ${tajawal.variable} h-full antialiased`}
+      style={{ 
+        "--app-font-sans": locale === 'ar' ? `var(${tajawal.variable})` : `var(${inter.variable})` 
+      } as React.CSSProperties}
     >
       <body className="min-h-full flex flex-col">
-        <Providers>
-          {children}
-          <Toaster />
-        </Providers>
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            {children}
+            <Toaster />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

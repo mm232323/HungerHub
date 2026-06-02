@@ -10,6 +10,7 @@ import type { ErrorType } from "@/types/api-fetch";
 import { buildQueryParams } from "@/utils/buildQueryParams";
 import { customFetch } from "@/utils/customFetch";
 import type { SecondParameter } from "@/utils/ts-helpers";
+import { listCategories } from "../categories";
 
 export const listProducts = async (
   params?: ListProductsParams,
@@ -20,6 +21,25 @@ export const listProducts = async (
     { ...options, method: "GET" },
   );
 };
+export function useListProducts<
+  TData = Awaited<ReturnType<typeof listProducts>>,
+  TError = ErrorType<unknown>,
+>(
+  params?: ListProductsParams,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof listProducts>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  }
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryKey = options?.query?.queryKey ?? ["/products", params];
+  const queryFn = () => listProducts(params, options?.request);
+  const query = useQuery({ queryKey, queryFn, ...options?.query }) as any;
+  return { ...query, queryKey };
+}
 
 export const getProduct = async (
   id: number,
