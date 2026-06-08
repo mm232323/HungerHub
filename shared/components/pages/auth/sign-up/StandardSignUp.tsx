@@ -18,12 +18,14 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { SignUp } from "@clerk/react";
 
+import { Role } from "@/types";
+
 function StandardSignUp({
   role,
   handleChangeRole,
 }: {
-  role: string;
-  handleChangeRole: (r: string | null) => void;
+  role: Role;
+  handleChangeRole: (r: Role) => void;
 }) {
   const t = useTranslations("Auth.SignUp");
   const tShared = useTranslations("Auth.shared");
@@ -156,7 +158,7 @@ function StandardSignUp({
           {/* Role switcher */}
           <div className="w-[440px] max-w-full">
             <div className="flex gap-1 p-1 bg-stone-100 rounded-xl w-fit">
-              {(["customer", "merchant"] as any[]).map((r) => (
+              {(["customer", "merchant"] as Role[]).map((r) => (
                 <button
                   key={r}
                   onClick={() => handleChangeRole(r)}

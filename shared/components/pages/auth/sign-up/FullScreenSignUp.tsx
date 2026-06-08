@@ -4,10 +4,12 @@ import React from "react";
 import { RoleSelector } from "./RoleSelector";
 import { BG_EMOJIS } from "./data";
 
+import { Role } from "@/types";
+
 function FullScreenSignUp({
   handleChangeRole,
 }: {
-  handleChangeRole: (role: string) => void;
+  handleChangeRole: (role: Role) => void;
 }) {
   return (
     <>

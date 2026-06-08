@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono, Tajawal } from "next/font/google";
 import {NextIntlClientProvider} from 'next-intl';
-import {getMessages} from 'next-intl/server';
+import { getMessages, getLocale } from 'next-intl/server';
 import "./globals.css";
 
 import { Providers } from "./[locale]/providers";
@@ -25,8 +25,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale();
   const t = await getMessages({ locale });
   const layout = (t as any).Layout;
   
@@ -38,12 +38,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function RootLayout(props: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }>) {
-  const params = await props.params;
-  const { locale } = params;
   const { children } = props;
-  const messages = await getMessages();
+  const locale = await getLocale();
+  const messages = await getMessages({ locale });
   return (
     <html
       lang={locale}

@@ -72,7 +72,6 @@ function StandardSignIn({
           path={`${basePath}/auth/sign-in`}
           signUpUrl={`${basePath}/auth/sign-up`}
           fallbackRedirectUrl={`${basePath}/`}
-          afterSignInUrl={`${basePath}/`}
           appearance={clerkAppearance}
         />
 

@@ -8,7 +8,8 @@ type ResponseType =
   | "formData"
   | "auto";
 
-export interface CustomFetchOptions extends RequestInit {
+export interface CustomFetchOptions extends Omit<RequestInit, 'body'> {
+  body?: RequestInit['body'] | Record<string, unknown> | unknown[] | any;
   responseType?: ResponseType;
   query?: Record<string, string | number | boolean | undefined>;
   timeout?: number;
