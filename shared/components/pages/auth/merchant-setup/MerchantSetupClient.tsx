@@ -115,7 +115,7 @@ export function MerchantSetupClient() {
         profileImage: form.profileImage.trim() || undefined,
         coverImage: form.coverImage.trim() || undefined,
         tags: form.tags,
-        ownerUserName: user?.username || undefined,
+        owner_user_name: user?.username || undefined,
       },
     });
   };

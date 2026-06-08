@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Get real-time tracking updates, estimated arrival, map location and courier details.",
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function TrackPage({ params }: Props) {
   const { id } = await params;
   const orderId = parseInt(id, 10) || 0;

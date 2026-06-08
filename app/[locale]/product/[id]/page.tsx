@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getProductById } from "@/lib/server-api";
+import { getProductById, getProductReviews } from "@/lib/server-api";
 import { ProductDetailView } from "@/shared/components/pages/product/product-detail-view";
 
 type Props = { params: Promise<{ id: string }> };
@@ -19,9 +19,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
   const productId = parseInt(id, 10);
-  const product = await getProductById(productId);
+  const [product, reviews] = await Promise.all([
+    getProductById(productId),
+    getProductReviews(productId),
+  ]);
+  
   if (!product) {
     return <div className="p-4 text-center">Product not found</div>;
   }
-  return <ProductDetailView product={product} />;
+  return <ProductDetailView product={product} initialReviews={reviews} />;
 }

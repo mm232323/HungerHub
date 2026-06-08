@@ -33,4 +33,5 @@ export type ListMerchantsParams = {
   search?: string;
   limit?: number;
   offset?: number;
+  owner_user_name?: string;
 };

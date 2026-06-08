@@ -9,7 +9,7 @@ function ProductHeader({ product }: { product: Product }) {
     <>
       <div className="relative h-[40vh] md:h-[50vh] w-full bg-muted rounded-b-[2rem] overflow-hidden shadow-sm">
         <div className="absolute top-4 left-4 z-10">
-          <Link href={`/merchant/${product.merchantId}`}>
+          <Link href={`/merchant/${(product as any).merchantSlug || product.merchantId}`}>
             <Button
               variant="secondary"
               size="icon"

@@ -30,7 +30,7 @@ function TrendingMerchants({
         {trendingMerchants.slice(0, 4).map((merchant) => (
           <Link
             key={merchant.id}
-            href={`/merchant/${merchant.id}`}
+            href={`/merchant/${merchant.slug || merchant.id}`}
             className="group block"
           >
             <div className="bg-card border rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">

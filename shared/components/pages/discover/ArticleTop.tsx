@@ -1,15 +1,16 @@
-import { Link, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { FeedPost } from "@/types";
 import { Button } from "../../ui/button";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import Link from "next/link";
 
 function ArticleTop({ post }: { post: FeedPost }) {
   return (
-    <div className="px-4 flex items-center justify-between">
+    <div className="p-4 flex items-center justify-between">
       <Link
-        href={`/merchant/${post.merchantId}`}
+        href={`/merchant/${post.merchant.slug || post.merchantId}`}
         className="flex items-center gap-3"
       >
         <Avatar className="h-10 w-10">

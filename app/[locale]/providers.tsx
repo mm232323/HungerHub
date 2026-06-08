@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { ClerkProvider, useAuth } from "@clerk/react";
+import { ClerkProvider, useAuth, useUser } from "@clerk/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { setBaseUrl, setAuthTokenGetter } from "@/utils/api";
+import { setBaseUrl, setAuthTokenGetter, setUsernameGetter } from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
 import { SiteHeader } from "@/layout/site-header";
 import { BottomNav } from "@/layout/bottom-nav";
@@ -18,6 +18,7 @@ const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || "";
 
 function AuthConfig() {
   const { getToken } = useAuth();
+  const { user } = useUser();
   
   React.useEffect(() => {
     setAuthTokenGetter(async () => {
@@ -27,7 +28,11 @@ function AuthConfig() {
         return null;
       }
     });
-  }, [getToken]);
+
+    setUsernameGetter(() => {
+      return user?.username || null;
+    });
+  }, [getToken, user]);
 
   return null;
 }

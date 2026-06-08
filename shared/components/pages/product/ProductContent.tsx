@@ -16,7 +16,7 @@ function ProductContent({product}: {product: Product}) {
             <p className="text-sm text-muted-foreground line-through">${product.price.toFixed(2)}</p>
           )}
 
-          <Link href={`/merchant/${product.merchantId}`} className="inline-block text-sm font-medium text-muted-foreground hover:text-primary">
+          <Link href={`/merchant/${(product as any).merchantSlug || product.merchantId}`} className="inline-block text-sm font-medium text-muted-foreground hover:text-primary">
             By {product.merchantName || 'Merchant'}
           </Link>
         </div>

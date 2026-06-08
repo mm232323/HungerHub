@@ -4,6 +4,8 @@ export interface Product {
   merchantId: number;
   /** @nullable */
   merchantName?: string | null;
+  /** @nullable */
+  merchantSlug?: string | null;
   name: string;
   description: string;
   price: number;

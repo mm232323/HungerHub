@@ -25,6 +25,14 @@ export type TrackOrderViewProps = {
 export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
   const [progress, setProgress] = useState(10);
 
+  const formatTime = (dateStr?: string | null) => {
+    if (!dateStr) return "—";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+
   const orderData: Order =
     order ??
     ({
@@ -120,7 +128,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
       <header className="bg-background border-b px-4 h-16 flex items-center justify-between sticky top-0 z-50">
-        <Link href="/discover">
+        <Link href="/track">
           <Button variant="ghost" size="icon" className="rounded-full">
             <ChevronLeft className="h-5 w-5" />
           </Button>
@@ -156,7 +164,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
                 Estimated Delivery
               </p>
               <h2 className="text-3xl font-bold">
-                {orderData.estimatedDelivery ?? "—"}
+                {formatTime(orderData.estimatedDelivery)}
               </h2>
             </div>
             <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
@@ -224,6 +232,47 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
                 Delivery Address
               </h3>
               <p className="font-medium mt-1">{orderData.address}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-background rounded-3xl p-6 shadow-sm border space-y-4">
+          <h3 className="font-bold text-lg mb-2">Order Summary</h3>
+          <div className="space-y-3">
+            {orderData.items && orderData.items.length > 0 ? (
+              orderData.items.map((item, idx) => (
+                <div key={idx} className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <span className="bg-muted px-2 py-0.5 rounded text-sm font-medium">{item.quantity}x</span>
+                    <span className="font-medium text-sm">{item.productName}</span>
+                  </div>
+                  <span className="font-medium text-sm">${(item.price * item.quantity).toFixed(2)}</span>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">No items to display.</p>
+            )}
+          </div>
+          
+          <div className="h-px w-full bg-border my-2" />
+          
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Subtotal</span>
+              <span className="font-medium">${(orderData.subtotal || orderData.total).toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Delivery Fee</span>
+              <span className="font-medium">${(orderData.deliveryFee || 0).toFixed(2)}</span>
+            </div>
+            {!!(orderData as any).discount && (
+              <div className="flex justify-between text-sm text-green-600 font-medium">
+                <span>Discount {(orderData as any).promoCode ? `(${(orderData as any).promoCode})` : ''}</span>
+                <span>-${((orderData as any).discount || 0).toFixed(2)}</span>
+              </div>
+            )}
+            <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
+              <span>Total</span>
+              <span>${orderData.total.toFixed(2)}</span>
             </div>
           </div>
         </div>

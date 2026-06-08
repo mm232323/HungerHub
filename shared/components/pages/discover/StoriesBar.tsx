@@ -5,15 +5,15 @@ import { MerchantStory } from "@/types";
 
 function StoriesBar({ initialStories }: { initialStories: MerchantStory[] }) {
   return (
-    <div className="px-4 py-4 flex gap-4 overflow-x-auto hide-scrollbar border-b">
+    <div className="px-4 py-3 flex gap-3 overflow-x-auto hide-scrollbar">
       {initialStories.map((story) => (
         <Link
           key={story.id}
-          href={`/merchant/${story.merchantId}`}
-          className="flex flex-col items-center gap-2 shrink-0 cursor-pointer"
+          href={`/merchant/${story.merchant.slug || story.merchantId}`}
+          className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer"
         >
           <div
-            className={`p-1 rounded-full ${story.hasUnviewed ? "bg-gradient-to-tr from-primary to-orange-400" : "bg-muted"}`}
+            className={`p-1 rounded-full ${story.hasUnviewed ? "bg-gradient-to-tr from-primary to-orange-400" : "bg-muted/50"}`}
           >
             <Avatar className="h-14 w-14 border-2 border-background">
               <AvatarImage

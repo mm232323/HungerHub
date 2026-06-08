@@ -5,6 +5,7 @@ import { Check, Clock, MapPin, Star } from "lucide-react";
 import { Merchant } from "@/types";
 import { useFollowMerchant } from "@/apis";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth, SignInButton } from "@clerk/nextjs";
 
 function MerchantInfo({
   merchant,
@@ -16,6 +17,7 @@ function MerchantInfo({
   onHandleFollows: (isFollowing: boolean, followersCount: number) => void;
 }) {
   const { toast } = useToast();
+  const { isSignedIn } = useAuth();
   const followMutation = useFollowMerchant({
     mutation: {
       onSuccess: (data) => {
@@ -35,19 +37,27 @@ function MerchantInfo({
         <div className="flex-1 space-y-2">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">{merchant.name}</h1>
-            <Button
-              variant={merchant.isFollowing ? "secondary" : "default"}
-              className="rounded-full"
-              onClick={() => followMutation.mutate({ id: merchantId })}
-            >
-              {merchant.isFollowing ? (
-                <>
-                  <Check className="h-4 w-4 mr-1" /> Following
-                </>
-              ) : (
-                "Follow"
-              )}
-            </Button>
+            {isSignedIn ? (
+              <Button
+                variant={merchant.isFollowing ? "secondary" : "default"}
+                className="rounded-full"
+                onClick={() => followMutation.mutate({ id: merchantId })}
+              >
+                {merchant.isFollowing ? (
+                  <>
+                    <Check className="h-4 w-4 mr-1" /> Following
+                  </>
+                ) : (
+                  "Follow"
+                )}
+              </Button>
+            ) : (
+              <SignInButton mode="modal">
+                <Button variant="default" className="rounded-full">
+                  Follow
+                </Button>
+              </SignInButton>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {merchant.cuisineType} • {merchant.followersCount} followers

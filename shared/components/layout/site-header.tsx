@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut, User } from "lucide-react";
+import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut, User, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useUser, useClerk, Show } from "@clerk/react";
@@ -124,6 +124,9 @@ export function SiteHeader() {
           <NavLink href="/">{t("linkHome")}</NavLink>
           <NavLink href="/discover">{t("linkDiscover")}</NavLink>
           <NavLink href="/meals">{t("linkMeals")}</NavLink>
+          <Show when="signed-in">
+            <NavLink href="/track">{t("linkOrders")}</NavLink>
+          </Show>
         </nav>
 
         {/* Desktop Actions */}
@@ -202,6 +205,9 @@ export function SiteHeader() {
             <Show when="signed-in">
               <MobileNavLink href="/cart" icon={<ShoppingBag className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
                 {t("linkCart")}
+              </MobileNavLink>
+              <MobileNavLink href="/track" icon={<Package className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
+                {t("linkOrders")}
               </MobileNavLink>
             </Show>
 

@@ -17,6 +17,7 @@ export interface CustomFetchOptions extends RequestInit {
 
 let _baseUrl = "";
 let _authTokenGetter: AuthTokenGetter | null = null;
+let _usernameGetter: (() => string | null) | null = null;
 
 export function setBaseUrl(url: string | null): void {
   _baseUrl = url ? url.replace(/\/+$/, "") : "";
@@ -24,6 +25,10 @@ export function setBaseUrl(url: string | null): void {
 
 export function setAuthTokenGetter(getter: AuthTokenGetter | null): void {
   _authTokenGetter = getter;
+}
+
+export function setUsernameGetter(getter: (() => string | null) | null): void {
+  _usernameGetter = getter;
 }
 
 export class ApiError<T = unknown> extends Error {
@@ -97,6 +102,13 @@ export async function customFetch<T = unknown>(
 
     if (token) {
       headers.set("authorization", `Bearer ${token}`);
+    }
+  }
+
+  if (_usernameGetter && !headers.has("x-owner-user-name")) {
+    const username = _usernameGetter();
+    if (username) {
+      headers.set("x-owner-user-name", username);
     }
   }
 

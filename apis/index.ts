@@ -5,3 +5,4 @@ export * from "./feed";
 export * from "./orders";
 export * from "./dashboard";
 export * from "./health";
+export * from "./ads";

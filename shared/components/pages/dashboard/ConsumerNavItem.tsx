@@ -1,9 +1,18 @@
-'use client'
-import { ExternalLink, Link } from 'lucide-react';
-import React, { ElementType } from 'react'
+"use client";
+import { ExternalLink } from "lucide-react";
+import Link from "next/link";
+import React, { ElementType } from "react";
 
-function ConsumerNavItem({ href, icon: Icon, label, onClick }: {
-  href: string; icon: ElementType; label: string; onClick?: () => void;
+function ConsumerNavItem({
+  href,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  href: string;
+  icon: ElementType;
+  label: string;
+  onClick?: () => void;
 }) {
   return (
     <Link href={href} onClick={onClick}>
@@ -16,4 +25,4 @@ function ConsumerNavItem({ href, icon: Icon, label, onClick }: {
   );
 }
 
-export default ConsumerNavItem
+export default ConsumerNavItem;

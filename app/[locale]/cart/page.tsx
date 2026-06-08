@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import { useCart } from "@/shared/contexts/CartContext";
 import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { useCreateOrder } from "@/apis/orders";
 import { useToast } from "@/hooks/use-toast";
-import { Minus, Plus, Trash2, ArrowLeft, Loader2 } from "lucide-react";
+import { Minus, Plus, Trash2, ArrowLeft, Loader2, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -14,6 +15,12 @@ export default function CartPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [promoMessage, setPromoMessage] = useState("");
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
   const createOrder = useCreateOrder({
     mutation: {
@@ -24,7 +31,7 @@ export default function CartPage() {
         });
         clearCart();
         setIsProcessing(false);
-        router.push("/orders"); // Or redirect to home/dashboard
+        router.push("/track"); // Or redirect to home/dashboard
       },
       onError: (error: any) => {
         toast({
@@ -37,12 +44,47 @@ export default function CartPage() {
     },
   });
 
+  const handleApplyPromo = async () => {
+    if (!promoInput || items.length === 0) return;
+    setIsApplyingPromo(true);
+    setPromoMessage("");
+
+    try {
+      const merchantId = items[0].product.merchantId;
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8080/v1";
+      const apiUrl = baseUrl.includes("/v1") ? baseUrl : `${baseUrl}/v1`;
+      
+      const res = await fetch(`${apiUrl}/orders/validate-promo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          promoCode: promoInput,
+          merchantId,
+          subtotal: cartTotal,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.valid) {
+        setAppliedPromo(promoInput);
+        setDiscount(data.discount);
+        setPromoMessage(data.message || "Promo applied!");
+      } else {
+        setAppliedPromo("");
+        setDiscount(0);
+        setPromoMessage(data.message || "Invalid promo code");
+      }
+    } catch (error) {
+      setPromoMessage("Failed to apply promo code");
+    } finally {
+      setIsApplyingPromo(false);
+    }
+  };
+
   const handleCheckout = () => {
     if (items.length === 0) return;
     setIsProcessing(true);
 
-    // Group items by merchant. In a real app with multiple merchants, we'd create multiple orders or restrict cart to 1 merchant.
-    // For now, let's just create an order for the first merchant in the cart.
     const merchantId = items[0].product.merchantId;
     const orderItems = items.map((item) => ({
       productId: item.product.id,
@@ -55,6 +97,7 @@ export default function CartPage() {
         items: orderItems,
         address: "Home Address", // Temporary placeholder
         paymentMethod: "card",
+        promoCode: appliedPromo || undefined,
       },
     });
   };
@@ -123,30 +166,63 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
-            <div className="flex justify-between text-gray-600">
-              <span>Subtotal</span>
-              <span>${cartTotal.toFixed(2)}</span>
+          <div className="bg-white rounded-2xl shadow-sm p-4 space-y-4">
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Enter promo code"
+                  className="pl-9 bg-gray-50 border-transparent focus-visible:ring-orange-500 focus-visible:bg-white transition-all"
+                  value={promoInput}
+                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  disabled={isApplyingPromo}
+                />
+              </div>
+              <Button 
+                onClick={handleApplyPromo}
+                disabled={!promoInput || isApplyingPromo}
+                className="bg-gray-900 hover:bg-gray-800 text-white px-6"
+              >
+                {isApplyingPromo ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
+              </Button>
             </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Delivery Fee</span>
-              <span>$2.99</span>
-            </div>
-            <div className="border-t pt-3 flex justify-between font-bold text-lg">
-              <span>Total</span>
-              <span>${(cartTotal + 2.99).toFixed(2)}</span>
+            {promoMessage && (
+              <p className={`text-sm font-medium ${appliedPromo ? 'text-green-600' : 'text-red-500'}`}>
+                {promoMessage}
+              </p>
+            )}
+            
+            <div className="space-y-3 pt-2">
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>${cartTotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Delivery Fee</span>
+                <span>$2.99</span>
+              </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-green-600 font-medium">
+                  <span>Discount ({appliedPromo})</span>
+                  <span>-${discount.toFixed(2)}</span>
+                </div>
+              )}
+              <div className="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
+                <span>Total</span>
+                <span>${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}</span>
+              </div>
             </div>
           </div>
 
           <Button
-            className="w-full h-14 rounded-full text-lg font-bold bg-orange-500 hover:bg-orange-600 shadow-lg"
+            className="w-full h-14 rounded-full text-lg font-bold bg-orange-500 hover:bg-orange-600 shadow-lg text-white"
             onClick={handleCheckout}
             disabled={isProcessing}
           >
             {isProcessing ? (
               <Loader2 className="h-5 w-5 animate-spin mx-auto" />
             ) : (
-              `Buy Now • ${(cartTotal + 2.99).toFixed(2)}`
+              `Checkout • $${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}`
             )}
           </Button>
         </div>

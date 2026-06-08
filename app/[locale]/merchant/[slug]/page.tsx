@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import {
-  getMerchantById,
+  getMerchantBySlug,
   getMerchantProducts,
   getMerchantReviews,
 } from "@/lib/server-api";
 import MerchantHeader from "@/shared/components/pages/merchant/MerchantHeader";
 import MerchantBody from "@/shared/components/pages/merchant/MerchanBody";
 
-type Props = { params: Promise<{ id: string }> };
+type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
-  const merchant = await getMerchantById(parseInt(id, 10));
+  const { slug } = await params;
+  const merchant = await getMerchantBySlug(slug);
   return {
     title: merchant
       ? `${merchant.name} - HungerHub`
@@ -22,23 +22,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MerchantPage({ params }: Props) {
-  const { id } = await params;
-  const merchantId = parseInt(id, 10);
+  const { slug } = await params;
 
-  const [initialMerchant, initialProducts, initialReviews] = await Promise.all([
-    getMerchantById(merchantId),
+  const initialMerchant = await getMerchantBySlug(slug);
+  
+  if (!initialMerchant) {
+    return <div className="p-4 text-center">Merchant not found</div>;
+  }
+
+  const merchantId = initialMerchant.id;
+
+  const [initialProducts, initialReviews] = await Promise.all([
     getMerchantProducts(merchantId),
     getMerchantReviews(merchantId),
   ]);
-  if (!merchantId) {
-    return <div className="p-4 text-center">Merchant not found</div>;
-  }
+
   return (
     <div className="min-h-screen bg-background pb-20">
-      <MerchantHeader merchant={initialMerchant!} />
+      <MerchantHeader merchant={initialMerchant} />
       <div className="container max-w-4xl mx-auto px-4 relative -mt-16">
         <MerchantBody
-          initialMerchant={initialMerchant!}
+          initialMerchant={initialMerchant}
           initialProducts={initialProducts}
           initialReviews={initialReviews}
           merchantId={merchantId}

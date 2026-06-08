@@ -18,28 +18,28 @@ function ArticleBody({ post }: { post: FeedPost }) {
       {post.productId && (
         <div className="absolute bottom-4 left-4 right-4">
           <Link href={`/product/${post.productId}`}>
-            <div className="bg-background/90 backdrop-blur border rounded-xl p-3 flex items-center justify-between shadow-lg">
+            <div className="bg-background/95 backdrop-blur-md border rounded-[16px] p-2 flex items-center justify-between shadow-xl hover:bg-background transition-colors group">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-md bg-muted overflow-hidden">
+                <div className="h-12 w-12 rounded-xl bg-muted overflow-hidden border shadow-sm">
                   <img
                     src={(post.product as { image?: string })?.image || ""}
                     alt={(post.product as { name?: string })?.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform"
                   />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">
+                  <p className="font-bold text-sm text-foreground">
                     {(post.product as { name?: string })?.name ||
                       t("featuredItem")}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs font-semibold text-orange-500">
                     $
                     {(post.product as { price?: number })?.price?.toFixed(2) ||
                       "0.00"}
                   </p>
                 </div>
               </div>
-              <Button size="sm" className="rounded-full h-8">
+              <Button size="sm" className="rounded-full h-8 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold mr-1">
                 <Plus className="h-4 w-4 mr-1" /> {t("addBtn")}
               </Button>
             </div>

@@ -1,5 +1,6 @@
-import "server-only";
+import "server-only"; // Trigger recompile to clear fetch cache
 
+import { auth } from "@clerk/nextjs/server";
 import type {
   Category,
   CustomerAnalytics,
@@ -18,14 +19,33 @@ const baseUrl = (
 
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const url = path.startsWith("http") ? path : `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
-  const res = await fetch(url, {
+  
+  const options: RequestInit = {
     ...init,
     headers: {
       Accept: "application/json",
       ...init?.headers,
     },
-    next: { revalidate: 60 },
-  });
+  };
+
+  try {
+    const { getToken, userId } = await auth();
+    const token = await getToken();
+    if (token) {
+      options.headers = {
+        ...options.headers,
+        Authorization: `Bearer ${token}`
+      };
+    }
+  } catch (error) {
+    console.error("SERVER API AUTH ERROR:", error);
+  }
+
+  if (!init?.cache && !init?.next) {
+    options.next = { revalidate: 0 };
+  }
+
+  const res = await fetch(url, options);
   if (!res.ok) {
     throw new Error(`Server API ${res.status} ${path}`);
   }
@@ -33,9 +53,9 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 /** Safe fetch: returns `null` on failure (network / non-OK). */
-async function fetchJsonSafe<T>(path: string): Promise<T | null> {
+async function fetchJsonSafe<T>(path: string, init?: RequestInit): Promise<T | null> {
   try {
-    return await fetchJson<T>(path);
+    return await fetchJson<T>(path, init);
   } catch {
     return null;
   }
@@ -54,6 +74,10 @@ export async function GetAnalysis(): Promise<CustomerAnalytics> {
 
 export async function getTrendingMerchants(): Promise<Merchant[]> {
   return (await fetchJsonSafe<Merchant[]>("/merchants/trending")) ?? [];
+}
+
+export async function getFollowedMerchants(): Promise<Merchant[]> {
+  return (await fetchJsonSafe<Merchant[]>("/merchants/followed", { cache: "no-store" })) ?? [];
 }
 
 export async function getTrendingProducts(): Promise<Product[]> {
@@ -82,6 +106,11 @@ export async function getMerchantById(id: number): Promise<Merchant | null> {
   return fetchJsonSafe<Merchant>(`/merchants/${id}`);
 }
 
+export async function getMerchantBySlug(slug: string): Promise<Merchant | null> {
+  if (!slug) return null;
+  return fetchJsonSafe<Merchant>(`/merchants/slug/${slug}`);
+}
+
 export async function getMerchantProducts(id: number): Promise<Product[]> {
   if (!Number.isFinite(id) || id <= 0) return [];
   return (await fetchJsonSafe<Product[]>(`/merchants/${id}/products`)) ?? [];
@@ -92,7 +121,27 @@ export async function getMerchantReviews(id: number): Promise<Review[]> {
   return (await fetchJsonSafe<Review[]>(`/merchants/${id}/reviews`)) ?? [];
 }
 
+export async function getProductReviews(id: number): Promise<Review[]> {
+  if (!Number.isFinite(id) || id <= 0) return [];
+  return (await fetchJsonSafe<Review[]>(`/products/${id}/reviews`, { cache: "no-store" })) ?? [];
+}
+
 export async function getOrderById(id: number): Promise<Order | null> {
   if (!Number.isFinite(id) || id <= 0) return null;
-  return fetchJsonSafe<Order>(`/orders/${id}`);
+  return fetchJsonSafe<Order>(`/orders/${id}`, { cache: "no-store" });
 }
+
+export async function getOrders(params?: { status?: string; merchantId?: number }): Promise<Order[]> {
+  const query = new URLSearchParams();
+  if (params?.status) query.set("status", params.status);
+  if (params?.merchantId) query.set("merchantId", params.merchantId.toString());
+  
+  const queryString = query.toString() ? `?${query.toString()}` : "";
+  return (await fetchJsonSafe<Order[]>(`/orders${queryString}`, { cache: "no-store" })) ?? [];
+}
+
+import type { FeedAd } from "@/types";
+export async function getFeedAds(): Promise<FeedAd[]> {
+  return (await fetchJsonSafe<FeedAd[]>("/feed/ads", { cache: "no-store" })) ?? [];
+}
+

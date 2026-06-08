@@ -8,6 +8,7 @@ import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Switch } from "@/shared/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
+import { customFetch } from "@/utils/api";
 import { 
   Building2, 
   CalendarDays, 
@@ -87,6 +88,47 @@ export default function SettingsPage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'profileImage' | 'coverImage') => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // show preview
+      const previewUrl = URL.createObjectURL(file);
+      updateField(field, previewUrl);
+
+      // upload to Cloudinary
+      setIsUploading(true);
+      try {
+        const toBase64 = (blob: Blob) => new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+        const dataUri = await toBase64(file);
+
+        const json = await customFetch<{ url: string }>('/upload', {
+          method: 'POST',
+          body: { dataUri, folder: 'merchant' },
+        });
+        
+        if (json && json.url) {
+          updateField(field, json.url);
+          toast({ title: "Image uploaded successfully!" });
+        } else {
+          toast({ title: "Upload failed", variant: "destructive" });
+        }
+      } catch (err) {
+        console.error(err);
+        toast({ title: "Upload error", variant: "destructive" });
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
+
   const handleSave = () => {
     updateProfile.mutate({
       data: {
@@ -152,9 +194,10 @@ export default function SettingsPage() {
               )}
             </div>
             
-            <Button variant="outline" className="w-full border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2">
-              <UploadCloud className="h-4 w-4" /> Change Logo
-            </Button>
+            <label className={`w-full border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={(e) => handleImageUpload(e, 'profileImage')} disabled={isUploading} />
+              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? "Uploading..." : "Change Logo"}
+            </label>
             <p className="text-xs text-stone-400 leading-snug">Recommended size: 512x512px<br/>PNG, JPG up to 2MB</p>
           </div>
 
@@ -176,9 +219,10 @@ export default function SettingsPage() {
               )}
             </div>
             
-            <Button variant="outline" className="w-[180px] border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2">
-              <UploadCloud className="h-4 w-4" /> Change Banner
-            </Button>
+            <label className={`w-[180px] border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={(e) => handleImageUpload(e, 'coverImage')} disabled={isUploading} />
+              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? "Uploading..." : "Change Banner"}
+            </label>
             <p className="text-xs text-stone-400 leading-snug">Recommended size: 1920x600px<br/>PNG, JPG up to 5MB</p>
           </div>
         </div>
