@@ -8,6 +8,7 @@ export interface FormData {
   deliveryTime: string;
   deliveryFee: string;
   address: string;
+  country: string;
   isOpen: boolean;
   profileImage: string;
   coverImage: string;

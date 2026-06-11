@@ -1,12 +1,12 @@
 import { Category } from "@/types";
 import { ChevronRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import React from "react";
 
 function Categories({ categories }: { categories: Category[] }) {
   const t = useTranslations("HomePage");
-
+  const locale = useLocale();
   return (
     <section className="py-12 px-4 container mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -26,9 +26,11 @@ function Categories({ categories }: { categories: Category[] }) {
             className="flex-1 shrink-0 min-w-[80px] snap-start group cursor-pointer"
           >
             <div className="w-full h-28 bg-secondary rounded-2xl flex flex-col items-center justify-center gap-2.5 border border-transparent group-hover:border-primary/30 group-hover:bg-primary/5 transition-all duration-200">
-              <span className="text-3xl">{cat.icon || "🍴"}</span>
+              <span className="text-3xl">
+                {cat.icon ? <span dangerouslySetInnerHTML={{ __html: cat.icon }} /> : "🍴"}
+              </span>
               <span className="text-xs font-semibold text-center leading-tight px-1">
-                {cat.name}
+                {locale === 'ar' ? (cat.name_ar || cat.name) : cat.name}
               </span>
             </div>
           </Link>

@@ -150,7 +150,7 @@ function SideBar() {
             <NavItem
               href="/dashboard/settings"
               icon={Settings}
-              label="Settings"
+              label={t("settings")}
               onClick={() => setIsMobileMenuOpen(false)}
             />
           </nav>

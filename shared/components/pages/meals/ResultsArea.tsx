@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Search, X } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import ProductCard from "./ProductCard";
@@ -26,6 +26,7 @@ export default function ResultsArea({
   priceRange: string;
 }) {
   const t = useTranslations("MealsPage");
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -56,8 +57,15 @@ export default function ResultsArea({
 
           {activeCategory && (
             <span className="inline-flex items-center gap-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-xs font-bold px-3 py-1.5 rounded-full">
-              {categories?.find((c) => c.name === activeCategory)?.icon}{" "}
-              {activeCategory}
+              {(() => {
+                const cat = categories?.find((c) => c.name === activeCategory);
+                return (
+                  <>
+                    {cat?.icon ? <span dangerouslySetInnerHTML={{ __html: cat.icon }} /> : null}
+                    {cat && locale === 'ar' ? (cat.name_ar || cat.name) : activeCategory}
+                  </>
+                );
+              })()}
               <button
                 onClick={() => updateParam("category", null)}
                 className="hover:text-orange-900"

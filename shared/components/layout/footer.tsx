@@ -11,6 +11,7 @@ interface FooterProps {
 
 export function Footer({ showMerchantCTA = false }: FooterProps) {
   const t = useTranslations("Footer");
+  const tNav = useTranslations("Nav");
   return (
     <footer className="relative bg-background border-t pt-16 pb-8 overflow-hidden z-10">
       
@@ -122,10 +123,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
             <ul className="space-y-3">
               {[
                 { label: t("aboutUs"), href: "/about" },
-                { label: t("features"), href: "/features" },
-                { label: t("pricing"), href: "/pricing" },
-                { label: t("contactUs"), href: "/contact" },
-                { label: t("blog"), href: "/blog" }
+                { label: t("contactUs"), href: "/contact" }
               ].map(link => (
                 <li key={link.label}>
                   <Link href={link.href} className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">
@@ -141,9 +139,9 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
             <h3 className="font-bold text-sm tracking-wider uppercase text-muted-foreground/60">{t("colPlatform")}</h3>
             <ul className="space-y-3">
               {[
-                { label: t("docs"), href: "/docs" },
-                { label: t("apiRef"), href: "/api-docs" },
-                { label: t("helpCenter"), href: "/help" },
+                { label: tNav("linkDiscover"), href: "/discover" },
+                { label: tNav("linkMeals"), href: "/meals" },
+                { label: tNav("linkCart"), href: "/cart" },
                 { label: t("merchantDashboard"), href: "/dashboard" }
               ].map(link => (
                 <li key={link.label}>

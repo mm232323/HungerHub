@@ -26,30 +26,30 @@ export const DELIVERY_TIMES = [
   "45-60 min",
 ];
 
-export const STEPS: StepInfo[] = [
+export const getSteps = (t: any): StepInfo[] => [
   {
     id: 1,
-    title: "Your Restaurant",
+    title: t("step1.title"),
     icon: Store,
-    description: "Tell us about your place",
+    description: t("step1.desc"),
   },
   {
     id: 2,
-    title: "Menu & Style",
+    title: t("step2.title"),
     icon: ChefHat,
-    description: "What do you serve?",
+    description: t("step2.desc"),
   },
   {
     id: 3,
-    title: "Delivery Setup",
+    title: t("step3.title"),
     icon: Clock,
-    description: "Set your delivery info",
+    description: t("step3.desc"),
   },
   {
     id: 4,
-    title: "Make It Yours",
+    title: t("step4.title"),
     icon: Image,
-    description: "Add photos & branding",
+    description: t("step4.desc"),
   },
 ];
 
@@ -61,6 +61,7 @@ export const INITIAL_FORM: FormData = {
   deliveryTime: "25-35 min",
   deliveryFee: "2.99",
   address: "",
+  country: "",
   isOpen: true,
   profileImage: "",
   coverImage: "",

@@ -70,7 +70,7 @@ function MarketingActionHeader() {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
         <h2 className="text-2xl font-bold">{t("activePromotions") || "Active Promotions"}</h2>
-        <p className="text-muted-foreground mt-1">Create coupons and discount campaigns for your customers.</p>
+        <p className="text-muted-foreground mt-1">{t("marketingDesc") || "Create coupons and discount campaigns for your customers."}</p>
       </div>
 
       <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
@@ -120,13 +120,13 @@ function MarketingActionHeader() {
                   <option value="percentage">{t("typePercentage") || "Percentage (%)"}</option>
                   <option value="fixed">{t("typeFixed") || "Fixed Amount"}</option>
                   <option value="free_delivery">{t("typeFreeDelivery") || "Free Delivery"}</option>
-                  <option value="bogo">Buy One Get One</option>
+                  <option value="bogo">{t("typeBogo") || "Buy One Get One"}</option>
                 </select>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Start Date *</Label>
+                <Label>{t("startDate") || "Start Date *"}</Label>
                 <Input
                   type="date"
                   value={startDate}
@@ -134,7 +134,7 @@ function MarketingActionHeader() {
                 />
               </div>
               <div className="space-y-2">
-                <Label>End Date *</Label>
+                <Label>{t("endDate") || "End Date *"}</Label>
                 <Input
                   type="date"
                   value={endDate}
@@ -147,7 +147,7 @@ function MarketingActionHeader() {
               onClick={handleCreate}
               disabled={createPromotion.isPending}
             >
-              {createPromotion.isPending ? "Creating..." : t("launchCampaign")}
+              {createPromotion.isPending ? (t("creating") || "Creating...") : t("launchCampaign")}
             </Button>
           </div>
         </DialogContent>

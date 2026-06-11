@@ -5,6 +5,7 @@ import { Button } from "../../ui/button";
 import { Plus, Star } from "lucide-react";
 import Link from "next/link";
 import { Merchant, Product, Review } from "@/types";
+import { useTranslations } from "next-intl";
 function MerchantTabs({
   initialReviews,
   initialProducts,
@@ -14,6 +15,7 @@ function MerchantTabs({
   initialProducts: Product[];
   merchant: Merchant;
 }) {
+  const t = useTranslations("MerchantTabs");
   return (
     <Tabs defaultValue="products" className="mt-8">
       <TabsList className="w-full justify-start border-b rounded-none h-auto p-0 bg-transparent">
@@ -21,19 +23,19 @@ function MerchantTabs({
           value="products"
           className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary pb-3"
         >
-          Menu
+          {t("menu")}
         </TabsTrigger>
         <TabsTrigger
           value="reviews"
           className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary pb-3"
         >
-          Reviews
+          {t("reviews")}
         </TabsTrigger>
         <TabsTrigger
           value="about"
           className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-primary pb-3"
         >
-          About
+          {t("about")}
         </TabsTrigger>
       </TabsList>
 
@@ -97,19 +99,19 @@ function MerchantTabs({
       <TabsContent value="about" className="py-6">
         <div className="space-y-4 text-sm">
           <div className="flex justify-between py-2 border-b">
-            <span className="text-muted-foreground">Address</span>
+            <span className="text-muted-foreground">{t("address")}</span>
             <span className="font-medium">
               {merchant.address || "Online Only"}
             </span>
           </div>
           <div className="flex justify-between py-2 border-b">
-            <span className="text-muted-foreground">Delivery Fee</span>
+            <span className="text-muted-foreground">{t("deliveryFee")}</span>
             <span className="font-medium">
               ${merchant.deliveryFee.toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between py-2 border-b">
-            <span className="text-muted-foreground">Tags</span>
+            <span className="text-muted-foreground">{t("tags")}</span>
             <div className="flex gap-2">
               {merchant.tags?.map((tag) => (
                 <span

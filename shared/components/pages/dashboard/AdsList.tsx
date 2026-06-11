@@ -88,11 +88,11 @@ export default function AdsList() {
               {/* Stats Row (if we have stats from backend) */}
               <div className="flex items-center gap-4 mt-4 text-xs font-medium text-muted-foreground">
                 <div className="flex flex-col">
-                  <span>Impressions</span>
+                  <span>{t("impressions")}</span>
                   <span className="text-foreground text-sm">{ad.impressions || 0}</span>
                 </div>
                 <div className="flex flex-col">
-                  <span>Clicks</span>
+                  <span>{t("clicks")}</span>
                   <span className="text-foreground text-sm">{ad.clicks || 0}</span>
                 </div>
               </div>

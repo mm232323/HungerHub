@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Order } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface PastOrderCardProps {
   order: Order;
 }
 
 export function PastOrderCard({ order }: PastOrderCardProps) {
+  const t = useTranslations("Orders");
   const isDelivered = order.status === "delivered";
 
   return (
@@ -20,7 +22,7 @@ export function PastOrderCard({ order }: PastOrderCardProps) {
           </div>
           <div>
             <h3 className="font-bold">{order.merchantName}</h3>
-            <p className="text-sm text-muted-foreground">Order ID: #{order.id}</p>
+            <p className="text-sm text-muted-foreground">{t("orderId")}: #{order.id}</p>
             <p className="text-xs text-muted-foreground mt-0.5">
               {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
             </p>
@@ -30,10 +32,10 @@ export function PastOrderCard({ order }: PastOrderCardProps) {
         <div className="flex items-center gap-4 text-right">
           <div>
             <span className={`inline-block text-xs font-medium px-2 py-1 rounded-md capitalize ${isDelivered ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {order.status}
+              {t(`status.${order.status}` as any) || order.status}
             </span>
             <p className="text-[10px] text-muted-foreground mt-1">
-              {isDelivered ? "Delivered on" : "Cancelled on"}
+              {isDelivered ? t("deliveredOn") : t("cancelledOn")}
             </p>
             <p className="text-xs font-medium text-muted-foreground">
               {new Date(order.createdAt).toLocaleDateString()}

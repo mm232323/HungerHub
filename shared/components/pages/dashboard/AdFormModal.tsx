@@ -13,6 +13,7 @@ import {
 import { Label } from "../../ui/label";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
+import { useTranslations } from "next-intl";
 
 interface AdFormModalProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
   const { data: products } = useListProducts();
   const { mutate: createAd, isPending: isCreating } = useCreateAd();
   const { mutate: updateAd, isPending: isUpdating } = useUpdateAd();
+  const t = useTranslations("Dashboard.Ads");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -72,11 +74,11 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
         if (json && json.url) {
           setImagePreview(json.url); // replace preview with the Cloudinary URL
         } else {
-          alert('Upload failed');
+          alert(t("uploadFailed") || 'Upload failed');
         }
       } catch (err) {
         console.error(err);
-        alert('Upload error');
+        alert(t("uploadError") || 'Upload error');
       }
     }
   };
@@ -98,7 +100,7 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
         {
           onSuccess: () => {
             setIsOpen(false);
-            alert("Ad updated successfully!");
+            alert(t("adUpdated") || "Ad updated successfully!");
           },
           onError: (error: any) => {
             alert(error.message);
@@ -109,7 +111,7 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
       createAd(payload, {
         onSuccess: () => {
           setIsOpen(false);
-          alert("Ad created successfully!");
+          alert(t("adCreated") || "Ad created successfully!");
         },
         onError: (error: any) => {
           alert(error.message);
@@ -122,33 +124,33 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Ad" : "Create New Ad"}</DialogTitle>
+          <DialogTitle>{isEdit ? (t("editAd") || "Edit Ad") : (t("createNewAd") || "Create New Ad")}</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4 text-foreground">
           {/* Form Side */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Ad Title</Label>
+              <Label>{t("adTitle") || "Ad Title"}</Label>
               <Input
-                placeholder="Enter ad title"
+                placeholder={t("adTitlePlaceholder") || "Enter ad title"}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Description</Label>
+              <Label>{t("description") || "Description"}</Label>
               <textarea
                 className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                placeholder="Enter ad description"
+                placeholder={t("descPlaceholder") || "Enter ad description"}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <div className="space-y-2">
-              <Label>Ad Image</Label>
+              <Label>{t("adImage") || "Ad Image"}</Label>
               <label className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-muted-foreground cursor-pointer hover:bg-muted/50 transition-colors">
                 <Upload className="h-8 w-8 mb-2" />
-                <span className="text-sm">Click to upload image</span>
+                <span className="text-sm">{t("clickToUpload") || "Click to upload image"}</span>
                 <input
                   type="file"
                   className="hidden"
@@ -158,13 +160,13 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
               </label>
             </div>
             <div className="space-y-2">
-              <Label>Linked Product (Optional)</Label>
+              <Label>{t("linkedProduct") || "Linked Product (Optional)"}</Label>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={selectedProduct}
                 onChange={(e) => setSelectedProduct(e.target.value)}
               >
-                <option value="">Select a product...</option>
+                <option value="">{t("selectProduct") || "Select a product..."}</option>
                 {products?.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name}
@@ -179,18 +181,18 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
             >
               {isPending
                 ? isEdit
-                  ? "Updating..."
-                  : "Creating..."
+                  ? (t("updating") || "Updating...")
+                  : (t("creating") || "Creating...")
                 : isEdit
-                ? "Save Changes"
-                : "Launch Ad"}
+                ? (t("saveChanges") || "Save Changes")
+                : (t("launchAd") || "Launch Ad")}
             </Button>
           </div>
 
           {/* Preview Side */}
           <div className="hidden md:block">
             <Label className="mb-4 block text-muted-foreground font-semibold uppercase text-xs">
-              Live Preview
+              {t("livePreview") || "Live Preview"}
             </Label>
             <div className="border rounded-xl overflow-hidden shadow-sm bg-background max-w-sm mx-auto">
               {/* Fake Post Header */}
@@ -203,7 +205,7 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
                     Your Restaurant
                   </div>
                   <div className="text-xs text-muted-foreground leading-tight">
-                    Sponsored
+                    {t("sponsored") || "Sponsored"}
                   </div>
                 </div>
               </div>
@@ -218,19 +220,19 @@ export default function AdFormModal({ isOpen, setIsOpen, adToEdit }: AdFormModal
                 ) : (
                   <span className="text-muted-foreground text-sm flex flex-col items-center gap-2">
                     <Upload className="h-6 w-6 opacity-50" />
-                    No image uploaded
+                    {t("noImage") || "No image uploaded"}
                   </span>
                 )}
               </div>
               {/* Content */}
               <div className="p-4 space-y-2">
-                <h4 className="font-bold text-lg">{title || "Ad Title"}</h4>
+                <h4 className="font-bold text-lg">{title || (t("defaultAdTitle") || "Ad Title")}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-2">
                   {description ||
-                    "Your ad description will appear here. Write something catchy!"}
+                    (t("defaultAdDesc") || "Your ad description will appear here. Write something catchy!")}
                 </p>
                 <Button variant="secondary" size="sm" className="w-full mt-2 pointer-events-none">
-                  View Offer
+                  {t("viewOffer") || "View Offer"}
                 </Button>
               </div>
             </div>

@@ -2,6 +2,7 @@
 export interface Category {
   id: number;
   name: string;
+  name_ar?: string;
   slug: string;
   icon: string;
   /** @nullable */

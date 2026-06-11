@@ -25,11 +25,11 @@ export function SignInView() {
 
   return (
     <div className="min-h-[100dvh] flex">
-      {/* ── LEFT PANEL ── */}
-      <SidePanel role={role} />
-
-      {/* ── RIGHT PANEL ── */}
+      {/* ── LEFT PANEL (Form) ── */}
       <StandardSignIn role={role} handleRoleChange={handleChangeRole} />
+
+      {/* ── RIGHT PANEL (Image/SidePanel) ── */}
+      <SidePanel role={role} />
     </div>
   );
 }

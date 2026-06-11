@@ -1,10 +1,12 @@
 import { Role } from "@/types";
-import { SignIn } from "@clerk/react";
+import { SignIn } from "@clerk/nextjs";
 import { LayoutDashboard, ShoppingBag, Utensils } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React from "react";
 import { clerkAppearance } from "./data";
+
+import { getClerkLocalization } from "../sign-up/data";
 
 function StandardSignIn({
   role,
@@ -14,6 +16,7 @@ function StandardSignIn({
   handleRoleChange: (role: Role) => void;
 }) {
   const t = useTranslations("Auth.SignIn");
+  const tShared = useTranslations("Auth.shared");
   const tGlobal = useTranslations("Global");
   const locale = useLocale();
   const basePath = `/${locale}`;
@@ -86,6 +89,37 @@ function StandardSignIn({
             </Link>
           </p>
         )}
+
+        {/* Trust Badges */}
+        <div className="w-[440px] max-w-full flex justify-between items-center mt-6 border-t border-stone-100 pt-6">
+          <div className="flex items-center gap-2">
+            <div className="bg-orange-50 p-1.5 rounded-full text-[#F97316]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-stone-900">{tShared("secureAndSafe") || "Secure & Safe"}</p>
+              <p className="text-[10px] text-stone-500">{tShared("yourDataIsProtected") || "Your data is protected"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="bg-orange-50 p-1.5 rounded-full text-[#F97316]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-stone-900">{tShared("fastDelivery") || "Fast Delivery"}</p>
+              <p className="text-[10px] text-stone-500">{tShared("onTimeEveryTime") || "On-time, every time"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="bg-orange-50 p-1.5 rounded-full text-[#F97316]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-stone-900">{tShared("bestQuality") || "Best Quality"}</p>
+              <p className="text-[10px] text-stone-500">{tShared("topRestaurantsOnly") || "Top restaurants only"}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

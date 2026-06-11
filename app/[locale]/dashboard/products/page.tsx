@@ -5,11 +5,12 @@ import ProductTabBody from "@/shared/components/pages/dashboard/ProductTabBody";
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Search } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
 
 export default function DashboardProductsPage() {
   const t = useTranslations("Dashboard.Products");
+  const locale = useLocale();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -50,24 +51,24 @@ export default function DashboardProductsPage() {
         <div className="flex w-full md:w-auto items-center gap-3">
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger className="w-full md:w-[160px] bg-stone-50/50">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={t("categoryLabel") || "Category"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">{t("allCategories") || "All Categories"}</SelectItem>
               {categories?.map((cat) => (
-                <SelectItem key={cat.id} value={cat.slug}>{cat.name}</SelectItem>
+                <SelectItem key={cat.id} value={cat.slug}>{locale === 'ar' ? (cat.name_ar || cat.name) : cat.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full md:w-[130px] bg-stone-50/50">
-              <SelectValue placeholder="Status" />
+              <SelectValue placeholder={t("status") || "Status"} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="hidden">Hidden</SelectItem>
+              <SelectItem value="all">{t("allStatuses") || "All Statuses"}</SelectItem>
+              <SelectItem value="active">{t("statusActive") || "Active"}</SelectItem>
+              <SelectItem value="hidden">{t("statusHidden") || "Hidden"}</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Order } from "@/types";
+import { useTranslations } from "next-intl";
 
 export type TrackOrderViewProps = {
   orderId: number;
@@ -23,6 +24,7 @@ export type TrackOrderViewProps = {
 };
 
 export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
+  const t = useTranslations("Orders");
   const [progress, setProgress] = useState(10);
 
   const formatTime = (dateStr?: string | null) => {
@@ -83,42 +85,42 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
     switch (status) {
       case "pending":
         return {
-          title: "Order Placed",
+          title: t("orderPlaced"),
           icon: Clock,
-          desc: "Waiting for confirmation",
+          desc: t("waitingForConfirmation"),
         };
       case "confirmed":
         return {
-          title: "Order Confirmed",
+          title: t("orderConfirmed"),
           icon: CheckCircle2,
-          desc: "Restaurant accepted your order",
+          desc: t("restaurantAccepted"),
         };
       case "preparing":
         return {
-          title: "Preparing Your Food",
+          title: t("preparingFood"),
           icon: ChefHat,
-          desc: "Cooking up something delicious",
+          desc: t("cookingDelicious"),
         };
       case "ready":
         return {
-          title: "Ready for Pickup",
+          title: t("readyForPickup"),
           icon: PackageCheck,
-          desc: "Waiting for driver",
+          desc: t("waitingForDriver"),
         };
       case "delivering":
         return {
-          title: "On The Way",
+          title: t("headingToYou"),
           icon: Bike,
-          desc: "Driver is heading to you",
+          desc: t("headingToYou"),
         };
       case "delivered":
         return {
-          title: "Delivered",
+          title: t("delivered"),
           icon: MapPin,
-          desc: "Enjoy your meal!",
+          desc: t("enjoyMeal"),
         };
       default:
-        return { title: "Processing", icon: Clock, desc: "..." };
+        return { title: t("processing"), icon: Clock, desc: "..." };
     }
   };
 
@@ -133,7 +135,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
             <ChevronLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-lg font-bold">Track Order #{orderData.id}</h1>
+        <h1 className="text-lg font-bold">{t("trackOrder")} #{orderData.id}</h1>
         <div className="w-10" />
       </header>
 
@@ -161,7 +163,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
           <div className="flex justify-between items-center mb-6">
             <div>
               <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                Estimated Delivery
+                {t("estimatedDelivery")}
               </p>
               <h2 className="text-3xl font-bold">
                 {formatTime(orderData.estimatedDelivery)}
@@ -194,10 +196,10 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
             </div>
             <div className="flex-1">
               <h3 className="font-bold">{orderData.merchantName}</h3>
-              <p className="text-sm text-muted-foreground">Preparing your order</p>
+              <p className="text-sm text-muted-foreground">{t("preparingYourOrder")}</p>
             </div>
             <Button variant="outline" size="sm" className="rounded-full">
-              View
+              {t("view")}
             </Button>
           </div>
 
@@ -213,7 +215,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
               </div>
               <div className="flex-1">
                 <h3 className="font-bold">{orderData.driverName}</h3>
-                <p className="text-sm text-muted-foreground">Delivery Driver</p>
+                <p className="text-sm text-muted-foreground">{t("deliveryDriver")}</p>
               </div>
               <Button size="icon" className="rounded-full h-10 w-10">
                 <Phone className="h-4 w-4" />
@@ -229,14 +231,14 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
             </div>
             <div>
               <h3 className="font-semibold text-sm text-muted-foreground">
-                Delivery Address
+                {t("deliveryAddress")}
               </h3>
               <p className="font-medium mt-1">{orderData.address}</p>
             </div>
           </div>
         </div>
         <div className="bg-background rounded-3xl p-6 shadow-sm border space-y-4">
-          <h3 className="font-bold text-lg mb-2">Order Summary</h3>
+          <h3 className="font-bold text-lg mb-2">{t("orderSummary")}</h3>
           <div className="space-y-3">
             {orderData.items && orderData.items.length > 0 ? (
               orderData.items.map((item, idx) => (
@@ -249,7 +251,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-muted-foreground">No items to display.</p>
+              <p className="text-sm text-muted-foreground">{t("noItemsDisplay")}</p>
             )}
           </div>
           
@@ -257,21 +259,21 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
           
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Subtotal</span>
+              <span className="text-muted-foreground">{t("subtotal")}</span>
               <span className="font-medium">${(orderData.subtotal || orderData.total).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Delivery Fee</span>
+              <span className="text-muted-foreground">{t("deliveryFee")}</span>
               <span className="font-medium">${(orderData.deliveryFee || 0).toFixed(2)}</span>
             </div>
             {!!(orderData as any).discount && (
               <div className="flex justify-between text-sm text-green-600 font-medium">
-                <span>Discount {(orderData as any).promoCode ? `(${(orderData as any).promoCode})` : ''}</span>
+                <span>{t("discount")} {(orderData as any).promoCode ? `(${(orderData as any).promoCode})` : ''}</span>
                 <span>-${((orderData as any).discount || 0).toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between font-bold text-lg pt-2 border-t mt-2">
-              <span>Total</span>
+              <span>{t("total")}</span>
               <span>${orderData.total.toFixed(2)}</span>
             </div>
           </div>

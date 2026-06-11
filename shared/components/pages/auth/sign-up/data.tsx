@@ -10,6 +10,10 @@ import {
 import { useTranslations } from "next-intl";
 
 export const clerkAppearance = {
+  layout: {
+    socialButtonsPlacement: "top",
+    socialButtonsVariant: "blockButton",
+  },
   variables: {
     colorPrimary: "#F97316", // Beautiful brand orange accent
     colorBackground: "#FFFFFF", // Light background inside the form
@@ -49,6 +53,12 @@ export const clerkAppearance = {
       color: "#4B5563",
       fontSize: "0.95rem",
     },
+    socialButtons: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gap: "12px",
+      width: "100%",
+    },
     socialButtonsBlockButton: {
       backgroundColor: "#FFFFFF",
       border: "1px solid #E5E7EB",
@@ -56,6 +66,7 @@ export const clerkAppearance = {
       height: "50px",
       borderRadius: "12px",
       transition: "all 0.2s ease-in-out",
+      margin: 0, // override default margin
       "&:hover": {
         backgroundColor: "#F9FAFB",
         borderColor: "#F97316",
@@ -138,6 +149,33 @@ export const clerkAppearance = {
     },
   },
 } as const;
+
+export const getClerkLocalization = (t: any) => ({
+  signUp: {
+    start: {
+      title: t("signUpTitle") || "Create your account",
+      subtitle: t("signUpSubtitle") || "Welcome! Please fill in the details to get started.",
+      actionText: t("alreadyHaveAccount") || "Already have an account?",
+      actionLink: t("signIn") || "Sign In",
+    },
+  },
+  signIn: {
+    start: {
+      title: t("signInTitle") || "Sign in to your account",
+      subtitle: t("signInSubtitle") || "Welcome back! Please enter your details.",
+      actionText: t("dontHaveAccount") || "Don't have an account?",
+      actionLink: t("signUp") || "Sign Up",
+    },
+  },
+  socialButtonsBlockButton: t("socialButtonText") || "Continue with {{provider|titleize}}",
+  dividerText: t("or") || "OR",
+  formFieldLabel__firstName: t("yourName") || "Your name",
+  formFieldLabel__emailAddress: t("emailOrPhone") || "Your E-mail or Phone Number",
+  formFieldLabel__emailAddress_username: t("emailOrPhone") || "Your E-mail or Phone Number",
+  formFieldLabel__password: t("password") || "Password",
+  formFieldLabel__confirmPassword: t("confirmPassword") || "Confirm Password",
+  formButtonPrimary: t("submitButton") || "Submit",
+});
 
 export const BG_EMOJIS = [
   {

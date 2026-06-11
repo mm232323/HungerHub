@@ -2,25 +2,27 @@ import { Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormData } from "./types";
+import { useTranslations } from "next-intl";
 
 export function StepFour({ form, set }: { form: FormData, set: any }) {
+  const t = useTranslations("MerchantSetup.Steps.step4");
+
   return (
     <>
       <div className="p-4 bg-stone-100 rounded-2xl text-center mb-2">
         <p className="text-sm text-stone-500">
-          You can skip this step and add photos later from your
-          dashboard.
+          {t("skip")}
         </p>
       </div>
 
       <div>
         <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">
-          Profile / Logo Image URL
+          {t("profileLabel")}
         </Label>
         <Input
           value={form.profileImage}
           onChange={(e) => set("profileImage", e.target.value)}
-          placeholder="https://your-image-url.com/logo.jpg"
+          placeholder={t("profilePlaceholder")}
           className="h-12 text-[15px] rounded-xl border-stone-200 focus:border-orange-400 focus:ring-orange-400/20"
         />
         {form.profileImage && (
@@ -35,7 +37,7 @@ export function StepFour({ form, set }: { form: FormData, set: any }) {
               }}
             />
             <p className="text-xs text-stone-400">
-              Profile preview
+              {t("previewMode")}
             </p>
           </div>
         )}
@@ -43,12 +45,12 @@ export function StepFour({ form, set }: { form: FormData, set: any }) {
 
       <div>
         <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">
-          Cover / Banner Image URL
+          {t("coverLabel")}
         </Label>
         <Input
           value={form.coverImage}
           onChange={(e) => set("coverImage", e.target.value)}
-          placeholder="https://your-image-url.com/banner.jpg"
+          placeholder={t("coverPlaceholder")}
           className="h-12 text-[15px] rounded-xl border-stone-200 focus:border-orange-400 focus:ring-orange-400/20"
         />
         {form.coverImage && (
@@ -70,32 +72,32 @@ export function StepFour({ form, set }: { form: FormData, set: any }) {
       <div className="p-5 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 rounded-2xl space-y-3">
         <div className="flex items-center gap-2 text-orange-700 font-bold text-sm">
           <Sparkles className="h-4 w-4" />
-          Almost there! Here's your store summary:
+          {t("summaryTitle")}
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs text-stone-600">
           <div>
             <span className="font-semibold block text-stone-900">
               {form.name || "—"}
             </span>
-            Restaurant name
+            {t("summaryName")}
           </div>
           <div>
             <span className="font-semibold block text-stone-900">
               {form.cuisineType || "—"}
             </span>
-            Cuisine type
+            {t("summaryCuisine")}
           </div>
           <div>
             <span className="font-semibold block text-stone-900">
               {form.deliveryTime}
             </span>
-            Delivery time
+            {t("summaryTime")}
           </div>
           <div>
             <span className="font-semibold block text-stone-900">
               ${Number(form.deliveryFee || 0).toFixed(2)}
             </span>
-            Delivery fee
+            {t("summaryFee")}
           </div>
         </div>
       </div>

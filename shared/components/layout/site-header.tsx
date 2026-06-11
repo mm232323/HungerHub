@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut, User, Package } from "lucide-react";
+import { Utensils, ShoppingBag, LayoutDashboard, Compass, Home, Menu, X, LogOut, User, Package, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useUser, useClerk, Show } from "@clerk/react";
+import { useUser, useClerk, Show } from "@clerk/nextjs";
 import { useTranslations, useLocale } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/routing";
 
 const basePath = "";
 
@@ -23,6 +23,34 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
         <span className="absolute -bottom-[1px] left-0 right-0 h-[2px] bg-primary rounded-full" />
       )}
     </Link>
+  );
+}
+
+function LanguageToggle() {
+  const locale = useLocale();
+
+  const toggleLocale = () => {
+    const nextLocale = locale === "en" ? "ar" : "en";
+    
+    // Use raw browser API to guarantee correct URL and force a hard reload
+    const currentPath = window.location.pathname;
+    const segments = currentPath.split("/");
+    
+    if (segments[1] === locale) {
+      segments[1] = nextLocale;
+    } else {
+      segments.splice(1, 0, nextLocale);
+    }
+    
+    const newPath = segments.join("/") + window.location.search + window.location.hash;
+    window.location.href = newPath;
+  };
+
+  return (
+    <Button variant="ghost" size="sm" onClick={toggleLocale} className="rounded-full font-medium gap-2 text-muted-foreground hover:text-foreground">
+      <Globe className="h-4 w-4" />
+      {locale === "en" ? "عربي" : "EN"}
+    </Button>
   );
 }
 
@@ -131,6 +159,7 @@ export function SiteHeader() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
+          <LanguageToggle />
           <Show when="signed-in">
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative">
@@ -170,6 +199,7 @@ export function SiteHeader() {
 
         {/* Mobile: cart + hamburger */}
         <div className="flex md:hidden items-center gap-1">
+          <LanguageToggle />
           <Show when="signed-in">
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative">

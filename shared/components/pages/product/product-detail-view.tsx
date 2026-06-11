@@ -13,6 +13,7 @@ import { motion } from "framer-motion";
 import { useCart } from "@/shared/contexts/CartContext";
 import { useUser } from "@clerk/react";
 import { submitReview } from "@/lib/client-api";
+import { useTranslations } from "next-intl";
 
 export type ProductDetailViewProps = {
   product: Product | null;
@@ -30,6 +31,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations("ProductDetail");
 
   if (!product) {
     return <div className="p-4 text-center">Product not found</div>;
@@ -42,8 +44,8 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
     }
     addToCart(product, quantity);
     toast({
-      title: "Added to cart",
-      description: `${quantity}x ${product.name} added to your cart.`,
+      title: t("addedToCartTitle"),
+      description: t("addedToCartDesc", { quantity, name: product.name }),
     });
   };
 
@@ -57,7 +59,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
         <div>
           <Link href={`/merchant/${product.merchantSlug || product.merchantId}`}>
             <Button variant="ghost" size="sm" className="gap-2 px-0 hover:bg-transparent text-muted-foreground hover:text-foreground">
-              <ChevronLeft className="h-4 w-4" /> Back to Store
+              <ChevronLeft className="h-4 w-4" /> {t("backToStore")}
             </Button>
           </Link>
         </div>
@@ -73,7 +75,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
               className="w-full h-full object-cover"
             />
             <Button variant="secondary" size="sm" className="absolute top-4 right-4 bg-white/90 hover:bg-white text-black rounded-full gap-2 shadow-md">
-              <Maximize className="h-4 w-4" /> View Fullscreen
+              <Maximize className="h-4 w-4" /> {t("viewFullscreen")}
             </Button>
           </div>
 
@@ -84,7 +86,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
             <div className="space-y-3">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-50 text-orange-600 rounded-md text-xs font-bold uppercase tracking-wider border border-orange-100">
                 <Flame className="h-3.5 w-3.5" />
-                {product.isTrending ? "Trending" : "Popular"}
+                {product.isTrending ? t("trending") : t("popular")}
               </div>
               <h1 className="text-3xl lg:text-4xl font-bold tracking-tight">{product.name}</h1>
               
@@ -97,8 +99,8 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
                     />
                   ))}
                 </div>
-                <span className="text-foreground text-base ml-1">{product.rating ? product.rating.toFixed(1) : "New"}</span>
-                <span className="text-orange-500 text-base">({product.reviewCount || 0} reviews)</span>
+                <span className="text-foreground text-base ml-1">{product.rating ? product.rating.toFixed(1) : t("new")}</span>
+                <span className="text-orange-500 text-base">({product.reviewCount || 0} {t("reviews")})</span>
               </div>
             </div>
 
@@ -109,19 +111,19 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
 
             {/* Description */}
             <p className="text-muted-foreground leading-relaxed text-sm lg:text-base">
-              {product.description || "A delicious dish carefully prepared for you."}
+              {product.description || t("defaultDescription")}
             </p>
 
             {/* Features Row */}
             <div className="flex flex-wrap items-center gap-6 text-xs font-medium text-muted-foreground pt-2">
               <div className="flex items-center gap-1.5">
-                <Award className="h-5 w-5 text-orange-500" /> Premium Quality
+                <Award className="h-5 w-5 text-orange-500" /> {t("premiumQuality")}
               </div>
               <div className="flex items-center gap-1.5">
-                <Leaf className="h-5 w-5 text-green-500" /> Freshly Prepared
+                <Leaf className="h-5 w-5 text-green-500" /> {t("freshlyPrepared")}
               </div>
               <div className="flex items-center gap-1.5">
-                <Sparkles className="h-5 w-5 text-yellow-500" /> Perfectly Seasoned
+                <Sparkles className="h-5 w-5 text-yellow-500" /> {t("perfectlySeasoned")}
               </div>
             </div>
             
@@ -129,20 +131,20 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
 
             {/* Delivery Info */}
             <div className="space-y-3">
-              <h3 className="font-bold text-foreground">Delivery Information</h3>
+              <h3 className="font-bold text-foreground">{t("deliveryInfo")}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 border rounded-2xl p-4 bg-white shadow-sm">
                   <Truck className="h-6 w-6 text-foreground" />
                   <div>
-                    <p className="text-[11px] text-muted-foreground font-medium">Delivery</p>
-                    <p className="text-sm font-bold text-foreground">Available</p>
+                    <p className="text-[11px] text-muted-foreground font-medium">{t("delivery")}</p>
+                    <p className="text-sm font-bold text-foreground">{t("available")}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 border rounded-2xl p-4 bg-white shadow-sm">
                   <Clock className="h-6 w-6 text-foreground" />
                   <div>
-                    <p className="text-[11px] text-muted-foreground font-medium">Preparation Time</p>
-                    <p className="text-sm font-bold text-foreground">{product.preparationTime || 20} mins</p>
+                    <p className="text-[11px] text-muted-foreground font-medium">{t("preparationTime")}</p>
+                    <p className="text-sm font-bold text-foreground">{product.preparationTime || 20} {t("mins")}</p>
                   </div>
                 </div>
               </div>
@@ -153,7 +155,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
               <div className="space-y-4">
                 {product.customizations && product.customizations.length > 0 && (
                   <div className="space-y-2">
-                    <h3 className="font-bold text-sm">Options</h3>
+                    <h3 className="font-bold text-sm">{t("options")}</h3>
                     <div className="flex flex-wrap gap-2">
                       {product.customizations.map((c) => (
                         <Button 
@@ -174,7 +176,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
 
             {/* Add to Cart Section */}
             <div className="space-y-4 pt-4">
-              <h3 className="font-bold text-foreground">Quantity</h3>
+              <h3 className="font-bold text-foreground">{t("quantity")}</h3>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <div className="flex items-center justify-between border rounded-2xl p-1 bg-white shadow-sm w-full sm:w-32">
                   <Button
@@ -201,12 +203,12 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
                   onClick={handleAddToCart}
                 >
                   <ShoppingBag className="h-5 w-5 mr-2" />
-                  Add to Cart • ${(currentPrice * quantity).toFixed(2)}
+                  {t("addToCart")} • ${(currentPrice * quantity).toFixed(2)}
                 </Button>
               </div>
               <div className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground pt-2">
                 <ShieldCheck className="h-4 w-4 text-orange-500" />
-                Secure checkout • Easy returns
+                {t("secureCheckout")}
               </div>
             </div>
 
@@ -224,7 +226,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
               </div>
               <div>
                 <h3 className="font-bold text-xl text-foreground flex items-center gap-3">
-                  {product.merchantName || "Local Store"}
+                  {product.merchantName || t("localStore")}
                   <span className="flex items-center text-orange-500 bg-orange-50 px-2.5 py-0.5 rounded-full text-xs font-bold">
                     <Star className="h-3.5 w-3.5 fill-current mr-1" />
                     4.5
@@ -232,32 +234,32 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
                 </h3>
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-1 font-medium">
                   <MapPin className="h-4 w-4" />
-                  Local Area
+                  {t("localArea")}
                 </div>
               </div>
             </div>
             <Link href={`/merchant/${product.merchantSlug || product.merchantId}`}>
-              <Button variant="outline" className="rounded-xl font-bold px-6 h-10 border-border">View More</Button>
+              <Button variant="outline" className="rounded-xl font-bold px-6 h-10 border-border">{t("viewMore")}</Button>
             </Link>
           </div>
 
           {/* Why choose us Card */}
           <div className="bg-[#fff9f2] border-0 rounded-3xl p-6 lg:p-8 shadow-sm space-y-5 h-full flex flex-col justify-center">
             <h3 className="font-bold text-lg flex items-center gap-2 text-foreground">
-              <Store className="h-5 w-5 text-orange-500" /> Why choose us?
+              <Store className="h-5 w-5 text-orange-500" /> {t("whyChooseUs")}
             </h3>
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
                 <CheckCircle2 className="h-5 w-5 text-orange-500 shrink-0" />
-                Fresh ingredients
+                {t("freshIngredients")}
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
                 <CheckCircle2 className="h-5 w-5 text-orange-500 shrink-0" />
-                Hygienically prepared
+                {t("hygienicallyPrepared")}
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
                 <CheckCircle2 className="h-5 w-5 text-orange-500 shrink-0" />
-                Delivered with care
+                {t("deliveredWithCare")}
               </div>
             </div>
           </div>
@@ -269,8 +271,8 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
           <div className="flex flex-col md:flex-row gap-8 lg:gap-16">
             
             <div className="md:w-1/3 space-y-3">
-              <h3 className="font-bold text-2xl tracking-tight">Customer Reviews</h3>
-              <p className="text-muted-foreground text-sm font-medium">Rate this product and share your thoughts.</p>
+              <h3 className="font-bold text-2xl tracking-tight">{t("customerReviews")}</h3>
+              <p className="text-muted-foreground text-sm font-medium">{t("rateProduct")}</p>
               <div className="flex items-center gap-1 pt-3">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -288,7 +290,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
             <div className="md:w-2/3 space-y-4">
               <textarea
                 className="w-full min-h-[140px] rounded-2xl border border-input bg-background p-5 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 resize-none font-medium"
-                placeholder="Write your review here... (Optional)"
+                placeholder={t("writeReviewPlaceholder")}
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
               />
@@ -309,17 +311,17 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
                       rating,
                       comment,
                     });
-                    toast({ title: "Review submitted", description: "Thank you for your feedback! Please refresh to see it." });
+                    toast({ title: t("reviewSubmitted"), description: t("reviewThanks") });
                     setComment("");
                     setRating(0);
                   } catch (error: any) {
-                    toast({ title: "Error", description: error.message || "Could not submit review.", variant: "destructive" });
+                    toast({ title: t("errorTitle"), description: error.message || t("reviewError"), variant: "destructive" });
                   } finally {
                     setIsSubmitting(false);
                   }
                 }}
               >
-                Submit Review
+                {t("submitReview")}
               </Button>
             </div>
           </div>
@@ -327,7 +329,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
           {/* Top 3 Reviews Display */}
           {initialReviews.length > 0 && (
             <div className="pt-8 border-t space-y-6">
-              <h4 className="font-bold text-xl tracking-tight">Recent Reviews</h4>
+              <h4 className="font-bold text-xl tracking-tight">{t("recentReviews")}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {initialReviews.map((review) => (
                   <div key={review.id} className="bg-[#f8f9fa] border rounded-2xl p-5 space-y-3">
@@ -388,26 +390,25 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
               onClick={handleAddToCart}
             >
               <ShoppingBag className="h-5 w-5 mr-2" />
-              Add • ${(currentPrice * quantity).toFixed(2)}
+              {t("add")} • ${(currentPrice * quantity).toFixed(2)}
             </Button>
           </motion.div>
         </div>
       </div>
 
-      {/* Auth Modal */}
       {showAuthModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setShowAuthModal(false)}>
           <div className="bg-white p-8 rounded-3xl max-w-sm w-full space-y-6 shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="space-y-2">
-              <h3 className="text-2xl font-bold tracking-tight text-foreground">Sign In Required</h3>
-              <p className="text-muted-foreground font-medium text-sm leading-relaxed">You need to sign in or create an account to add items to your cart or leave a review.</p>
+              <h3 className="text-2xl font-bold tracking-tight text-foreground">{t("signInRequired")}</h3>
+              <p className="text-muted-foreground font-medium text-sm leading-relaxed">{t("signInMessage")}</p>
             </div>
             <div className="flex flex-col gap-3">
               <Link href="/auth/sign-in" className="w-full" onClick={() => setShowAuthModal(false)}>
-                <Button className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-base shadow-md">Sign In</Button>
+                <Button className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-base shadow-md">{t("signIn")}</Button>
               </Link>
               <Link href="/auth/sign-up" className="w-full" onClick={() => setShowAuthModal(false)}>
-                <Button variant="outline" className="w-full h-12 rounded-xl font-bold text-base border-border">Create Account</Button>
+                <Button variant="outline" className="w-full h-12 rounded-xl font-bold text-base border-border">{t("createAccount")}</Button>
               </Link>
             </div>
           </div>

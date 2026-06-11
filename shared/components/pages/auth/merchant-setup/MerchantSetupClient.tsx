@@ -9,9 +9,10 @@ import { useInitMerchantStore } from "@/hooks/use-init-merchant-store";
 import { motion, AnimatePresence } from "framer-motion";
 import { Utensils, ArrowRight, ArrowLeft, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 import { FormData } from "./types";
-import { INITIAL_FORM, STEPS } from "./constants";
+import { INITIAL_FORM, getSteps } from "./constants";
 import { StepDots } from "./StepDots";
 import { LeftPanel } from "./LeftPanel";
 import { StepOne } from "./StepOne";
@@ -20,12 +21,26 @@ import { StepThree } from "./StepThree";
 import { StepFour } from "./StepFour";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useGetMerchantProfile } from "@/apis/dashboard";
 
 export function MerchantSetupClient() {
   const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  const { data: existingStore, isSuccess: hasExistingStore, isLoading: isCheckingStore } = useGetMerchantProfile({
+    query: {
+      retry: false,
+    }
+  });
+
+  useEffect(() => {
+    if (hasExistingStore && existingStore) {
+      router.push("/dashboard");
+    }
+  }, [hasExistingStore, existingStore, router]);
+
   const hasInitiated = useRef(false);
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>(INITIAL_FORM);
@@ -41,20 +56,25 @@ export function MerchantSetupClient() {
       .catch((e) => console.error("Failed to init user", e));
   }, [user]);
 
+  const tClient = useTranslations("MerchantSetup.Client");
+  const tVal = useTranslations("MerchantSetup.Validation");
+  const tSteps = useTranslations("MerchantSetup.Steps");
+  const STEPS = getSteps(tSteps);
+
   const mutation = useInitMerchantStore({
     mutation: {
       onSuccess: () => {
         toast({
-          title: "Store created!",
-          description: "Welcome to FoodHub. Let's start cooking.",
+          title: tClient("toastSuccessTitle"),
+          description: tClient("toastSuccessDesc"),
         });
         queryClient.invalidateQueries({ queryKey: ["/dashboard/merchant"] });
         router.push("/dashboard");
       },
       onError: () => {
         toast({
-          title: "Something went wrong",
-          description: "Please try again.",
+          title: tClient("toastErrorTitle"),
+          description: tClient("toastErrorDesc"),
           variant: "destructive",
         });
       },
@@ -78,18 +98,18 @@ export function MerchantSetupClient() {
   const validate = (s: number): boolean => {
     const errs: typeof errors = {};
     if (s === 1) {
-      if (!form.name.trim()) errs.name = "Restaurant name is required";
-      if (form.name.trim().length < 3)
-        errs.name = "Name must be at least 3 characters";
-      if (!form.bio.trim()) errs.bio = "Tell us about your restaurant";
+      if (!form.name.trim()) errs.name = tVal("nameReq");
+      if (form.name.trim().length < 3) errs.name = tVal("nameMin");
+      if (!form.bio.trim()) errs.bio = tVal("bioReq");
     }
     if (s === 2) {
-      if (!form.cuisineType) errs.cuisineType = "Pick a cuisine type";
+      if (!form.cuisineType) errs.cuisineType = tVal("cuisineReq");
     }
     if (s === 3) {
-      if (!form.address.trim()) errs.address = "Address is required";
+      if (!form.country) errs.country = tVal("countryReq");
+      if (!form.address.trim()) errs.address = tVal("addressReq");
       if (!form.deliveryFee || isNaN(Number(form.deliveryFee)))
-        errs.deliveryFee = "Enter a valid delivery fee";
+        errs.deliveryFee = tVal("feeInvalid");
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -111,6 +131,7 @@ export function MerchantSetupClient() {
         deliveryTime: form.deliveryTime,
         deliveryFee: Number(form.deliveryFee),
         address: form.address.trim(),
+        country: form.country,
         isOpen: form.isOpen,
         profileImage: form.profileImage.trim() || undefined,
         coverImage: form.coverImage.trim() || undefined,
@@ -122,6 +143,17 @@ export function MerchantSetupClient() {
 
   const currentStep = STEPS[step - 1];
   const StepIcon = currentStep.icon;
+
+  if (isCheckingStore || hasExistingStore) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-8 w-8 border-4 border-orange-500/30 border-t-orange-500 rounded-full animate-spin" />
+          <p className="text-sm font-medium text-stone-500">{tClient("loading") || "Loading..."}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[100dvh] bg-stone-50 flex">
@@ -143,7 +175,7 @@ export function MerchantSetupClient() {
             <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-100 text-orange-600 rounded-full px-3 py-1.5 mb-4">
               <StepIcon className="h-3.5 w-3.5" />
               <span className="text-xs font-bold uppercase tracking-wider">
-                Step {step} of {STEPS.length}
+                {tClient("stepXofY", { current: step, total: STEPS.length })}
               </span>
             </div>
             <h2 className="text-2xl lg:text-3xl font-black text-stone-900 mb-1">
@@ -173,15 +205,15 @@ export function MerchantSetupClient() {
               <StepDots current={step} total={STEPS.length} />
             </div>
 
-            <div className="flex gap-3 ml-auto">
+            <div className="flex gap-3 ml-auto rtl:ml-0 rtl:mr-auto">
               {step > 1 && (
                 <Button
                   variant="outline"
                   onClick={back}
                   className="h-12 px-6 rounded-xl border-stone-200"
                 >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
+                  <ArrowLeft className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0 rtl:rotate-180" />
+                  {tClient("back")}
                 </Button>
               )}
 
@@ -190,8 +222,8 @@ export function MerchantSetupClient() {
                   onClick={next}
                   className="h-12 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-lg shadow-orange-500/20"
                 >
-                  Continue
-                  <ArrowRight className="h-4 w-4 ml-2" />
+                  {tClient("continue")}
+                  <ArrowRight className="h-4 w-4 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
                 </Button>
               ) : (
                 <Button
@@ -202,12 +234,12 @@ export function MerchantSetupClient() {
                   {mutation.isPending ? (
                     <span className="flex items-center gap-2">
                       <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Creating your store…
+                      {tClient("creating")}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       <Flame className="h-4 w-4" />
-                      Launch My Store
+                      {tClient("launch")}
                     </span>
                   )}
                 </Button>

@@ -1,7 +1,13 @@
 import { Utensils, Check, Flame } from "lucide-react";
-import { STEPS } from "./constants";
+import { getSteps } from "./constants";
+import { useTranslations } from "next-intl";
 
 export function LeftPanel({ step }: { step: number }) {
+  const tSidebar = useTranslations("MerchantSetup.Sidebar");
+  const tSteps = useTranslations("MerchantSetup.Steps");
+  const STEPS = getSteps(tSteps);
+  const tGlobal = useTranslations("Global");
+
   return (
     <div className="hidden lg:flex flex-col w-[420px] bg-stone-950 text-white p-10 relative overflow-hidden shrink-0">
       <div
@@ -18,21 +24,16 @@ export function LeftPanel({ step }: { step: number }) {
           <div className="bg-orange-500 p-2 rounded-xl">
             <Utensils className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-black tracking-tight">FoodHub</span>
+          <span className="text-xl font-black tracking-tight">{tGlobal("brand")}</span>
         </div>
 
         {/* Headline */}
         <div className="mb-12">
           <h1 className="text-3xl font-black leading-tight mb-3">
-            Launch your
-            <br />
-            <span className="text-orange-500">restaurant</span>
-            <br />
-            in minutes
+            {tSidebar("welcome")}
           </h1>
           <p className="text-stone-400 text-sm leading-relaxed">
-            Set up your store, add your menu, and start receiving orders from
-            hungry customers nearby.
+            {tSidebar("description")}
           </p>
         </div>
 
@@ -75,20 +76,22 @@ export function LeftPanel({ step }: { step: number }) {
           })}
         </div>
 
-        {/* Bottom testimonial */}
+        {/* Bottom metrics */}
         <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-2xl">
-          <div className="flex gap-1 mb-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Flame key={i} className="h-3.5 w-3.5 text-orange-400" />
-            ))}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-orange-400" />
+              <p className="text-sm text-white/70">{tSidebar("metrics.orders")}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-orange-400" />
+              <p className="text-sm text-white/70">{tSidebar("metrics.merchants")}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-orange-400" />
+              <p className="text-sm text-white/70">{tSidebar("metrics.support")}</p>
+            </div>
           </div>
-          <p className="text-sm text-white/70 leading-relaxed">
-            "We started getting orders within hours of going live. FoodHub
-            made it effortless."
-          </p>
-          <p className="text-xs text-white/30 mt-2">
-            — Maria K., Smoke & Ember Grill
-          </p>
         </div>
       </div>
     </div>

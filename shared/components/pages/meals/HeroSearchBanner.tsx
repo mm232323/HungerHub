@@ -6,6 +6,8 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Input } from "../../ui/input";
 
+import { useGetTrendingProducts } from "@/apis/products";
+
 export default function HeroSearchBanner({
   productsLength,
   query,
@@ -19,6 +21,8 @@ export default function HeroSearchBanner({
   const searchParams = useSearchParams();
   
   const [localQuery, setLocalQuery] = useState(query);
+  const [isFocused, setIsFocused] = useState(false);
+  const { data: trendingProducts } = useGetTrendingProducts();
 
   useEffect(() => {
     setLocalQuery(query);
@@ -77,6 +81,8 @@ export default function HeroSearchBanner({
             <Input
               value={localQuery}
               onChange={(e) => setLocalQuery(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder={t("hero.searchPlaceholder")}
               className="pl-12 pr-12 h-14 text-[15px] border-0 shadow-none focus-visible:ring-0 bg-transparent text-stone-900 placeholder:text-stone-400"
             />
@@ -90,6 +96,30 @@ export default function HeroSearchBanner({
               </button>
             )}
           </form>
+          
+          {isFocused && !localQuery && trendingProducts && trendingProducts.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-stone-100 overflow-hidden text-left z-50">
+              <div className="p-3 bg-stone-50 border-b border-stone-100 flex items-center gap-2">
+                <Flame className="h-4 w-4 text-orange-500" />
+                <span className="text-sm font-semibold text-stone-700">Trending Products</span>
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                {trendingProducts.slice(0, 5).map(product => (
+                  <button 
+                    key={product.id}
+                    className="w-full text-left px-4 py-3 hover:bg-stone-50 flex items-center gap-3 transition-colors border-b border-stone-50 last:border-0"
+                    onClick={() => router.push(`/meals?query=${encodeURIComponent(product.name)}`)}
+                  >
+                    <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover" />
+                    <div>
+                      <p className="text-sm font-medium text-stone-900">{product.name}</p>
+                      <p className="text-xs text-stone-500">{product.merchantName}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>

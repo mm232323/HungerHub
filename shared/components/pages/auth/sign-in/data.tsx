@@ -1,4 +1,8 @@
 export const clerkAppearance = {
+  layout: {
+    socialButtonsPlacement: "top",
+    socialButtonsVariant: "blockButton",
+  },
   variables: {
     colorPrimary: "#F97316", // Beautiful brand orange accent
     colorBackground: "#FFFFFF", // Light background inside the form
@@ -38,6 +42,12 @@ export const clerkAppearance = {
       color: "#4B5563",
       fontSize: "0.95rem",
     },
+    socialButtons: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gap: "12px",
+      width: "100%",
+    },
     socialButtonsBlockButton: {
       backgroundColor: "#FFFFFF",
       border: "1px solid #E5E7EB",
@@ -45,6 +55,7 @@ export const clerkAppearance = {
       height: "50px",
       borderRadius: "12px",
       transition: "all 0.2s ease-in-out",
+      margin: 0,
       '&:hover': {
         backgroundColor: "#F9FAFB",
         borderColor: "#F97316",
@@ -61,8 +72,8 @@ export const clerkAppearance = {
       color: "#6B7280",
     },
     formFieldInput: {
-      backgroundColor: "#FFFFFF",
-      border: "1px solid #D1D5DB",
+      backgroundColor: "#F3F4F6",
+      border: "1px solid transparent",
       color: "#1F2937",
       height: "50px",
       borderRadius: "12px",
@@ -100,8 +111,8 @@ export const clerkAppearance = {
       },
     },
     formFieldCheckboxInput: {
-      backgroundColor: "#FFFFFF",
-      border: "1px solid #D1D5DB",
+      backgroundColor: "#F3F4F6",
+      border: "1px solid transparent",
       '&:checked': {
         backgroundColor: "#F97316",
         borderColor: "#F97316",

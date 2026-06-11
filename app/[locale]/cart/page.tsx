@@ -9,8 +9,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Minus, Plus, Trash2, ArrowLeft, Loader2, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function CartPage() {
+  const t = useTranslations("Cart");
   const { items, updateQuantity, removeFromCart, clearCart, cartTotal } = useCart();
   const { toast } = useToast();
   const router = useRouter();
@@ -26,8 +28,8 @@ export default function CartPage() {
     mutation: {
       onSuccess: () => {
         toast({
-          title: "Order Placed Successfully!",
-          description: "Your order has been sent to the merchant.",
+          title: t("orderPlaced") || "Order Placed Successfully!",
+          description: t("orderSent") || "Your order has been sent to the merchant.",
         });
         clearCart();
         setIsProcessing(false);
@@ -35,8 +37,8 @@ export default function CartPage() {
       },
       onError: (error: any) => {
         toast({
-          title: "Checkout Failed",
-          description: error?.message || "Something went wrong.",
+          title: t("checkoutFailed") || "Checkout Failed",
+          description: error?.message || (t("somethingWentWrong") || "Something went wrong."),
           variant: "destructive",
         });
         setIsProcessing(false);
@@ -68,14 +70,14 @@ export default function CartPage() {
       if (data.valid) {
         setAppliedPromo(promoInput);
         setDiscount(data.discount);
-        setPromoMessage(data.message || "Promo applied!");
+        setPromoMessage(data.message || (t("promoApplied") || "Promo applied!"));
       } else {
         setAppliedPromo("");
         setDiscount(0);
-        setPromoMessage(data.message || "Invalid promo code");
+        setPromoMessage(data.message || (t("invalidPromo") || "Invalid promo code"));
       }
     } catch (error) {
-      setPromoMessage("Failed to apply promo code");
+      setPromoMessage(t("failedPromo") || "Failed to apply promo code");
     } finally {
       setIsApplyingPromo(false);
     }
@@ -108,7 +110,7 @@ export default function CartPage() {
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
-        <h1 className="text-2xl font-bold">Your Cart</h1>
+        <h1 className="text-2xl font-bold">{t("yourCart") || "Your Cart"}</h1>
       </div>
 
       {items.length === 0 ? (
@@ -116,10 +118,10 @@ export default function CartPage() {
           <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <Trash2 className="h-8 w-8 text-orange-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Cart is empty</h2>
-          <p className="text-gray-500 mb-6">Looks like you haven't added anything yet.</p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">{t("emptyCart") || "Cart is empty"}</h2>
+          <p className="text-gray-500 mb-6">{t("emptyCartDesc") || "Looks like you haven't added anything yet."}</p>
           <Button onClick={() => router.push("/")} className="rounded-full bg-orange-500 hover:bg-orange-600">
-            Browse Restaurants
+            {t("browseRestaurants") || "Browse Restaurants"}
           </Button>
         </div>
       ) : (
@@ -171,7 +173,7 @@ export default function CartPage() {
               <div className="relative flex-1">
                 <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Enter promo code"
+                  placeholder={t("enterPromo") || "Enter promo code"}
                   className="pl-9 bg-gray-50 border-transparent focus-visible:ring-orange-500 focus-visible:bg-white transition-all"
                   value={promoInput}
                   onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
@@ -183,7 +185,7 @@ export default function CartPage() {
                 disabled={!promoInput || isApplyingPromo}
                 className="bg-gray-900 hover:bg-gray-800 text-white px-6"
               >
-                {isApplyingPromo ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply"}
+                {isApplyingPromo ? <Loader2 className="h-4 w-4 animate-spin" /> : (t("apply") || "Apply")}
               </Button>
             </div>
             {promoMessage && (
@@ -194,21 +196,21 @@ export default function CartPage() {
             
             <div className="space-y-3 pt-2">
               <div className="flex justify-between text-gray-600">
-                <span>Subtotal</span>
+                <span>{t("subtotal") || "Subtotal"}</span>
                 <span>${cartTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Delivery Fee</span>
+                <span>{t("deliveryFee") || "Delivery Fee"}</span>
                 <span>$2.99</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600 font-medium">
-                  <span>Discount ({appliedPromo})</span>
+                  <span>{t("discount") || "Discount"} ({appliedPromo})</span>
                   <span>-${discount.toFixed(2)}</span>
                 </div>
               )}
               <div className="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
-                <span>Total</span>
+                <span>{t("total") || "Total"}</span>
                 <span>${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}</span>
               </div>
             </div>
@@ -222,7 +224,7 @@ export default function CartPage() {
             {isProcessing ? (
               <Loader2 className="h-5 w-5 animate-spin mx-auto" />
             ) : (
-              `Checkout • $${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}`
+              `${t("checkout") || "Checkout"} • $${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}`
             )}
           </Button>
         </div>

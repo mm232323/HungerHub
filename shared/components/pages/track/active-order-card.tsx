@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/alerts/progress";
 import { ChevronRight, ChefHat, Bike, MapPin, CheckCircle2 } from "lucide-react";
 import type { Order } from "@/types";
+import { useTranslations } from "next-intl";
 
 interface ActiveOrderCardProps {
   order: Order;
 }
 
 export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
+  const t = useTranslations("Orders");
   const formatTime = (dateStr?: string | null) => {
     if (!dateStr) return "—";
     const date = new Date(dateStr);
@@ -52,15 +54,15 @@ export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
           </div>
           <div>
             <h3 className="font-bold text-lg leading-tight">{order.merchantName}</h3>
-            <p className="text-sm text-muted-foreground">Order ID: #{order.id}</p>
-            <p className="text-xs text-muted-foreground mt-1">Today, {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+            <p className="text-sm text-muted-foreground">{t("orderId")}: #{order.id}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t("today")}, {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
           </div>
         </div>
         <div className="text-right pr-6 md:pr-8">
           <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded-full capitalize">
-            {order.status}
+            {t(`status.${order.status}` as any) || order.status}
           </span>
-          <p className="text-[10px] text-muted-foreground uppercase mt-2">Estimated delivery</p>
+          <p className="text-[10px] text-muted-foreground uppercase mt-2">{t("estimatedDelivery")}</p>
           <p className="font-bold text-primary">{formatTime(order.estimatedDelivery)}</p>
         </div>
       </div>
@@ -74,19 +76,19 @@ export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
             <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 ${progress >= 10 ? 'border-primary bg-primary/10' : 'border-muted bg-background'}`}>
               <ChefHat className="h-4 w-4" />
             </div>
-            <span>Preparing</span>
+            <span>{t("preparing")}</span>
           </div>
           <div className={`flex flex-col items-center gap-1 ${progress >= 50 ? 'text-primary' : ''}`}>
             <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 ${progress >= 50 ? 'border-primary bg-primary/10' : 'border-muted bg-background'}`}>
               <Bike className="h-4 w-4" />
             </div>
-            <span>On the way</span>
+            <span>{t("onTheWay")}</span>
           </div>
           <div className={`flex flex-col items-center gap-1 ${progress >= 100 ? 'text-primary' : ''}`}>
             <div className={`h-8 w-8 rounded-full flex items-center justify-center border-2 ${progress >= 100 ? 'border-primary bg-primary/10' : 'border-muted bg-background'}`}>
               <CheckCircle2 className="h-4 w-4" />
             </div>
-            <span>Delivered</span>
+            <span>{t("delivered")}</span>
           </div>
         </div>
       </div>
@@ -104,13 +106,13 @@ export function ActiveOrderCard({ order }: ActiveOrderCardProps) {
             </div>
           )}
           <div className="ml-2 flex flex-col justify-center">
-            <span className="text-sm font-semibold">{itemsCount} Items</span>
-            <span className="text-xs text-primary font-medium">View items</span>
+            <span className="text-sm font-semibold">{itemsCount} {t("items")}</span>
+            <span className="text-xs text-primary font-medium">{t("viewItems")}</span>
           </div>
         </div>
         <Link href={`/track/${order.id}`}>
           <Button variant="outline" className="rounded-full font-semibold border-primary/20 text-primary hover:bg-primary/5">
-            Order Details
+            {t("orderDetails")}
           </Button>
         </Link>
       </div>

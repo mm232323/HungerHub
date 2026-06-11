@@ -1,31 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useListOrders, useUpdateOrderStatus } from "@/utils/api";
-import { DashboardShell } from "@/shared/components/pages/dashboard/dashboard-shell";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/alerts/skeleton";
-import { useToast } from "@/hooks/use-toast";
-import {
-  Clock,
-  User,
-  RefreshCw,
-  CheckCircle2,
-  ChefHat,
-  Bike,
-  PackageCheck,
-  Bell,
-} from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { useTranslations } from "next-intl";
+import { useListOrders } from "@/utils/api";
 import { useOrderStages } from "./data";
 import OrdersTabHeader from "./OrdersTabHeader";
 import OrderStage from "./OrderStage";
 
 export function DashboardOrdersView() {
-  const t = useTranslations("Dashboard.Orders");
   const STAGES = useOrderStages();
-  const { toast } = useToast();
   const [refreshing, setRefreshing] = useState(false);
   const handleRefresh = (refreshing: boolean) => {
     setRefreshing(refreshing);
@@ -41,14 +23,6 @@ export function DashboardOrdersView() {
     },
   );
 
-  const updateStatus = useUpdateOrderStatus({
-    mutation: {
-      onSuccess: () => {
-        toast({ title: "Order updated" });
-        refetch();
-      },
-    },
-  });
 
   const activeOrders = orders?.filter((o) => o.status !== "delivered") ?? [];
   const totalActive = activeOrders.length;

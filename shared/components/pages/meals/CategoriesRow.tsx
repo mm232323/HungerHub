@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export default function CategoriesRow({
@@ -12,6 +12,7 @@ export default function CategoriesRow({
   categories: any[];
 }) {
   const t = useTranslations("MealsPage");
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -52,8 +53,8 @@ export default function CategoriesRow({
                   : "bg-stone-50 text-stone-600 border-stone-200 hover:border-orange-300 hover:text-orange-600"
               }`}
             >
-              <span>{cat.icon || "🍴"}</span>
-              {cat.name}
+              {cat.icon ? <span dangerouslySetInnerHTML={{ __html: cat.icon }} /> : <span>🍴</span>}
+              {locale === 'ar' ? (cat.name_ar || cat.name) : cat.name}
             </button>
           ))}
         </div>

@@ -6,11 +6,13 @@ import { ChefHat, Home, Search, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
   const router = useRouter();
   const params = useParams();
   const locale = params.locale as string;
+  const t = useTranslations("NotFound");
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -63,10 +65,10 @@ export default function NotFound() {
           {/* Main Message */}
           <motion.div variants={itemVariants} className="mb-6">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
-              Oops! Page Not Found
+              {t("title") || "Oops! Page Not Found"}
             </h2>
             <p className="text-lg text-muted-foreground max-w-lg mx-auto leading-relaxed">
-              It looks like the kitchen is closed for this page. Let's get you back to finding delicious food!
+              {t("description") || "It looks like the kitchen is closed for this page. Let's get you back to finding delicious food!"}
             </p>
           </motion.div>
 
@@ -81,42 +83,42 @@ export default function NotFound() {
                 className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2 rounded-lg px-8"
               >
                 <Home className="w-5 h-5" />
-                Back to Home
+                {t("backToHome") || "Back to Home"}
               </Button>
             </Link>
 
-            <Link href={`//discover`} className="flex-1 sm:flex-none">
+            <Link href={`/discover`} className="flex-1 sm:flex-none">
               <Button
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto border-2 border-primary/20 hover:bg-primary/5 font-semibold gap-2 rounded-lg px-8"
               >
                 <Search className="w-5 h-5" />
-                Discover Restaurants
+                {t("discoverRestaurants") || "Discover Restaurants"}
               </Button>
             </Link>
           </motion.div>
 
           {/* Quick Links */}
           <motion.div variants={itemVariants} className="mt-12 pt-12 border-t border-border">
-            <p className="text-sm text-muted-foreground mb-6 font-medium">Quick Navigation</p>
+            <p className="text-sm text-muted-foreground mb-6 font-medium">{t("quickNavigation") || "Quick Navigation"}</p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-md mx-auto">
               <Link href={`/`}>
                 <button className="w-full p-3 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors duration-200 text-sm font-medium text-foreground">
                   <ShoppingBag className="w-5 h-5 mx-auto mb-2" />
-                  Order Now
+                  {t("orderNow") || "Order Now"}
                 </button>
               </Link>
-              <Link href={`//discover`}>
+              <Link href={`/discover`}>
                 <button className="w-full p-3 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors duration-200 text-sm font-medium text-foreground">
                   <Search className="w-5 h-5 mx-auto mb-2" />
-                  Browse
+                  {t("browse") || "Browse"}
                 </button>
               </Link>
-              <Link href={`//cart`}>
+              <Link href={`/cart`}>
                 <button className="w-full p-3 rounded-lg bg-muted/50 hover:bg-primary/10 transition-colors duration-200 text-sm font-medium text-foreground">
                   <ShoppingBag className="w-5 h-5 mx-auto mb-2" />
-                  Cart
+                  {t("cart") || "Cart"}
                 </button>
               </Link>
             </div>

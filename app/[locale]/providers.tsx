@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ClerkProvider, useAuth, useUser } from "@clerk/react";
+import { ClerkProvider, useAuth, useUser } from "@clerk/nextjs";
+import { arSA, enUS } from "@clerk/localizations";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { setBaseUrl, setAuthTokenGetter, setUsernameGetter } from "@/utils/api";
 import { usePathname, useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { SiteHeader } from "@/layout/site-header";
 import { BottomNav } from "@/layout/bottom-nav";
 import { Footer } from "@/layout/footer";
@@ -40,6 +42,7 @@ function AuthConfig() {
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
   
   // Handle locale prefixes in pathname (e.g., /en/dashboard)
   const isDashboard = pathname ? /^\/([^\/]+\/)?dashboard/.test(pathname) : false;
@@ -63,6 +66,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ClerkProvider 
+      localization={locale === "ar" ? arSA : enUS}
       publishableKey={clerkPublishableKey}
       routerPush={(to) => router.push(to)}
       routerReplace={(to) => router.replace(to)}

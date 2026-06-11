@@ -7,8 +7,12 @@ import { useTranslations } from "next-intl";
 import { Input } from "../../ui/input";
 import { Button } from "../../ui/button";
 import { useRouter } from "next/navigation";
+import { useGetTrendingProducts } from "@/apis/products";
+
 function Hero() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const { data: trendingProducts } = useGetTrendingProducts();
   const t = useTranslations("HomePage");
   const HERO_TAGS = [
     t("heroTags.burgers"),
@@ -22,9 +26,9 @@ function Hero() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/discover?q=${encodeURIComponent(searchQuery)}`);
+      router.push(`/meals?query=${encodeURIComponent(searchQuery)}`);
     } else {
-      router.push("/discover");
+      router.push("/meals");
     }
   };
   return (
@@ -86,29 +90,77 @@ function Hero() {
           </motion.p>
 
           {/* search bar */}
-          <motion.form
-            onSubmit={handleSearch}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="max-w-xl mx-auto"
-          >
-            <div className="relative flex items-center shadow-lg shadow-primary/10 rounded-full ring-1 ring-border bg-background">
-              <Search className="absolute left-4 h-5 w-5 text-muted-foreground pointer-events-none" />
-              <Input
-                className="pl-12 pr-32 h-14 text-base rounded-full border-0 shadow-none focus-visible:ring-0 bg-transparent"
-                placeholder={t("hero.searchPlaceholder")}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <Button
-                type="submit"
-                className="absolute right-2 rounded-full px-6 h-10 font-semibold"
-              >
-                {t("hero.searchButton")}
-              </Button>
-            </div>
-          </motion.form>
+          <div className="max-w-xl mx-auto relative z-20">
+            <motion.form
+              onSubmit={handleSearch}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <div className="relative flex items-center shadow-lg shadow-primary/10 rounded-full ring-1 ring-border bg-background">
+                <Search className="absolute left-4 h-5 w-5 text-muted-foreground pointer-events-none" />
+                <Input
+                  className="pl-12 pr-32 h-14 text-base rounded-full border-0 shadow-none focus-visible:ring-0 bg-transparent"
+                  placeholder={t("hero.searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                />
+                <Button
+                  type="submit"
+                  className="absolute right-2 rounded-full px-6 h-10 font-semibold"
+                >
+                  {t("hero.searchButton")}
+                </Button>
+              </div>
+            </motion.form>
+
+            {isFocused &&
+              !searchQuery &&
+              trendingProducts &&
+              trendingProducts.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute top-full left-0 right-0 mt-2 bg-background rounded-2xl shadow-xl border overflow-hidden text-left"
+                >
+                  <div className="p-3 bg-muted/50 border-b flex items-center gap-2">
+                    <Flame className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm font-semibold text-muted-foreground">
+                      Trending Products
+                    </span>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {trendingProducts.slice(0, 5).map((product) => (
+                      <button
+                        key={product.id}
+                        className="w-full text-left px-4 py-3 hover:bg-muted flex items-center gap-3 transition-colors border-b last:border-0"
+                        onClick={() =>
+                          router.push(
+                            `/meals?query=${encodeURIComponent(product.name)}`,
+                          )
+                        }
+                      >
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-10 h-10 rounded-lg object-cover"
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {product.merchantName}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+          </div>
 
           {/* quick-filter tags */}
           <motion.div

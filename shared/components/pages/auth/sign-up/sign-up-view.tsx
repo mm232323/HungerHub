@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { Role } from "@/types";
@@ -22,7 +22,9 @@ export function SignUpView() {
       localStorage.setItem("auth-role", newRole);
     }
   };
+  const hasInitialized = useRef(false);
   useEffect(() => {
+    if (hasInitialized.current) return;
     const fallbackUrl = searchParams.get("sign_up_fallback_redirect_url");
     if (fallbackUrl) {
       try {
@@ -31,13 +33,12 @@ export function SignUpView() {
           setRole("merchant");
         } else if (decoded.includes("/customer-setup")) {
           setRole("customer");
-        } else {
-          return;
         }
       } catch (e) {
         console.error("Failed to parse fallback URL:", e);
       }
     }
+    hasInitialized.current = true;
   }, [searchParams]);
 
   const isFullscreen = !role;

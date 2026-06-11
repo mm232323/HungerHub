@@ -9,6 +9,9 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { Switch } from "@/shared/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { customFetch } from "@/utils/api";
+import { useListCategories } from "@/apis";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { useTranslations, useLocale } from "next-intl";
 import { 
   Building2, 
   CalendarDays, 
@@ -35,17 +38,21 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
+  const t = useTranslations("DashboardSettings");
+  const locale = useLocale();
+  const { data: categories = [], isLoading: isLoadingCategories } = useListCategories();
+
   const { data: profile, isLoading, refetch } = useGetMerchantProfile();
   const updateProfile = useUpdateMerchantProfile({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Profile updated successfully!" });
+        toast({ title: t("toastUpdateSuccess") });
         refetch();
       },
       onError: (err: any) => {
         toast({ 
-          title: "Error updating profile", 
-          description: err?.message || "Failed to save changes.", 
+          title: t("toastUpdateErrorTitle"), 
+          description: err?.message || t("toastUpdateErrorDesc"), 
           variant: "destructive" 
         });
       }
@@ -116,13 +123,13 @@ export default function SettingsPage() {
         
         if (json && json.url) {
           updateField(field, json.url);
-          toast({ title: "Image uploaded successfully!" });
+          toast({ title: t("toastUploadSuccess") });
         } else {
-          toast({ title: "Upload failed", variant: "destructive" });
+          toast({ title: t("toastUploadFailed"), variant: "destructive" });
         }
       } catch (err) {
         console.error(err);
-        toast({ title: "Upload error", variant: "destructive" });
+        toast({ title: t("toastUploadError"), variant: "destructive" });
       } finally {
         setIsUploading(false);
       }
@@ -143,7 +150,7 @@ export default function SettingsPage() {
   };
 
   if (isLoading) {
-    return <div className="p-8 text-center text-stone-500">Loading settings...</div>;
+    return <div className="p-8 text-center text-stone-500">{t("loading")}</div>;
   }
 
   return (
@@ -152,12 +159,12 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-stone-900 tracking-tight">Restaurant Settings</h1>
-          <p className="text-sm text-stone-500 mt-1">Manage your restaurant profile, branding and preferences</p>
+          <h1 className="text-2xl font-bold text-stone-900 tracking-tight">{t("title")}</h1>
+          <p className="text-sm text-stone-500 mt-1">{t("subtitle")}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="border-stone-200 text-stone-700 bg-white shadow-sm flex items-center gap-2 h-10 px-4 rounded-lg hover:bg-stone-50">
-            Preview Store <ExternalLink className="h-4 w-4" />
+            {t("preview")} <ExternalLink className="h-4 w-4" />
           </Button>
           <Button 
             onClick={handleSave} 
@@ -165,22 +172,22 @@ export default function SettingsPage() {
             className="bg-orange-500 hover:bg-orange-600 text-white shadow-sm flex items-center gap-2 h-10 px-5 rounded-lg border-0"
           >
             <Check className="h-4 w-4" />
-            {updateProfile.isPending ? "Saving..." : "Save Changes"}
+            {updateProfile.isPending ? t("saving") : t("save")}
           </Button>
         </div>
       </div>
 
       {/* Branding Section */}
       <div className="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-100">
-        <h2 className="text-lg font-bold text-stone-800">Branding</h2>
-        <p className="text-sm text-stone-500 mt-1 mb-6">Manage your restaurant logo and banner</p>
+        <h2 className="text-lg font-bold text-stone-800">{t("brandingTitle")}</h2>
+        <p className="text-sm text-stone-500 mt-1 mb-6">{t("brandingSubtitle")}</p>
         
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Logo */}
           <div className="w-full lg:w-1/3 flex flex-col gap-3">
             <div>
-              <h3 className="text-sm font-semibold text-stone-800">Logo</h3>
-              <p className="text-xs text-stone-500">This logo will be shown in your store</p>
+              <h3 className="text-sm font-semibold text-stone-800">{t("logoTitle")}</h3>
+              <p className="text-xs text-stone-500">{t("logoSubtitle")}</p>
             </div>
             
             <div className="border border-stone-200 rounded-xl p-4 flex items-center justify-center relative bg-white h-[200px] overflow-hidden">
@@ -196,16 +203,16 @@ export default function SettingsPage() {
             
             <label className={`w-full border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
               <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={(e) => handleImageUpload(e, 'profileImage')} disabled={isUploading} />
-              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? "Uploading..." : "Change Logo"}
+              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? t("uploading") : t("changeLogo")}
             </label>
-            <p className="text-xs text-stone-400 leading-snug">Recommended size: 512x512px<br/>PNG, JPG up to 2MB</p>
+            <p className="text-xs text-stone-400 leading-snug" dangerouslySetInnerHTML={{ __html: t("logoSize") }}></p>
           </div>
 
           {/* Banner */}
           <div className="w-full lg:w-2/3 flex flex-col gap-3">
             <div>
-              <h3 className="text-sm font-semibold text-stone-800">Banner</h3>
-              <p className="text-xs text-stone-500">This banner will be shown at the top of your store</p>
+              <h3 className="text-sm font-semibold text-stone-800">{t("bannerTitle")}</h3>
+              <p className="text-xs text-stone-500">{t("bannerSubtitle")}</p>
             </div>
             
             <div className="border border-stone-200 rounded-xl overflow-hidden relative bg-stone-100 h-[200px] w-full">
@@ -215,15 +222,15 @@ export default function SettingsPage() {
               {formData.coverImage ? (
                 <img src={formData.coverImage} alt="Banner" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-stone-800 flex items-center justify-center text-stone-400">Banner Placeholder</div>
+                <div className="w-full h-full bg-stone-800 flex items-center justify-center text-stone-400">{t("bannerPlaceholder")}</div>
               )}
             </div>
             
             <label className={`w-[180px] border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
               <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onChange={(e) => handleImageUpload(e, 'coverImage')} disabled={isUploading} />
-              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? "Uploading..." : "Change Banner"}
+              <UploadCloud className="h-4 w-4 mr-2" /> {isUploading ? t("uploading") : t("changeBanner")}
             </label>
-            <p className="text-xs text-stone-400 leading-snug">Recommended size: 1920x600px<br/>PNG, JPG up to 5MB</p>
+            <p className="text-xs text-stone-400 leading-snug" dangerouslySetInnerHTML={{ __html: t("bannerSize") }}></p>
           </div>
         </div>
       </div>
@@ -233,48 +240,60 @@ export default function SettingsPage() {
         
         {/* Restaurant Information */}
         <div className="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-100">
-          <h2 className="text-lg font-bold text-stone-800 mb-6">Restaurant Information</h2>
+          <h2 className="text-lg font-bold text-stone-800 mb-6">{t("infoTitle")}</h2>
           
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Restaurant Name</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("nameLabel")}</Label>
               <div className="relative">
-                <Input value={formData.name} onChange={e => updateField('name', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <Building2 className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.name} onChange={e => updateField('name', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <Building2 className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Tagline</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("taglineLabel")}</Label>
               <div className="relative">
-                <Input value={formData.tagline} onChange={e => updateField('tagline', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <Tag className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.tagline} onChange={e => updateField('tagline', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <Tag className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
-              <p className="text-xs text-stone-400">A short tagline for your restaurant</p>
+              <p className="text-xs text-stone-400">{t("taglineHelper")}</p>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Description</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("descLabel")}</Label>
               <div className="relative">
-                <Textarea value={formData.description} onChange={e => updateField('description', e.target.value)} rows={4} className="pr-10 resize-none border-stone-200 text-stone-700" />
-                <AlignLeft className="absolute right-3 top-3 h-4 w-4 text-orange-500 opacity-60" />
+                <Textarea value={formData.description} onChange={e => updateField('description', e.target.value)} rows={4} className="pr-10 rtl:pr-3 rtl:pl-10 resize-none border-stone-200 text-stone-700" />
+                <AlignLeft className="absolute right-3 rtl:right-auto rtl:left-3 top-3 h-4 w-4 text-orange-500 opacity-60" />
               </div>
-              <div className="text-right text-xs text-stone-400">123/300</div>
+              <div className="text-right rtl:text-left text-xs text-stone-400">123/300</div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Cuisine Type</Label>
-              <div className="relative">
-                <Input value={formData.cuisineType} onChange={e => updateField('cuisineType', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <ChefHat className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
-              </div>
+              <Label className="text-sm font-semibold text-stone-700">{t("cuisineLabel")}</Label>
+              <Select value={formData.cuisineType} onValueChange={(val) => updateField('cuisineType', val)}>
+                <SelectTrigger className="h-10 text-[15px] border-stone-200 text-stone-700 w-full pl-10 pr-3 rtl:pr-10 rtl:pl-3 relative focus:border-orange-400 focus:ring-orange-400/20">
+                  <ChefHat className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60 z-10" />
+                  <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select category"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-60">
+                  {categories.map((c) => (
+                    <SelectItem key={c.slug} value={c.name} className="flex items-center gap-2 py-2">
+                      <div className="flex items-center gap-3">
+                        <span className="w-5 h-5 inline-flex items-center justify-center text-lg leading-none" dangerouslySetInnerHTML={{ __html: c.icon }} />
+                        <span>{locale === 'ar' ? (c.name_ar || c.name) : c.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Established Year</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("yearLabel")}</Label>
               <div className="relative">
-                <Input value={formData.establishedYear} onChange={e => updateField('establishedYear', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <CalendarDays className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.establishedYear} onChange={e => updateField('establishedYear', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <CalendarDays className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
           </div>
@@ -282,47 +301,47 @@ export default function SettingsPage() {
 
         {/* Contact Information */}
         <div className="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-100">
-          <h2 className="text-lg font-bold text-stone-800 mb-6">Contact Information</h2>
+          <h2 className="text-lg font-bold text-stone-800 mb-6">{t("contactTitle")}</h2>
           
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Phone Number</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("phoneLabel")}</Label>
               <div className="relative">
-                <Input value={formData.phone} onChange={e => updateField('phone', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <Phone className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.phone} onChange={e => updateField('phone', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <Phone className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Email Address</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("emailLabel")}</Label>
               <div className="relative">
-                <Input value={formData.email} onChange={e => updateField('email', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <Mail className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.email} onChange={e => updateField('email', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <Mail className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Address</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("addressLabel")}</Label>
               <div className="relative">
-                <Textarea value={formData.address} onChange={e => updateField('address', e.target.value)} rows={3} className="pr-10 resize-none border-stone-200 text-stone-700" />
-                <MapPin className="absolute right-3 top-3 h-4 w-4 text-orange-500 opacity-60" />
+                <Textarea value={formData.address} onChange={e => updateField('address', e.target.value)} rows={3} className="pr-10 rtl:pr-3 rtl:pl-10 resize-none border-stone-200 text-stone-700" />
+                <MapPin className="absolute right-3 rtl:right-auto rtl:left-3 top-3 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Website</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("websiteLabel")}</Label>
               <div className="relative">
-                <Input value={formData.website} onChange={e => updateField('website', e.target.value)} className="pr-10 h-10 border-stone-200 text-stone-700" />
-                <Globe className="absolute right-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <Input value={formData.website} onChange={e => updateField('website', e.target.value)} className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700" />
+                <Globe className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">Opening Hours</Label>
+              <Label className="text-sm font-semibold text-stone-700">{t("hoursLabel")}</Label>
               <div className="relative flex items-center bg-white border border-stone-200 rounded-md px-3 h-10 overflow-hidden">
-                <Clock className="h-4 w-4 text-orange-500 opacity-60 mr-3 shrink-0" />
+                <Clock className="h-4 w-4 text-orange-500 opacity-60 mr-3 rtl:mr-0 rtl:ml-3 shrink-0" />
                 <Input value={formData.openingHours} onChange={e => updateField('openingHours', e.target.value)} className="border-0 p-0 h-full shadow-none focus-visible:ring-0 text-stone-700 font-medium" />
-                <Pencil className="h-4 w-4 text-orange-500 opacity-60 ml-3 shrink-0 cursor-pointer" />
+                <Pencil className="h-4 w-4 text-orange-500 opacity-60 ml-3 rtl:ml-0 rtl:mr-3 shrink-0 cursor-pointer" />
               </div>
             </div>
           </div>
@@ -331,25 +350,25 @@ export default function SettingsPage() {
 
       {/* Social Media */}
       <div className="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-100">
-        <h2 className="text-lg font-bold text-stone-800">Social Media</h2>
-        <p className="text-sm text-stone-500 mt-1 mb-6">Add your social media links</p>
+        <h2 className="text-lg font-bold text-stone-800">{t("socialTitle")}</h2>
+        <p className="text-sm text-stone-500 mt-1 mb-6">{t("socialSubtitle")}</p>
         
         <div className="flex flex-wrap gap-4 items-center">
           <div className="relative flex-1 min-w-[200px]">
-            <Facebook className="absolute left-3 top-2.5 h-4 w-4 text-[#1877F2]" />
-            <Input defaultValue="facebook.com/delicio" className="pl-10 h-10 border-stone-200 text-stone-600 text-sm" />
+            <Facebook className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 h-4 w-4 text-[#1877F2]" />
+            <Input defaultValue="facebook.com/delicio" className="pl-10 rtl:pl-3 rtl:pr-10 h-10 border-stone-200 text-stone-600 text-sm" />
           </div>
           <div className="relative flex-1 min-w-[200px]">
-            <Instagram className="absolute left-3 top-2.5 h-4 w-4 text-[#E4405F]" />
-            <Input defaultValue="instagram.com/delicio" className="pl-10 h-10 border-stone-200 text-stone-600 text-sm" />
+            <Instagram className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 h-4 w-4 text-[#E4405F]" />
+            <Input defaultValue="instagram.com/delicio" className="pl-10 rtl:pl-3 rtl:pr-10 h-10 border-stone-200 text-stone-600 text-sm" />
           </div>
           <div className="relative flex-1 min-w-[200px]">
-            <Twitter className="absolute left-3 top-2.5 h-4 w-4 text-[#1DA1F2]" />
-            <Input defaultValue="twitter.com/delicio" className="pl-10 h-10 border-stone-200 text-stone-600 text-sm" />
+            <Twitter className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 h-4 w-4 text-[#1DA1F2]" />
+            <Input defaultValue="twitter.com/delicio" className="pl-10 rtl:pl-3 rtl:pr-10 h-10 border-stone-200 text-stone-600 text-sm" />
           </div>
           <div className="relative flex-1 min-w-[200px]">
-            <Youtube className="absolute left-3 top-2.5 h-4 w-4 text-[#FF0000]" />
-            <Input defaultValue="youtube.com/delicio" className="pl-10 h-10 border-stone-200 text-stone-600 text-sm" />
+            <Youtube className="absolute left-3 rtl:left-auto rtl:right-3 top-2.5 h-4 w-4 text-[#FF0000]" />
+            <Input defaultValue="youtube.com/delicio" className="pl-10 rtl:pl-3 rtl:pr-10 h-10 border-stone-200 text-stone-600 text-sm" />
           </div>
           <Button variant="outline" className="w-10 h-10 p-0 shrink-0 border-stone-200 text-stone-600 bg-white">
             <Plus className="h-5 w-5" />
@@ -359,8 +378,8 @@ export default function SettingsPage() {
 
       {/* Additional Settings */}
       <div className="bg-white p-6 rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-stone-100">
-        <h2 className="text-lg font-bold text-stone-800">Additional Settings</h2>
-        <p className="text-sm text-stone-500 mt-1 mb-6">Manage other preferences</p>
+        <h2 className="text-lg font-bold text-stone-800">{t("additionalTitle")}</h2>
+        <p className="text-sm text-stone-500 mt-1 mb-6">{t("additionalSubtitle")}</p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-center gap-4">
@@ -368,8 +387,8 @@ export default function SettingsPage() {
               <ShoppingBag className="h-5 w-5 text-orange-500" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-stone-800">Online Ordering</h4>
-              <p className="text-xs text-stone-500 mt-0.5">Allow customers to place orders online</p>
+              <h4 className="text-sm font-bold text-stone-800">{t("onlineOrderingTitle")}</h4>
+              <p className="text-xs text-stone-500 mt-0.5">{t("onlineOrderingDesc")}</p>
             </div>
             <Switch 
               checked={formData.onlineOrdering} 
@@ -383,8 +402,8 @@ export default function SettingsPage() {
               <Calendar className="h-5 w-5 text-orange-500" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-stone-800">Table Reservation</h4>
-              <p className="text-xs text-stone-500 mt-0.5">Allow customers to book tables</p>
+              <h4 className="text-sm font-bold text-stone-800">{t("reservationTitle")}</h4>
+              <p className="text-xs text-stone-500 mt-0.5">{t("reservationDesc")}</p>
             </div>
             <Switch 
               checked={formData.tableReservation} 
@@ -398,8 +417,8 @@ export default function SettingsPage() {
               <Star className="h-5 w-5 text-orange-500" />
             </div>
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-stone-800">Show Reviews</h4>
-              <p className="text-xs text-stone-500 mt-0.5">Display customer reviews on store</p>
+              <h4 className="text-sm font-bold text-stone-800">{t("reviewsTitle")}</h4>
+              <p className="text-xs text-stone-500 mt-0.5">{t("reviewsDesc")}</p>
             </div>
             <Switch 
               checked={formData.showReviews} 

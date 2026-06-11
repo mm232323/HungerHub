@@ -5,11 +5,12 @@ import { Textarea } from '../../ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../../alerts/dialog'
 import { Button } from '../../ui/button'
-import { Facebook, Instagram, LinkIcon, Plus, UploadCloud, Clock, Tag, PlusCircle } from 'lucide-react'
+import { Facebook, Instagram, LinkIcon, Plus, UploadCloud, Clock, Tag, PlusCircle, X } from 'lucide-react'
 import { ScrollArea } from '../../ui/scroll-area'
 import { toast } from '@/hooks/use-toast'
 import { useCreateProduct, useListCategories } from '@/apis'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
+import { customFetch } from '@/utils/api'
 
 interface FormData {
   name: string
@@ -40,6 +41,8 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
     instagramUrl: '',
   })
 
+  const [isUploading, setIsUploading] = useState(false)
+
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
@@ -62,19 +65,54 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
     query: { queryKey: ["/categories"] }
   })
   const t = useTranslations("Dashboard.Products")
+  const locale = useLocale()
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0]
+      
+      setIsUploading(true)
+      try {
+        const toBase64 = (blob: Blob) => new Promise<string>((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        })
+        const dataUri = await toBase64(file)
+
+        const json = await customFetch<{ url: string }>('/upload', {
+          method: 'POST',
+          body: { dataUri, folder: 'products' },
+        })
+        
+        if (json && json.url) {
+          updateFormData('image', json.url)
+          toast({ title: t("uploadSuccess") || "Image uploaded successfully" })
+        } else {
+          toast({ title: t("uploadFailed") || "Upload failed", variant: "destructive" })
+        }
+      } catch (err) {
+        console.error(err)
+        toast({ title: t("uploadError") || "Error uploading image", variant: "destructive" })
+      } finally {
+        setIsUploading(false)
+      }
+    }
+  }
   
   const createProduct = useCreateProduct({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Product added successfully!" })
+        toast({ title: t("addSuccess") || "Product added successfully!" })
         setIsAddOpen(false)
         onSuccess()
         resetForm()
       },
       onError: (err: any) => {
         toast({ 
-          title: "Error adding product", 
-          description: err?.message || "Failed to add product. Please try again.", 
+          title: t("addErrorTitle") || "Error adding product", 
+          description: err?.message || t("addErrorDesc") || "Failed to add product. Please try again.", 
           variant: "destructive" 
         })
       }
@@ -83,7 +121,7 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
 
   const handleSaveProduct = () => {
     if (!formData.name?.trim() || !formData.price || !formData.category || !formData.description?.trim()) {
-      toast({ title: "Missing required fields", variant: "destructive" })
+      toast({ title: t("missingFields") || "Missing required fields", variant: "destructive" })
       return
     }
 
@@ -166,13 +204,27 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
                 </div>
                 
                 {uploadMode === "file" ? (
-                  <div className="border-2 border-dashed border-stone-200 rounded-xl p-8 flex flex-col items-center justify-center text-center bg-stone-50/50 hover:bg-stone-50 transition-colors cursor-pointer group">
-                    <div className="h-12 w-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                      <UploadCloud className="h-6 w-6" />
-                    </div>
-                    <p className="text-sm font-medium text-stone-900">{t("uploadDesc1")}</p>
-                    <p className="text-xs text-stone-500 mt-1">{t("uploadDesc2")}</p>
-                    <p className="text-[10px] text-stone-400 mt-4 italic">{t("uploadNote")}</p>
+                  <div className="space-y-2">
+                    <label className={`relative block border-2 border-dashed border-stone-200 rounded-xl p-8 flex flex-col items-center justify-center text-center bg-stone-50/50 hover:bg-stone-50 transition-colors cursor-pointer group ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}>
+                      <input type="file" className="absolute inset-0 opacity-0 cursor-pointer z-10" accept="image/*" onChange={handleImageUpload} disabled={isUploading} />
+                      <div className="h-12 w-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <UploadCloud className="h-6 w-6" />
+                      </div>
+                      <p className="text-sm font-medium text-stone-900">{isUploading ? t("uploading") || "Uploading..." : t("uploadDesc1")}</p>
+                      <p className="text-xs text-stone-500 mt-1">{t("uploadDesc2")}</p>
+                    </label>
+                    {formData.image && formData.image.startsWith('http') && (
+                      <div className="mt-4 rounded-xl overflow-hidden border border-stone-200 h-32 w-48 relative bg-stone-100 group/preview">
+                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                        <button
+                          onClick={(e) => { e.preventDefault(); updateFormData('image', ''); }}
+                          className="absolute top-2 right-2 bg-white/80 hover:bg-red-50 text-stone-600 hover:text-red-500 rounded-full p-1.5 opacity-0 group-hover/preview:opacity-100 transition-all backdrop-blur-sm shadow-sm"
+                          title="Remove image"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -186,8 +238,15 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
                       />
                     </div>
                     {formData.image && (
-                      <div className="mt-4 rounded-xl overflow-hidden border border-stone-200 h-32 w-48 relative bg-stone-100">
+                      <div className="mt-4 rounded-xl overflow-hidden border border-stone-200 h-32 w-48 relative bg-stone-100 group/preview">
                         <img src={formData.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
+                        <button
+                          onClick={(e) => { e.preventDefault(); updateFormData('image', ''); }}
+                          className="absolute top-2 right-2 bg-white/80 hover:bg-red-50 text-stone-600 hover:text-red-500 rounded-full p-1.5 opacity-0 group-hover/preview:opacity-100 transition-all backdrop-blur-sm shadow-sm"
+                          title="Remove image"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
                     )}
                   </div>
@@ -218,7 +277,8 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
                         {categories?.map((cat) => (
                           <SelectItem key={cat.id} value={cat.slug}>
                             <div className="flex items-center gap-2">
-                              <span>{cat.icon}</span> {cat.name}
+                              <span className="w-4 h-4 inline-flex items-center justify-center" dangerouslySetInnerHTML={{ __html: cat.icon }} />
+                              {locale === 'ar' ? (cat.name_ar || cat.name) : cat.name}
                             </div>
                           </SelectItem>
                         ))}
