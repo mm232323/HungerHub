@@ -31,6 +31,7 @@ export function MerchantSetupClient() {
   
   const { data: existingStore, isSuccess: hasExistingStore, isLoading: isCheckingStore } = useGetMerchantProfile({
     query: {
+      queryKey: ["/dashboard/merchant"],
       retry: false,
     }
   });
