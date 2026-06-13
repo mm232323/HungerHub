@@ -3,11 +3,11 @@
         "brand": "HungerHub"
     },
     "Layout": {
-        "title": "HungerHub - Food You\u0027ll Actually Love",
+        "title": "HungerHub - Food You'll Actually Love",
         "description": "Discover local gems, order in minutes, and track your delivery live."
     },
     "HomePage": {
-        "title": "HungerHub - Food You\u0027ll Actually Love",
+        "title": "HungerHub - Food You'll Actually Love",
         "description": "Discover local gems, order in minutes, and track your delivery live.",
         "heroTags": {
             "burgers": "🍔 Burgers",
@@ -18,7 +18,7 @@
         },
         "hero": {
             "badge": "8 local gems near you",
-            "titlePart1": "Discover food you\u0027ll ",
+            "titlePart1": "Discover food you'll ",
             "titlePart2": "actually love",
             "subtitle": "The best local food gems, homemade meals, and passionate food startups — ordered in minutes, delivered to your door.",
             "searchPlaceholder": "Burgers, sushi, homemade pasta…",
@@ -51,14 +51,14 @@
             "steps": {
                 "1": {
                     "title": "Discover",
-                    "desc": "Browse the feed, explore categories, or search for exactly what you\u0027re craving right now."
+                    "desc": "Browse the feed, explore categories, or search for exactly what you're craving right now."
                 },
                 "2": {
                     "title": "Order",
                     "desc": "Pick your dishes, add them to cart, and checkout in seconds — no account needed."
                 },
                 "3": {
-                    "title": "Track \u0026 Enjoy",
+                    "title": "Track & Enjoy",
                     "desc": "Watch your order live from kitchen to doorstep. Contactless delivery, always fresh."
                 }
             }
@@ -100,7 +100,7 @@
     },
     "Footer": {
         "partnerBadge": "Partner With HungerHub",
-        "partnerTitle1": "Expand your restaurant\u0027s ",
+        "partnerTitle1": "Expand your restaurant's ",
         "partnerTitle2": "reach and double your sales",
         "partnerDesc": "Manage orders live, utilize automatic delivery matching, and connect directly with thousands of hungry local food lovers.",
         "btnGetStarted": "Get started",
@@ -149,7 +149,7 @@
             "manageYour": "Manage your",
             "restaurant": "food empire",
             "withEase": "with ease",
-            "foodYoull": "Flavors you\u0027ll",
+            "foodYoull": "Flavors you'll",
             "actually": "absolutely",
             "love": "crave",
             "merchantDesc": "Live orders, AI insights, and a full business dashboard — all in one place.",
@@ -158,7 +158,7 @@
             "rating": "4.9 rating",
             "restaurantsCount": "8+ restaurants",
             "pizzaName": "Margherita Pizza",
-            "pizzaDesc": "Smoke \u0026 Ember Grill · $14.99",
+            "pizzaDesc": "Smoke & Ember Grill · $14.99",
             "live": "LIVE",
             "ordersCount": "+2,400 orders this week",
             "backToHome": "← Back to HungerHub",
@@ -173,11 +173,11 @@
             "joinTitle": "Join HungerHub",
             "howToStart": "How do you want to get started?",
             "mostPopular": "⭐ Most popular",
-            "imCustomer": "I\u0027m a customer",
+            "imCustomer": "I'm a customer",
             "browseOrder": "Browse, order, and track your favourite food.",
             "getStarted": "Get started",
             "restaurantOwner": "🏪 Restaurant owner",
-            "imMerchant": "I\u0027m a merchant",
+            "imMerchant": "I'm a merchant",
             "runRestaurant": "Run your restaurant + still order food.",
             "registerRestaurant": "Register restaurant",
             "growYour": "Grow your",
@@ -189,12 +189,12 @@
             "changeRole": "Change role",
             "roleCustomer": "Food Lover",
             "roleMerchant": "Restaurant Partner",
-            "foodYoull": "Flavors you\u0027ll",
+            "foodYoull": "Flavors you'll",
             "actually": "absolutely",
             "love": "crave",
             "perkDelivery": "20-min average delivery",
             "perkTracking": "Live order tracking on map",
-            "perkFav": "Save favorites \u0026 reorder fast",
+            "perkFav": "Save favorites & reorder fast",
             "perkAnalytics": "Real-time revenue analytics",
             "perkKanban": "Live kanban order board",
             "perkAI": "AI-powered growth insights",
@@ -202,7 +202,13 @@
             "signIn": "Sign in"
         },
         "shared": {
-            "copyright": "© 2026 HungerHub. All rights reserved."
+            "copyright": "© 2026 HungerHub. All rights reserved.",
+            "secureAndSafe": "Secure & Safe",
+            "yourDataIsProtected": "Your data is protected",
+            "fastDelivery": "Fast Delivery",
+            "onTimeEveryTime": "On time, every time",
+            "bestQuality": "Best Quality",
+            "topRestaurantsOnly": "Top restaurants only"
         }
     },
     "Dashboard": {
@@ -225,9 +231,9 @@
         },
         "Home": {
             "title": "Dashboard Overview",
-            "subtitle": "Here\u0027s what\u0027s happening with your store today.",
+            "subtitle": "Here's what's happening with your store today.",
             "totalRevenue": "Total Revenue",
-            "todaysOrders": "Today\u0027s Orders",
+            "todaysOrders": "Today's Orders",
             "pendingOrders": "Pending Orders",
             "totalCustomers": "Total Customers",
             "revenueOverTime": "Revenue Over Time",
@@ -265,7 +271,7 @@
             "addErrorTitle": "Error adding product",
             "addErrorDesc": "Failed to add product. Please try again.",
             "missingFields": "Missing required fields",
-            "pricingCategory": "Pricing \u0026 Category",
+            "pricingCategory": "Pricing & Category",
             "priceLabel": "Price ($)",
             "pricePlaceholder": "12.99",
             "categoryLabel": "Category",
@@ -322,7 +328,7 @@
             "actionComplete": "Complete"
         },
         "Marketing": {
-            "title": "Marketing \u0026 Offers",
+            "title": "Marketing & Offers",
             "commentsText": "Comments",
             "subtitle": "Run campaigns to attract and retain customers.",
             "newCampaign": "New Campaign",
@@ -350,7 +356,7 @@
             "liveAds": "Live Ads",
             "totalImpressions": "Total Impressions",
             "adClicks": "Ad Clicks",
-            "couponsAndPromotions": "Coupons \u0026 Promotions",
+            "couponsAndPromotions": "Coupons & Promotions",
             "discoverFeedAds": "Discover Feed Ads",
             "noAdsTitle": "No ads yet",
             "noAdsDesc": "Create your first ad to appear in the Discover feed.",
@@ -421,11 +427,11 @@
                 "content": "We use your data to process orders, deliver food, personalize recommendations, improve our services, communicate updates, and ensure platform security. We never sell your personal information to third parties."
             },
             "dataStorage": {
-                "title": "Data Storage \u0026 Security",
+                "title": "Data Storage & Security",
                 "content": "Your data is stored on secure servers with encryption at rest and in transit. We use industry-standard security practices including HTTPS, firewalls, and regular audits. Payment information is handled by PCI-compliant processors — we never store full card details."
             },
             "cookies": {
-                "title": "Cookies \u0026 Tracking",
+                "title": "Cookies & Tracking",
                 "content": "We use cookies and similar technologies to keep you signed in, remember preferences, analyze traffic, and deliver relevant promotions. You can control cookies through your browser settings. Disabling cookies may limit some features."
             },
             "communications": {
@@ -451,11 +457,11 @@
                 "content": "By accessing or using FoodHub, you agree to be bound by these Terms of Service. If you do not agree, you may not use the platform. We reserve the right to modify these terms at any time. Continued use after changes constitutes acceptance of the revised terms."
             },
             "orders": {
-                "title": "Orders \u0026 Delivery",
+                "title": "Orders & Delivery",
                 "content": "All orders placed through FoodHub are subject to restaurant availability and delivery partner capacity. Estimated delivery times are provided for convenience and may vary due to traffic, weather, or operational delays. FoodHub is not liable for delays outside our reasonable control."
             },
             "payments": {
-                "title": "Payments \u0026 Refunds",
+                "title": "Payments & Refunds",
                 "content": "Payments are processed securely through our payment partners. Prices listed include applicable taxes where required. Refunds may be issued for incorrect orders, missing items, or food quality issues, subject to review. Refund requests must be submitted within 24 hours of delivery."
             },
             "prohibited": {
@@ -497,12 +503,12 @@
                 "description": "We champion independent restaurants and local food creators, giving them the digital tools they need to thrive."
             },
             "speed": {
-                "title": "Speed \u0026 Simplicity",
-                "description": "Order in seconds. Track in real time. Hot food at your door — that\u0027s the promise."
+                "title": "Speed & Simplicity",
+                "description": "Order in seconds. Track in real time. Hot food at your door — that's the promise."
             },
             "everyone": {
                 "title": "Built for Everyone",
-                "description": "Whether you\u0027re a hungry customer or a restaurant owner, FoodHub is designed to make your life easier."
+                "description": "Whether you're a hungry customer or a restaurant owner, FoodHub is designed to make your life easier."
             }
         },
         "missionBadge": "Our Mission",
@@ -593,7 +599,7 @@
         },
         "Client": {
             "toastSuccessTitle": "Store created!",
-            "toastSuccessDesc": "Welcome to FoodHub. Let\u0027s start cooking.",
+            "toastSuccessDesc": "Welcome to FoodHub. Let's start cooking.",
             "toastErrorTitle": "Something went wrong",
             "toastErrorDesc": "Please try again.",
             "stepXofY": "Step {current} of {total}",
@@ -616,13 +622,13 @@
                 "title": "Store Identity",
                 "desc": "Give your restaurant a name and personality.",
                 "nameLabel": "Restaurant Name",
-                "namePlaceholder": "e.g. Luigi\u0027s Pizza",
+                "namePlaceholder": "e.g. Luigi's Pizza",
                 "bioLabel": "Short Bio",
                 "bioPlaceholder": "What makes your food special?",
                 "tip": "Tip: Restaurants with a great story get 3x more followers on FoodHub."
             },
             "step2": {
-                "title": "Cuisine \u0026 Specialties",
+                "title": "Cuisine & Specialties",
                 "desc": "Help customers find what they are craving.",
                 "cuisineLabel": "Primary Cuisine Type",
                 "cuisinePlaceholder": "Select a cuisine",
@@ -650,7 +656,7 @@
                 "previewMode": "Live Preview",
                 "previewWait": "Waiting for branding details...",
                 "skip": "You can skip this step and add photos later from your dashboard.",
-                "summaryTitle": "Almost there! Here\u0027s your store summary:",
+                "summaryTitle": "Almost there! Here's your store summary:",
                 "summaryName": "Restaurant name",
                 "summaryCuisine": "Cuisine type",
                 "summaryTime": "Delivery time",
@@ -671,12 +677,12 @@
         "logoSubtitle": "This logo will be shown in your store",
         "uploading": "Uploading...",
         "changeLogo": "Change Logo",
-        "logoSize": "Recommended size: 512x512px\u003cbr/\u003ePNG, JPG up to 2MB",
+        "logoSize": "Recommended size: 512x512px<br/>PNG, JPG up to 2MB",
         "bannerTitle": "Banner",
         "bannerSubtitle": "This banner will be shown at the top of your store",
         "changeBanner": "Change Banner",
         "bannerPlaceholder": "Banner Placeholder",
-        "bannerSize": "Recommended size: 1920x600px\u003cbr/\u003ePNG, JPG up to 5MB",
+        "bannerSize": "Recommended size: 1920x600px<br/>PNG, JPG up to 5MB",
         "infoTitle": "Restaurant Information",
         "nameLabel": "Restaurant Name",
         "taglineLabel": "Tagline",
@@ -719,7 +725,7 @@
     },
     "NotFound": {
         "title": "Oops! Page Not Found",
-        "description": "It looks like the kitchen is closed for this page. Let\u0027s get you back to finding delicious food!",
+        "description": "It looks like the kitchen is closed for this page. Let's get you back to finding delicious food!",
         "backToHome": "Back to Home",
         "discoverRestaurants": "Discover Restaurants",
         "quickNavigation": "Quick Navigation",
@@ -737,7 +743,7 @@
         "failedPromo": "Failed to apply promo code",
         "yourCart": "Your Cart",
         "emptyCart": "Cart is empty",
-        "emptyCartDesc": "Looks like you haven\u0027t added anything yet.",
+        "emptyCartDesc": "Looks like you haven't added anything yet.",
         "browseRestaurants": "Browse Restaurants",
         "enterPromo": "Enter promo code",
         "apply": "Apply",
