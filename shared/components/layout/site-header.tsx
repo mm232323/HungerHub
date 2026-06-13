@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useUser, useClerk, Show } from "@clerk/nextjs";
 import { useTranslations, useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
+import { CartDrawer } from "./cart-drawer";
 
 const basePath = "";
 
@@ -161,12 +162,7 @@ export function SiteHeader() {
         <div className="hidden md:flex items-center gap-2">
           <LanguageToggle />
           <Show when="signed-in">
-            <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
-              </Button>
-            </Link>
+            <CartDrawer />
           </Show>
 
           {/* Signed out: Login + Sign up */}
@@ -201,12 +197,7 @@ export function SiteHeader() {
         <div className="flex md:hidden items-center gap-1">
           <LanguageToggle />
           <Show when="signed-in">
-            <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingBag className="h-5 w-5" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-primary rounded-full" />
-              </Button>
-            </Link>
+            <CartDrawer />
           </Show>
           <Button
             variant="ghost"

@@ -4,6 +4,7 @@ import { LayoutDashboard, ShoppingBag, Utensils } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React from "react";
+import { motion } from "framer-motion";
 import { clerkAppearance } from "./data";
 
 import { getClerkLocalization } from "../sign-up/data";
@@ -36,7 +37,7 @@ function StandardSignIn({
 
       <div className="w-full flex flex-col items-center gap-5 auth-slide-up">
         {/* Back to site link */}
-        <div className="w-[440px] max-w-full flex justify-end">
+        <div className="w-full max-w-[550px] flex justify-end">
           <Link
             href="/"
             className="text-xs text-stone-400 hover:text-stone-600 transition-colors"
@@ -46,14 +47,16 @@ function StandardSignIn({
         </div>
 
         {/* Role switcher */}
-        <div className="w-[440px] max-w-full">
-          <div className="flex gap-1 p-1 bg-stone-100 rounded-xl w-fit">
-            {(["customer", "merchant"] as Role[]).map((r) => (
+        <div className="w-full max-w-[550px]">
+          <div className="flex relative p-1 bg-stone-100 rounded-xl w-fit">
+            {(["customer", "merchant"] as Role[]).map((r) => {
+              const isActive = role === r;
+              return (
               <button
                 key={r}
                 onClick={() => handleRoleChange(r)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                  role === r
+                  isActive
                     ? "bg-[#F97316] text-white shadow"
                     : "text-stone-400 hover:text-stone-700"
                 }`}
@@ -65,18 +68,20 @@ function StandardSignIn({
                 )}
                 {r === "customer" ? t("roleCustomer") : t("roleMerchant")}
               </button>
-            ))}
+            )})}
           </div>
         </div>
 
-        <SignIn
-          key={`signin-${role}`}
-          routing="path"
-          path={`${basePath}/auth/sign-in`}
-          signUpUrl={`${basePath}/auth/sign-up`}
-          fallbackRedirectUrl={`${basePath}/`}
-          appearance={clerkAppearance}
-        />
+        <div className="w-full max-w-[550px]">
+          <SignIn
+            key={`signin-${role}`}
+            routing="path"
+            path={`${basePath}/auth/sign-in`}
+            signUpUrl={`${basePath}/auth/sign-up`}
+            fallbackRedirectUrl={`${basePath}/`}
+            appearance={clerkAppearance}
+          />
+        </div>
 
         {role === "merchant" && (
           <p className="text-sm text-stone-400 text-center">
@@ -91,7 +96,7 @@ function StandardSignIn({
         )}
 
         {/* Trust Badges */}
-        <div className="w-[440px] max-w-full flex justify-between items-center mt-6 border-t border-stone-100 pt-6">
+        <div className="w-full max-w-[550px] flex justify-between items-center mt-6 border-t border-stone-100 pt-6">
           <div className="flex items-center gap-2">
             <div className="bg-orange-50 p-1.5 rounded-full text-[#F97316]">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>

@@ -31,6 +31,7 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const t = useTranslations("ProductDetail");
 
   if (!product) {
@@ -65,16 +66,21 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
         </div>
 
         {/* Section 1: Top Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr] gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr] gap-6 lg:gap-8 items-start">
           
           {/* Left Column: Image */}
-          <div className="relative bg-muted rounded-[32px] overflow-hidden h-full min-h-[300px] shadow-sm">
+          <div className="relative bg-muted rounded-[32px] overflow-hidden aspect-square shadow-sm sticky top-24">
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
             />
-            <Button variant="secondary" size="sm" className="absolute top-4 right-4 bg-white/90 hover:bg-white text-black rounded-full gap-2 shadow-md">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              className="absolute top-4 right-4 bg-white/90 hover:bg-white text-black rounded-full gap-2 shadow-md"
+              onClick={() => setIsFullscreen(true)}
+            >
               <Maximize className="h-4 w-4" /> {t("viewFullscreen")}
             </Button>
           </div>
@@ -412,6 +418,29 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
               </Link>
             </div>
           </div>
+        </div>
+      )}
+
+      {isFullscreen && (
+        <div 
+          className="fixed inset-0 z-[110] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm cursor-zoom-out"
+          onClick={() => setIsFullscreen(false)}
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            className="max-w-full max-h-[90vh] object-contain rounded-2xl cursor-default shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-6 right-6 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full h-12 w-12"
+            onClick={() => setIsFullscreen(false)}
+          >
+            <span className="sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </Button>
         </div>
       )}
     </div>

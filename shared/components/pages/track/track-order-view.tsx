@@ -141,7 +141,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
 
       <div className="h-[30vh] w-full bg-slate-200 relative overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&q=80"
+          src="/images/track/delivery.png"
           alt="Map"
           className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
         />
@@ -198,8 +198,10 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
               <h3 className="font-bold">{orderData.merchantName}</h3>
               <p className="text-sm text-muted-foreground">{t("preparingYourOrder")}</p>
             </div>
-            <Button variant="outline" size="sm" className="rounded-full">
-              {t("view")}
+            <Button asChild variant="outline" size="sm" className="rounded-full">
+              <Link href={`/merchant/${(orderData.merchantName || "").toLowerCase().replace(/[\s_]+/g, '-')}`}>
+                {t("view")}
+              </Link>
             </Button>
           </div>
 

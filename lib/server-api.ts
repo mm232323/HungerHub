@@ -103,22 +103,22 @@ export async function getProductById(id: number): Promise<Product | null> {
 
 export async function getMerchantById(id: number): Promise<Merchant | null> {
   if (!Number.isFinite(id) || id <= 0) return null;
-  return fetchJsonSafe<Merchant>(`/merchants/${id}`);
+  return fetchJsonSafe<Merchant>(`/merchants/${id}`, { cache: "no-store" });
 }
 
 export async function getMerchantBySlug(slug: string): Promise<Merchant | null> {
   if (!slug) return null;
-  return fetchJsonSafe<Merchant>(`/merchants/slug/${slug}`);
+  return fetchJsonSafe<Merchant>(`/merchants/slug/${slug}`, { cache: "no-store" });
 }
 
 export async function getMerchantProducts(id: number): Promise<Product[]> {
   if (!Number.isFinite(id) || id <= 0) return [];
-  return (await fetchJsonSafe<Product[]>(`/merchants/${id}/products`)) ?? [];
+  return (await fetchJsonSafe<Product[]>(`/merchants/${id}/products`, { cache: "no-store" })) ?? [];
 }
 
 export async function getMerchantReviews(id: number): Promise<Review[]> {
   if (!Number.isFinite(id) || id <= 0) return [];
-  return (await fetchJsonSafe<Review[]>(`/merchants/${id}/reviews`)) ?? [];
+  return (await fetchJsonSafe<Review[]>(`/merchants/${id}/reviews`, { cache: "no-store" })) ?? [];
 }
 
 export async function getProductReviews(id: number): Promise<Review[]> {

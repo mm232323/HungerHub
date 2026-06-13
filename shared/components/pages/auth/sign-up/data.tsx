@@ -28,13 +28,16 @@ export const clerkAppearance = {
   elements: {
     rootBox: {
       width: "100%",
-      maxWidth: "440px",
+      maxWidth: "550px",
       boxShadow: "none",
       border: "none",
+      overflow: "visible",
     },
     cardBox: {
+      width: "100%",
       boxShadow: "none",
       border: "none",
+      overflow: "visible",
     },
     card: {
       backgroundColor: "transparent",
@@ -42,6 +45,7 @@ export const clerkAppearance = {
       border: "none",
       width: "100%",
       padding: "0px",
+      overflow: "visible",
     },
     headerTitle: {
       fontSize: "2.25rem",

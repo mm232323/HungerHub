@@ -18,6 +18,24 @@ export interface Merchant {
   isFollowing: boolean;
   isTrending?: boolean;
   tags?: string[];
+  /** @nullable */
+  additionalShowed?: string | null;
+  /** @nullable */
+  phone?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  website?: string | null;
+  /** @nullable */
+  facebook?: string | null;
+  /** @nullable */
+  instagram?: string | null;
+  /** @nullable */
+  twitter?: string | null;
+  /** @nullable */
+  youtube?: string | null;
+  /** @nullable */
+  openingHours?: string | null;
 }
 
 /** Response from `POST /merchants/:id/follow`. */
