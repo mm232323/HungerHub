@@ -6,8 +6,10 @@ import { Merchant } from "@/types";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, UserPlus } from "lucide-react";
 import { useFollowMerchant } from "@/apis/merchants";
+import { useTranslations } from "next-intl";
 
 function MerchantListItem({ merchant }: { merchant: Merchant }) {
+  const tGlobal = useTranslations("Global");
   const [isFollowing, setIsFollowing] = useState(true);
   const followMutation = useFollowMerchant({
     mutation: {
@@ -56,11 +58,11 @@ function MerchantListItem({ merchant }: { merchant: Merchant }) {
         <span className="flex items-center gap-1">
           {isFollowing ? (
             <>
-              <CheckCircle2 className="h-3 w-3" /> Following
+              <CheckCircle2 className="h-3 w-3" /> {tGlobal("following")}
             </>
           ) : (
             <>
-              <UserPlus className="h-3 w-3" /> Follow
+              <UserPlus className="h-3 w-3" /> {tGlobal("follow")}
             </>
           )}
         </span>
@@ -74,12 +76,13 @@ export function FollowedMerchantsSideBar({
 }: {
   merchants: Merchant[];
 }) {
+  const tGlobal = useTranslations("Global");
   return (
     <div className="bg-card border rounded-2xl p-5 shadow-sm sticky top-24">
-      <h3 className="font-bold text-lg mb-4">Following</h3>
+      <h3 className="font-bold text-lg mb-4">{tGlobal("followingTitle")}</h3>
       {merchants.length === 0 ? (
         <p className="text-muted-foreground text-sm">
-          You aren't following any stores yet.
+          {tGlobal("noFollowingStores")}
         </p>
       ) : (
         <div className="space-y-4">

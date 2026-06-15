@@ -18,6 +18,7 @@ function MerchantInfo({
   onHandleFollows: (isFollowing: boolean, followersCount: number) => void;
 }) {
   const toastT = useTranslations("Toasts");
+  const tGlobal = useTranslations("Global");
   const { toast } = useToast();
   const { isSignedIn } = useAuth();
   const followMutation = useFollowMerchant({
@@ -47,28 +48,28 @@ function MerchantInfo({
               >
                 {merchant.isFollowing ? (
                   <>
-                    <Check className="h-4 w-4 mr-1" /> Following
+                    <Check className="h-4 w-4 mr-1" /> {tGlobal("following")}
                   </>
                 ) : (
-                  "Follow"
+                  tGlobal("follow")
                 )}
               </Button>
             ) : (
               <SignInButton mode="modal">
                 <Button variant="default" className="rounded-full">
-                  Follow
+                  {tGlobal("follow")}
                 </Button>
               </SignInButton>
             )}
           </div>
           <p className="text-sm text-muted-foreground">
-            {merchant.cuisineType} • {merchant.followersCount} followers
+            {merchant.cuisineType} • {merchant.followersCount} {tGlobal("followers")}
           </p>
 
           <div className="flex flex-wrap gap-4 text-sm font-medium pt-2">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-primary text-primary" />
-              <span>{merchant.rating?.toFixed(1) || "New"}</span>
+              <span>{merchant.rating?.toFixed(1) || tGlobal("new")}</span>
               <span className="text-muted-foreground">
                 ({merchant.reviewCount})
               </span>
@@ -79,7 +80,7 @@ function MerchantInfo({
             </div>
             <div className="flex items-center gap-1 text-muted-foreground">
               <MapPin className="h-4 w-4" />
-              <span>{merchant.address || "Local Delivery"}</span>
+              <span>{merchant.address || tGlobal("localDelivery")}</span>
             </div>
           </div>
         </div>

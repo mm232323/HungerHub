@@ -1,7 +1,14 @@
 {
   "Global": {
     "brand": "HungerHub",
-    "globalLoader": "Serving up something delicious..."
+    "globalLoader": "Serving up something delicious...",
+    "following": "Following",
+    "follow": "Follow",
+    "followers": "followers",
+    "new": "New",
+    "localDelivery": "Local Delivery",
+    "noFollowingStores": "You aren't following any stores yet.",
+    "followingTitle": "Following"
   },
   "Layout": {
     "title": "HungerHub - Food You'll Actually Love",
