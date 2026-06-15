@@ -12,6 +12,7 @@ interface FooterProps {
 export function Footer({ showMerchantCTA = false }: FooterProps) {
   const t = useTranslations("Footer");
   const tNav = useTranslations("Nav");
+  const tGlobal = useTranslations("Global");
   return (
     <footer className="relative bg-background border-t pt-16 pb-8 overflow-hidden z-10">
       
@@ -23,7 +24,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
           WebkitTextStroke: "2px currentColor",
         }}
       >
-        HungerHub
+        {tGlobal("brand")}
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -110,7 +111,7 @@ export function Footer({ showMerchantCTA = false }: FooterProps) {
               <div className="bg-primary p-2.5 rounded-2xl shadow-lg shadow-primary/20 transition-transform duration-300 group-hover:scale-105">
                 <Utensils className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-black tracking-tight">HungerHub</span>
+              <span className="text-2xl font-black tracking-tight">{tGlobal("brand")}</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">
               {t("slogan")}

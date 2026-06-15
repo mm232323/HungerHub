@@ -28,7 +28,8 @@
     "stats": {
       "merchants": "تجار محليون",
       "dishes": "أطباق طازجة",
-      "delivery": "متوسط التوصيل"
+      "delivery": "متوسط التوصيل",
+      "min": "دقيقة"
     },
     "categories": {
       "title": "بماذا تشعر؟",

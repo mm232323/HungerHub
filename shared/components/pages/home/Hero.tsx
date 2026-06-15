@@ -135,12 +135,11 @@ function Hero() {
                     {trendingProducts.slice(0, 5).map((product) => (
                       <button
                         key={product.id}
-                        className="w-full text-left px-4 py-3 hover:bg-muted flex items-center gap-3 transition-colors border-b last:border-0"
-                        onClick={() =>
-                          router.push(
-                            `/meals?query=${encodeURIComponent(product.name)}`,
-                          )
-                        }
+                        className="w-full text-left px-4 py-3 hover:bg-muted flex items-center gap-3 transition-colors border-b last:border-0 cursor-pointer"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          router.push(`/product/${product.id}`);
+                        }}
                       >
                         <img
                           src={product.image}

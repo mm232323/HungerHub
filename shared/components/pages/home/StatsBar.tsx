@@ -5,7 +5,7 @@ import React from "react";
 function StatsBar() {
   const t = useTranslations("HomePage");
   return (
-    <section className="border-b bg-muted/30">
+    <section className="border-b bg-gradient-to-r from-orange-50/80 via-amber-50/50 to-orange-50/80 dark:from-orange-950/20 dark:via-amber-950/10 dark:to-orange-950/20">
       <div className="container mx-auto px-4 py-5">
         <div className="grid grid-cols-3 divide-x divide-border max-w-2xl mx-auto text-center">
           {[
@@ -21,7 +21,7 @@ function StatsBar() {
             },
             {
               icon: <Zap className="h-4 w-4" />,
-              value: "20 min",
+              value: `20 ${t("stats.min")}`,
               label: t("stats.delivery"),
             },
           ].map(({ icon, value, label }) => (

@@ -28,7 +28,8 @@
     "stats": {
       "merchants": "Local merchants",
       "dishes": "Fresh dishes",
-      "delivery": "Avg. delivery"
+      "delivery": "Avg. delivery",
+      "min": "min"
     },
     "categories": {
       "title": "What are you feeling?",
