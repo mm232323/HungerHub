@@ -22,6 +22,7 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
   const [uploadMode, setUploadMode] = useState<'file' | 'url'>('url');
   const [isUploading, setIsUploading] = useState(false);
   const t = useTranslations("Dashboard.Products");
+  const toastT = useTranslations("Toasts");
   const locale = useLocale();
   const { data: categories } = useListCategories({
     query: { queryKey: ["/categories"] }
@@ -86,11 +87,11 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
           updateFormData('image', json.url)
           toast({ title: t("uploadSuccess") || "Image uploaded successfully" })
         } else {
-          toast({ title: t("uploadFailed") || "Upload failed", variant: "destructive" })
+          toast({ title: t("uploadFailed") || toastT("uploadFailed"), variant: "destructive" })
         }
       } catch (err) {
         console.error(err)
-        toast({ title: t("uploadError") || "Error uploading image", variant: "destructive" })
+        toast({ title: t("uploadError") || toastT("uploadError"), variant: "destructive" })
       } finally {
         setIsUploading(false)
       }
@@ -100,7 +101,7 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
   const updateProduct = useUpdateProduct({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Product updated successfully!" });
+        toast({ title: toastT("productUpdated") });
         setIsOpen(false);
         onUpdated?.();
       },
@@ -116,7 +117,7 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
 
   const handleSave = () => {
     if (!formData.name?.trim() || !formData.price || !formData.category || !formData.description?.trim()) {
-      toast({ title: "Missing required fields", variant: "destructive" });
+      toast({ title: toastT("fillFields"), variant: "destructive" });
       return;
     }
 
@@ -272,6 +273,7 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
 
 function ProductTabBody({ filteredProducts, onUpdated }: { filteredProducts: Product[], onUpdated?: () => void }) {
   const t = useTranslations("Dashboard.Products");
+  const toastT = useTranslations("Toasts");
   const locale = useLocale();
   const { data: categories } = useListCategories({
     query: { queryKey: ["/categories"] }
@@ -282,7 +284,7 @@ function ProductTabBody({ filteredProducts, onUpdated }: { filteredProducts: Pro
   const deleteProduct = useDeleteProduct({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Product deleted" });
+        toast({ title: toastT("productDeleted") });
         refetch();
         onUpdated?.();
       },

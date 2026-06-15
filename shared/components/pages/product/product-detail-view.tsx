@@ -9,7 +9,7 @@ import {
   Maximize, Clock, ShieldCheck, Award, Leaf, Sparkles, CheckCircle2, Flame, UserCircle2 
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/shared/contexts/CartContext";
 import { useUser } from "@clerk/react";
 import { submitReview } from "@/lib/client-api";
@@ -402,24 +402,39 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
         </div>
       </div>
 
-      {showAuthModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4" onClick={() => setShowAuthModal(false)}>
-          <div className="bg-white p-8 rounded-3xl max-w-sm w-full space-y-6 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="space-y-2">
-              <h3 className="text-2xl font-bold tracking-tight text-foreground">{t("signInRequired")}</h3>
-              <p className="text-muted-foreground font-medium text-sm leading-relaxed">{t("signInMessage")}</p>
-            </div>
-            <div className="flex flex-col gap-3">
-              <Link href="/auth/sign-in" className="w-full" onClick={() => setShowAuthModal(false)}>
-                <Button className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-base shadow-md">{t("signIn")}</Button>
-              </Link>
-              <Link href="/auth/sign-up" className="w-full" onClick={() => setShowAuthModal(false)}>
-                <Button variant="outline" className="w-full h-12 rounded-xl font-bold text-base border-border">{t("createAccount")}</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {showAuthModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" 
+            onClick={() => setShowAuthModal(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-white p-8 rounded-3xl max-w-sm w-full space-y-6 shadow-2xl" 
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold tracking-tight text-foreground">{t("signInRequired")}</h3>
+                <p className="text-muted-foreground font-medium text-sm leading-relaxed">{t("signInMessage")}</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Link href="/auth/sign-in" className="w-full" onClick={() => setShowAuthModal(false)}>
+                  <Button className="w-full h-12 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-base shadow-md">{t("signIn")}</Button>
+                </Link>
+                <Link href="/auth/sign-up" className="w-full" onClick={() => setShowAuthModal(false)}>
+                  <Button variant="outline" className="w-full h-12 rounded-xl font-bold text-base border-border">{t("createAccount")}</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {isFullscreen && (
         <div 

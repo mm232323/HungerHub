@@ -68,6 +68,8 @@ export interface OrderInput {
   promoCode?: string | null;
   /** @nullable */
   notes?: string | null;
+  customerName?: string;
+  customerPhone?: string;
 }
 
 export type OrderStatusUpdateStatus =

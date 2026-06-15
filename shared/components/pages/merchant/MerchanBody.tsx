@@ -1,4 +1,6 @@
 "use client";
+import { useTranslations } from "next-intl";
+
 import React, { useEffect, useState } from "react";
 import { Merchant, Product, Review } from "@/types";
 import { toast } from "@/hooks/use-toast";
@@ -16,12 +18,13 @@ function MerchanBody({
   initialReviews: Review[];
   merchantId: number;
 }) {
+  const toastT = useTranslations("Toasts");
   const [merchant, setMerchant] = useState(initialMerchant);
   const handleUpdateFollows = (
     isFollowing: boolean,
     followersCount: number,
   ) => {
-    toast({ title: "Follow updated" });
+    toast({ title: toastT("followUpdated") });
     setMerchant((prev) =>
       prev
         ? {

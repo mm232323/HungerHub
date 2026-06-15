@@ -46,9 +46,9 @@ export default function CategoriesRow({
           {categories?.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => handleToggleCategory(activeCategory === cat.name ? null : cat.name)}
+              onClick={() => handleToggleCategory(activeCategory === cat.slug ? null : cat.slug)}
               className={`shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap border ${
-                activeCategory === cat.name
+                activeCategory === cat.slug
                   ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/20"
                   : "bg-stone-50 text-stone-600 border-stone-200 hover:border-orange-300 hover:text-orange-600"
               }`}

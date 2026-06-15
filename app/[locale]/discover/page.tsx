@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getFeed, getFeedStories, getFeedAds, getFollowedMerchants } from "@/lib/server-api";
+import { getFeed, getFeedStories, getFeedAds, getFollowedMerchants, getTrendingMerchants } from "@/lib/server-api";
 
 import { getMessages } from "next-intl/server";
 import StoriesBar from "@/shared/components/pages/discover/StoriesBar";
 import Feed from "@/shared/components/pages/discover/Feed";
 import { FollowedMerchantsSideBar } from "@/shared/components/pages/discover/FollowedMerchantsSideBar";
+import TrendingMerchants from "@/shared/components/pages/home/TrendingMerchants";
 
 export async function generateMetadata({
   params,
@@ -24,11 +25,12 @@ export async function generateMetadata({
 }
 
 export default async function DiscoverPage() {
-  const [initialStories, initialFeed, initialAds, followedMerchants] = await Promise.all([
+  const [initialStories, initialFeed, initialAds, followedMerchants, trendingMerchants] = await Promise.all([
     getFeedStories(),
     getFeed(),
     getFeedAds(),
     getFollowedMerchants(),
+    getTrendingMerchants(),
   ]);
 
   return (
@@ -37,6 +39,9 @@ export default async function DiscoverPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 md:gap-4 lg:gap-8">
           {/* Main Feed Section */}
           <div className="md:col-span-8 lg:col-span-8 w-full min-h-screen">
+            <div className="mt-4 md:mt-8">
+              <TrendingMerchants trendingMerchants={trendingMerchants} />
+            </div>
             <StoriesBar initialStories={initialStories} />
             <Feed initialFeed={initialFeed} initialAds={initialAds} />
           </div>

@@ -19,6 +19,10 @@ export interface Merchant {
   isTrending?: boolean;
   tags?: string[];
   /** @nullable */
+  latitude?: number | null;
+  /** @nullable */
+  longitude?: number | null;
+  /** @nullable */
   additionalShowed?: string | null;
   /** @nullable */
   phone?: string | null;

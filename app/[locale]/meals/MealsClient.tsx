@@ -1,11 +1,13 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import HeroSearchBanner from "@/shared/components/pages/meals/HeroSearchBanner";
 import CategoriesRow from "@/shared/components/pages/meals/CategoriesRow";
 import ResultsArea from "@/shared/components/pages/meals/ResultsArea";
 import { PRICE_RANGES } from "@/shared/components/pages/meals/data";
 import { Category, Product } from "@/types";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 export default function MealsClient({
   initialProducts,
@@ -20,7 +22,34 @@ export default function MealsClient({
   const sort = searchParams.get("sort") || "default";
   const priceRange = searchParams.get("priceRange") || "all";
 
+  const { location, error } = useGeolocation();
+  const [nearbyMerchantIds, setNearbyMerchantIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (location && !error) {
+      fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL || "http://localhost:8080"}/merchants/trending?lat=${location.lat}&lng=${location.lng}`)
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setNearbyMerchantIds(data.map(m => m.id));
+          }
+        })
+        .catch(console.error);
+    }
+  }, [location, error]);
+
   let products = [...initialProducts];
+
+  // If nearby merchants are loaded, prioritize their products first
+  if (nearbyMerchantIds.length > 0) {
+    products.sort((a, b) => {
+      const idxA = nearbyMerchantIds.indexOf(a.merchantId);
+      const idxB = nearbyMerchantIds.indexOf(b.merchantId);
+      const rankA = idxA === -1 ? 9999 : idxA;
+      const rankB = idxB === -1 ? 9999 : idxB;
+      return rankA - rankB;
+    });
+  }
 
   // Filter & Sort
   if (query) {

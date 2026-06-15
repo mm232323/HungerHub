@@ -40,6 +40,9 @@ export interface CustomerAnalytics {
   repeatBuyerRate: number;
   totalCustomers: number;
   newCustomers: number;
+  organicTrafficPercentage?: number;
+  socialTrafficPercentage?: number;
+  retentionDelta?: number;
   topOrderTimes: CustomerAnalyticsTopOrderTimesItem[];
   orderHeatmap: CustomerAnalyticsOrderHeatmapItem[];
   demographics?: CustomerAnalyticsDemographicsItem[];

@@ -10,13 +10,18 @@ import { Minus, Plus, Trash2, ArrowLeft, Loader2, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useUser } from "@clerk/nextjs";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 export default function CartPage() {
   const t = useTranslations("Cart");
   const { items, updateQuantity, removeFromCart, clearCart, cartTotal } = useCart();
+  const toastT = useTranslations("Toasts");
   const { toast } = useToast();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const { user } = useUser();
+  const { location } = useGeolocation();
   
   const [promoInput, setPromoInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState("");
@@ -26,10 +31,10 @@ export default function CartPage() {
 
   const createOrder = useCreateOrder({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (order: any) => {
         toast({
-          title: t("orderPlaced") || "Order Placed Successfully!",
-          description: t("orderSent") || "Your order has been sent to the merchant.",
+          title: toastT("orderPlaced"),
+          description: toastT("orderId", { id: order.id }),
         });
         clearCart();
         setIsProcessing(false);
@@ -37,8 +42,8 @@ export default function CartPage() {
       },
       onError: (error: any) => {
         toast({
-          title: t("checkoutFailed") || "Checkout Failed",
-          description: error?.message || (t("somethingWentWrong") || "Something went wrong."),
+          title: toastT("orderFailed"),
+          description: error?.message || toastT("somethingWentWrong"),
           variant: "destructive",
         });
         setIsProcessing(false);
@@ -70,11 +75,11 @@ export default function CartPage() {
       if (data.valid) {
         setAppliedPromo(promoInput);
         setDiscount(data.discount);
-        setPromoMessage(data.message || (t("promoApplied") || "Promo applied!"));
+        setPromoMessage(t("promoApplied") || "Promo code applied successfully!");
       } else {
         setAppliedPromo("");
         setDiscount(0);
-        setPromoMessage(data.message || (t("invalidPromo") || "Invalid promo code"));
+        setPromoMessage(t("invalidPromo") || "Invalid promo code");
       }
     } catch (error) {
       setPromoMessage(t("failedPromo") || "Failed to apply promo code");
@@ -93,13 +98,19 @@ export default function CartPage() {
       quantity: item.quantity,
     }));
 
+    const customerName = user?.fullName || user?.firstName || undefined;
+    const customerPhone = user?.primaryPhoneNumber?.phoneNumber || undefined;
+    const addressStr = location ? `Lat: ${location.lat}, Lng: ${location.lng}` : "Home Address";
+
     createOrder.mutate({
       data: {
         merchantId,
         items: orderItems,
-        address: "Home Address", // Temporary placeholder
-        paymentMethod: "card",
+        address: addressStr,
+        paymentMethod: "cash",
         promoCode: appliedPromo || undefined,
+        customerName,
+        customerPhone,
       },
     });
   };

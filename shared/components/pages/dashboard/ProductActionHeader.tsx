@@ -65,6 +65,7 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
     query: { queryKey: ["/categories"] }
   })
   const t = useTranslations("Dashboard.Products")
+  const toastT = useTranslations("Toasts")
   const locale = useLocale()
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,11 +91,11 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
           updateFormData('image', json.url)
           toast({ title: t("uploadSuccess") || "Image uploaded successfully" })
         } else {
-          toast({ title: t("uploadFailed") || "Upload failed", variant: "destructive" })
+          toast({ title: t("uploadFailed") || toastT("uploadFailed"), variant: "destructive" })
         }
       } catch (err) {
         console.error(err)
-        toast({ title: t("uploadError") || "Error uploading image", variant: "destructive" })
+        toast({ title: t("uploadError") || toastT("uploadError"), variant: "destructive" })
       } finally {
         setIsUploading(false)
       }
@@ -104,7 +105,7 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
   const createProduct = useCreateProduct({
     mutation: {
       onSuccess: () => {
-        toast({ title: t("addSuccess") || "Product added successfully!" })
+        toast({ title: t("addSuccess") || toastT("productUpdated") })
         setIsAddOpen(false)
         onSuccess()
         resetForm()
@@ -121,7 +122,7 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
 
   const handleSaveProduct = () => {
     if (!formData.name?.trim() || !formData.price || !formData.category || !formData.description?.trim()) {
-      toast({ title: t("missingFields") || "Missing required fields", variant: "destructive" })
+      toast({ title: t("missingFields") || toastT("fillFields"), variant: "destructive" })
       return
     }
 

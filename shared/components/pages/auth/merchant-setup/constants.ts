@@ -65,4 +65,6 @@ export const INITIAL_FORM: FormData = {
   isOpen: true,
   profileImage: "",
   coverImage: "",
+  latitude: undefined,
+  longitude: undefined,
 };

@@ -1,11 +1,62 @@
-import { Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Sparkles, UploadCloud, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormData } from "./types";
 import { useTranslations } from "next-intl";
+import { customFetch } from "@/utils/api";
+import { useToast } from "@/hooks/use-toast";
 
 export function StepFour({ form, set }: { form: FormData, set: any }) {
   const t = useTranslations("MerchantSetup.Steps.step4");
+  const toastT = useTranslations("Toasts");
+  const { toast } = useToast();
+  const [isUploadingProfile, setIsUploadingProfile] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+
+  const handleImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "profileImage" | "coverImage",
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // show preview
+      const previewUrl = URL.createObjectURL(file);
+      set(field, previewUrl);
+
+      // upload
+      const setUploading = field === "profileImage" ? setIsUploadingProfile : setIsUploadingCover;
+      setUploading(true);
+      
+      try {
+        const toBase64 = (blob: Blob) =>
+          new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        const dataUri = await toBase64(file);
+
+        const json = await customFetch<{ url: string }>("/upload", {
+          method: "POST",
+          body: { dataUri, folder: "merchant" },
+        });
+
+        if (json && json.url) {
+          set(field, json.url);
+        } else {
+          toast({ title: toastT("uploadFailed"), variant: "destructive" });
+        }
+      } catch (err) {
+        console.error(err);
+        toast({ title: toastT("uploadError"), variant: "destructive" });
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -15,57 +66,76 @@ export function StepFour({ form, set }: { form: FormData, set: any }) {
         </p>
       </div>
 
-      <div>
-        <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">
-          {t("profileLabel")}
-        </Label>
-        <Input
-          value={form.profileImage}
-          onChange={(e) => set("profileImage", e.target.value)}
-          placeholder={t("profilePlaceholder")}
-          className="h-12 text-[15px] rounded-xl border-stone-200 focus:border-orange-400 focus:ring-orange-400/20"
-        />
-        {form.profileImage && (
-          <div className="mt-2 flex items-center gap-3">
+      <div className="flex flex-col gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-stone-800">
+            {t("profileLabel")}
+          </h3>
+        </div>
+
+        <div className="border border-stone-200 rounded-xl p-4 flex items-center justify-center relative bg-white h-[120px] overflow-hidden">
+          {form.profileImage ? (
             <img
               src={form.profileImage}
-              alt="Profile preview"
-              className="h-12 w-12 rounded-full object-cover border-2 border-orange-200"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display =
-                  "none";
-              }}
+              alt="Logo"
+              className="max-w-[100px] max-h-[100px] object-contain"
             />
-            <p className="text-xs text-stone-400">
-              {t("previewMode")}
-            </p>
-          </div>
-        )}
+          ) : (
+            <div className="flex flex-col items-center justify-center text-stone-400 opacity-50">
+              <span className="text-xs font-medium">Default Logo</span>
+            </div>
+          )}
+        </div>
+
+        <label
+          className={`w-full border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploadingProfile ? "opacity-50 pointer-events-none" : ""}`}
+        >
+          <input
+            type="file"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "profileImage")}
+            disabled={isUploadingProfile}
+          />
+          <UploadCloud className="h-4 w-4 mr-2" />{" "}
+          {isUploadingProfile ? "Uploading..." : "Upload Logo"}
+        </label>
       </div>
 
-      <div>
-        <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">
-          {t("coverLabel")}
-        </Label>
-        <Input
-          value={form.coverImage}
-          onChange={(e) => set("coverImage", e.target.value)}
-          placeholder={t("coverPlaceholder")}
-          className="h-12 text-[15px] rounded-xl border-stone-200 focus:border-orange-400 focus:ring-orange-400/20"
-        />
-        {form.coverImage && (
-          <div className="mt-2">
+      <div className="flex flex-col gap-3 mt-4">
+        <div>
+          <h3 className="text-sm font-semibold text-stone-800">
+            {t("coverLabel")}
+          </h3>
+        </div>
+
+        <div className="border border-stone-200 rounded-xl overflow-hidden relative bg-stone-100 h-[150px] w-full">
+          {form.coverImage ? (
             <img
               src={form.coverImage}
-              alt="Cover preview"
-              className="w-full h-24 rounded-xl object-cover border border-stone-200"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display =
-                  "none";
-              }}
+              alt="Banner"
+              className="w-full h-full object-cover"
             />
-          </div>
-        )}
+          ) : (
+            <div className="w-full h-full bg-stone-200 flex items-center justify-center text-stone-400 text-xs">
+              Banner Placeholder
+            </div>
+          )}
+        </div>
+
+        <label
+          className={`w-full border border-stone-200 text-orange-500 hover:text-orange-600 hover:bg-orange-50 bg-white h-10 gap-2 relative overflow-hidden flex items-center justify-center rounded-md font-medium text-sm cursor-pointer transition-colors ${isUploadingCover ? "opacity-50 pointer-events-none" : ""}`}
+        >
+          <input
+            type="file"
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "coverImage")}
+            disabled={isUploadingCover}
+          />
+          <UploadCloud className="h-4 w-4 mr-2" />{" "}
+          {isUploadingCover ? "Uploading..." : "Upload Banner"}
+        </label>
       </div>
 
       {/* Summary Card */}

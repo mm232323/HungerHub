@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Lightbulb } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -124,26 +124,26 @@ function RevenueCharts() {
       </Card>
 
       <div className="space-y-6">
-        {/* Action Items */}
-        <Card className="border-primary bg-primary/5">
+        {/* Quick Tips (Replaced AI Insights for now) */}
+        <Card className="border-amber-500/30 bg-amber-500/5">
           <CardHeader className="pb-3">
             <CardTitle className="text-lg flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" /> {t("aiInsights")}
+              <Lightbulb className="h-5 w-5 text-amber-500" /> {t("quickTips")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div className="bg-background rounded-lg p-3 border">
               <p>
-                <span className="font-semibold text-primary">
-                  {t("trending")}
+                <span className="font-semibold text-amber-600">
+                  {t("tipPromotions")}
                 </span>{" "}
-                {t("trendingDesc")}
+                {t("tipPromotionsDesc")}
               </p>
             </div>
             <div className="bg-background rounded-lg p-3 border">
               <p>
-                <span className="font-semibold">{t("inventoryAlert")}</span>{" "}
-                {t("inventoryDesc")}
+                <span className="font-semibold text-amber-600">{t("tipPhotos")}</span>{" "}
+                {t("tipPhotosDesc")}
               </p>
             </div>
           </CardContent>

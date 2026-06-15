@@ -11,13 +11,45 @@ import {
   ShoppingCart,
   Utensils,
   Settings,
+  Globe,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import NavItem from "./NavItem";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import ConsumerNavItem from "./ConsumerNavItem";
 import UserProfile from "./UserProfile";
+
+function LanguageToggle() {
+  const locale = useLocale();
+
+  const toggleLocale = () => {
+    const nextLocale = locale === "en" ? "ar" : "en";
+    
+    // Use raw browser API to guarantee correct URL and force a hard reload
+    const currentPath = window.location.pathname;
+    const segments = currentPath.split("/");
+    
+    if (segments[1] === locale) {
+      segments[1] = nextLocale;
+    } else {
+      segments.splice(1, 0, nextLocale);
+    }
+    
+    const newPath = segments.join("/") + window.location.search + window.location.hash;
+    window.location.href = newPath;
+  };
+
+  return (
+    <button onClick={toggleLocale} className="flex items-center justify-between px-4 py-3 mx-2 sm:mx-3 mb-2 rounded-xl text-sm font-medium text-white/50 hover:text-white hover:bg-white/5 transition-colors">
+      <div className="flex items-center gap-3">
+        <Globe className="h-4 w-4" />
+        <span>Language / اللغة</span>
+      </div>
+      <span className="text-xs font-bold px-2 py-0.5 rounded bg-white/10 text-white/80">{locale === "en" ? "EN" : "AR"}</span>
+    </button>
+  );
+}
 
 function SideBar() {
   const t = useTranslations("Dashboard.Shell");
@@ -183,6 +215,9 @@ function SideBar() {
             />
           </nav>
         </div>
+
+        {/* Utilities */}
+        <LanguageToggle />
 
         {/* User profile */}
         <UserProfile />

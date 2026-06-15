@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { Button } from "../../ui/button";
@@ -16,12 +17,13 @@ function MerchantInfo({
   merchantId: number;
   onHandleFollows: (isFollowing: boolean, followersCount: number) => void;
 }) {
+  const toastT = useTranslations("Toasts");
   const { toast } = useToast();
   const { isSignedIn } = useAuth();
   const followMutation = useFollowMerchant({
     mutation: {
       onSuccess: (data) => {
-        toast({ title: "Follow updated" });
+        toast({ title: toastT("followUpdated") });
         onHandleFollows(data.isFollowing, data.followersCount);
       },
     },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useListOrders } from "@/utils/api";
+import { useGetDashboardOrders } from "@/apis";
 import { useOrderStages } from "./data";
 import OrdersTabHeader from "./OrdersTabHeader";
 import OrderStage from "./OrderStage";
@@ -12,14 +12,17 @@ export function DashboardOrdersView() {
   const handleRefresh = (refreshing: boolean) => {
     setRefreshing(refreshing);
   };
+
   const {
     data: orders,
     isLoading,
     refetch,
-  } = useListOrders(
+  } = useGetDashboardOrders(
     {},
     {
-      query: { queryKey: ["/orders"] },
+      query: { 
+        queryKey: ["/dashboard/orders"],
+      },
     },
   );
 

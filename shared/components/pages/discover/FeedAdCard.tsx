@@ -11,9 +11,13 @@ import { toast } from '@/hooks/use-toast';
 import { useGetFeedAdComments, useCommentFeedAd, useLikeFeedAd, useGetFeedAdLikes } from '@/apis/feed';
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function FeedAdCard({ ad }: { ad: FeedAd }) {
+import { useAuth } from "@clerk/nextjs";
+
+export default function FeedAdCard({ ad, onAuthRequired }: { ad: FeedAd; onAuthRequired?: () => void }) {
   const t = useTranslations("Dashboard.Marketing");
+  const toastT = useTranslations("Toasts");
   const queryClient = useQueryClient();
+  const { isSignedIn } = useAuth();
 
   const { data: likesData = { isLiked: false, likes: 0 } } = useGetFeedAdLikes(ad.id);
   const isLiked = likesData.isLiked;
@@ -27,7 +31,7 @@ export default function FeedAdCard({ ad }: { ad: FeedAd }) {
   const commentMutation = useCommentFeedAd({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Comment posted!" });
+        toast({ title: toastT("commentPosted") });
         queryClient.invalidateQueries({ queryKey: ["/feed/ads/comments", ad.id] });
       }
     }
@@ -41,8 +45,28 @@ export default function FeedAdCard({ ad }: { ad: FeedAd }) {
     }
   });
 
+  const handleLike = () => {
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
+    likeMutation.mutate({ id: ad.id });
+  };
+
+  const handleCommentClick = () => {
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
+    setShowCommentBox(!showCommentBox);
+  };
+
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
     if (!commentText.trim()) return;
     
     commentMutation.mutate({ id: ad.id, data: { content: commentText } });
@@ -113,7 +137,7 @@ export default function FeedAdCard({ ad }: { ad: FeedAd }) {
             <Button
               variant="ghost"
               className={`hover:bg-primary/10 rounded-full gap-2 transition-colors ${isLiked ? "text-primary hover:text-primary" : "text-muted-foreground"}`}
-              onClick={() => likeMutation.mutate({ id: ad.id })}
+              onClick={handleLike}
             >
               <Heart className={`h-5 w-5 ${isLiked ? "fill-current text-primary" : ""}`} />
               <span className="font-semibold text-sm">{likes.toLocaleString()}</span>
@@ -121,7 +145,7 @@ export default function FeedAdCard({ ad }: { ad: FeedAd }) {
             <Button 
               variant="ghost" 
               className="hover:bg-muted rounded-full gap-2 text-muted-foreground transition-colors"
-              onClick={() => setShowCommentBox(!showCommentBox)}
+              onClick={handleCommentClick}
             >
               <MessageCircle className="h-5 w-5" />
               <span className="font-semibold text-sm hidden sm:inline">{t("commentsText") || "Comments"}</span>
@@ -148,7 +172,7 @@ export default function FeedAdCard({ ad }: { ad: FeedAd }) {
                     setIsSharing(false);
                   }
                 } else {
-                  toast({ title: "Sharing not supported on this browser" });
+                  toast({ title: toastT("shareNotSupported") });
                 }
               }}
             >

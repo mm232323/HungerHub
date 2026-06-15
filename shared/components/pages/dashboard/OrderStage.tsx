@@ -6,7 +6,10 @@ import { Skeleton } from "../../alerts/skeleton";
 import { Order } from "@/types";
 import { useUpdateOrderStatus } from "@/apis";
 import { toast } from "@/hooks/use-toast";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { ar, enUS } from "date-fns/locale";
+import { OrderDetailsModal } from "./order-details-modal";
+import { useOrderStages } from "./data";
 
 function OrderStage({
   stage,
@@ -20,11 +23,16 @@ function OrderStage({
   refetch: () => void;
 }) {
   const t = useTranslations("Dashboard.Orders");
+  const toastT = useTranslations("Toasts");
+  const locale = useLocale();
+  const dateLocale = locale === "ar" ? ar : enUS;
+  const allStages = useOrderStages();
+  const [selectedOrder, setSelectedOrder] = React.useState<Order | null>(null);
 
   const updateStatus = useUpdateOrderStatus({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Order updated" });
+        toast({ title: toastT("orderUpdated") });
         refetch();
       },
     },
@@ -72,7 +80,8 @@ function OrderStage({
           stageOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white border border-stone-100 rounded-lg sm:rounded-xl p-2.5 sm:p-3.5 shadow-sm hover:shadow-md hover:border-stone-200 transition-all group"
+              onClick={() => setSelectedOrder(order)}
+              className="bg-white border border-stone-100 rounded-lg sm:rounded-xl p-2.5 sm:p-3.5 shadow-sm hover:shadow-md hover:border-stone-200 transition-all group cursor-pointer"
             >
               {/* Top row */}
               <div className="flex items-start justify-between mb-2">
@@ -88,6 +97,7 @@ function OrderStage({
                   <Clock className="h-2 sm:h-2.5 w-2 sm:w-2.5" />
                   {formatDistanceToNow(new Date(order.createdAt), {
                     addSuffix: false,
+                    locale: dateLocale,
                   })}
                 </span>
               </div>
@@ -124,28 +134,50 @@ function OrderStage({
                 </div>
 
                 {/* Action button */}
-                {stage.action && (
+                <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() =>
+                    onClick={(e) => {
+                      e.stopPropagation();
                       updateStatus.mutate({
                         id: order.id,
-                        data: { status: stage.action.next as any },
-                      })
-                    }
-                    className={`text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg transition-all whitespace-nowrap ${
-                      stage.action.variant === "outline"
-                        ? "border border-stone-200 text-stone-600 hover:bg-stone-50 hover:border-stone-300"
-                        : "bg-orange-500 text-white hover:bg-orange-600 shadow-sm shadow-orange-200"
-                    }`}
+                        data: { status: "cancelled" },
+                      });
+                    }}
+                    className="text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg transition-all whitespace-nowrap border border-red-200 text-red-600 hover:bg-red-50"
                   >
-                    {stage.action.label}
+                    {t("actionCancel")}
                   </button>
-                )}
+                  {stage.action && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        updateStatus.mutate({
+                          id: order.id,
+                          data: { status: stage.action!.next as any },
+                        });
+                      }}
+                      className={`text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg transition-all whitespace-nowrap ${
+                        stage.action.variant === "outline"
+                          ? "border border-stone-200 text-stone-600 hover:bg-stone-50 hover:border-stone-300"
+                          : "bg-orange-500 text-white hover:bg-orange-600 shadow-sm shadow-orange-200"
+                      }`}
+                    >
+                      {stage.action.label}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))
         )}
       </div>
+
+      <OrderDetailsModal
+        open={!!selectedOrder}
+        onOpenChange={(open) => !open && setSelectedOrder(null)}
+        order={selectedOrder}
+        stages={allStages}
+      />
     </div>
   );
 }

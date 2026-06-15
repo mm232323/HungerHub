@@ -16,6 +16,7 @@ import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 
 function MarketingActionHeader() {
+  const toastT = useTranslations("Toasts");
   const t = useTranslations("Dashboard.Marketing");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -31,7 +32,7 @@ function MarketingActionHeader() {
   const createPromotion = useCreatePromotion({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Promotion created successfully" });
+        toast({ title: toastT("promoCreated") });
         setIsAddOpen(false);
         // Reset form
         setTitle("");
@@ -43,14 +44,14 @@ function MarketingActionHeader() {
         refetch();
       },
       onError: (error: any) => {
-        toast({ title: "Failed to create promotion", description: error.message, variant: "destructive" });
+        toast({ title: toastT("promoFailed"), description: error.message, variant: "destructive" });
       }
     },
   });
 
   const handleCreate = () => {
     if (!title || !code || !startDate || !endDate) {
-      toast({ title: "Please fill all required fields", variant: "destructive" });
+      toast({ title: toastT("fillFields"), variant: "destructive" });
       return;
     }
     createPromotion.mutate({

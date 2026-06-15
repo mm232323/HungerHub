@@ -6,8 +6,10 @@ import { motion } from "framer-motion";
 import { Product } from "@/types";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/shared/contexts/CartContext";
+import { useTranslations } from "next-intl";
 
 function ProductActions({ product }: { product: Product }) {
+  const toastT = useTranslations("Toasts");
   const { toast } = useToast();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
@@ -16,8 +18,8 @@ function ProductActions({ product }: { product: Product }) {
     if (!product) return;
     addToCart(product, quantity);
     toast({
-      title: "Added to cart",
-      description: `${quantity}x ${product.name} added to your cart.`,
+      title: toastT("addedToCart"),
+      description: toastT("addedToCartDesc", { quantity, productName: product.name }),
     });
   };
 

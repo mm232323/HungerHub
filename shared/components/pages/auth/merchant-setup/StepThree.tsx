@@ -50,6 +50,33 @@ export function StepThree({ form, set, errors }: { form: FormData, set: any, err
           className="h-12 text-[15px] rounded-xl border-stone-200 focus:border-orange-400 focus:ring-orange-400/20"
         />
         <FieldError message={errors.address} />
+        
+        <div className="mt-3 mb-2">
+          <button
+            type="button"
+            onClick={() => {
+              if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                  set("latitude", pos.coords.latitude);
+                  set("longitude", pos.coords.longitude);
+                });
+              } else {
+                alert("Geolocation is not supported by your browser");
+              }
+            }}
+            className={`flex items-center gap-2 text-sm font-medium px-4 py-2.5 rounded-xl transition-all ${
+              form.latitude && form.longitude 
+                ? "bg-green-50 text-green-700 border border-green-200" 
+                : "bg-orange-50 text-orange-600 border border-orange-200 hover:bg-orange-100"
+            }`}
+          >
+            <MapPin className="h-4 w-4" />
+            {form.latitude && form.longitude ? t("locationSaved") : t("useMyLocation")}
+          </button>
+          <p className="text-xs text-stone-500 mt-1.5">
+            {t("locationHelpText")}
+          </p>
+        </div>
       </div>
 
       <div>

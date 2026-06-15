@@ -12,6 +12,8 @@ export interface FormData {
   isOpen: boolean;
   profileImage: string;
   coverImage: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface StepInfo {

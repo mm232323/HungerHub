@@ -5,9 +5,12 @@ import { FeedPost } from "@/types";
 import { useLikeFeedPost, useSaveFeedPost } from "@/apis";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@clerk/nextjs";
 
-function ArticleActions({ post, setFeed, onCommentClick }: { post: FeedPost; setFeed: React.Dispatch<React.SetStateAction<FeedPost[]>>; onCommentClick?: () => void }) {
+function ArticleActions({ post, setFeed, onCommentClick, onAuthRequired }: { post: FeedPost; setFeed: React.Dispatch<React.SetStateAction<FeedPost[]>>; onCommentClick?: () => void; onAuthRequired?: () => void }) {
   const t = useTranslations("DiscoverPage");
+  const toastT = useTranslations("Toasts");
+  const { isSignedIn } = useAuth();
 
   const likeMutation = useLikeFeedPost({
     mutation: {
@@ -35,13 +38,37 @@ function ArticleActions({ post, setFeed, onCommentClick }: { post: FeedPost; set
   });
   const [isSharing, setIsSharing] = React.useState(false);
 
+  const handleLike = () => {
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
+    likeMutation.mutate({ id: post.id });
+  };
+
+  const handleComment = () => {
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
+    if (onCommentClick) onCommentClick();
+  };
+
+  const handleSave = () => {
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
+    saveMutation.mutate({ id: post.id });
+  };
+
   return (
     <div className="px-4 flex items-center justify-between">
       <div className="flex items-center gap-1 sm:gap-2">
         <Button
           variant="ghost"
           className={`hover:bg-primary/10 rounded-full gap-2 transition-colors ${post.isLiked ? "text-primary hover:text-primary" : "text-muted-foreground"}`}
-          onClick={() => likeMutation.mutate({ id: post.id })}
+          onClick={handleLike}
         >
           <Heart className={`h-5 w-5 ${post.isLiked ? "fill-current text-primary" : ""}`} />
           <span className="font-semibold text-sm">{post.likes.toLocaleString()}</span>
@@ -49,7 +76,7 @@ function ArticleActions({ post, setFeed, onCommentClick }: { post: FeedPost; set
         <Button 
           variant="ghost" 
           className="hover:bg-muted rounded-full gap-2 text-muted-foreground transition-colors"
-          onClick={onCommentClick}
+          onClick={handleComment}
         >
           <MessageCircle className="h-5 w-5" />
           <span className="font-semibold text-sm hidden sm:inline">{t("commentsText")}</span>
@@ -76,7 +103,7 @@ function ArticleActions({ post, setFeed, onCommentClick }: { post: FeedPost; set
                 setIsSharing(false);
               }
             } else {
-              toast({ title: "Sharing not supported on this browser" });
+              toast({ title: toastT("shareNotSupported") });
             }
           }}
         >
@@ -88,7 +115,7 @@ function ArticleActions({ post, setFeed, onCommentClick }: { post: FeedPost; set
         variant="ghost"
         size="icon"
         className="rounded-full hover:bg-muted text-muted-foreground transition-colors"
-        onClick={() => saveMutation.mutate({ id: post.id })}
+        onClick={handleSave}
       >
         <Bookmark className={`h-5 w-5 ${post.isSaved ? "fill-current text-foreground" : ""}`} />
       </Button>

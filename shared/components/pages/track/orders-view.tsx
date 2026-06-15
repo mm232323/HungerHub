@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, SlidersHorizontal } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import type { Order } from "@/types";
 import { ActiveOrderCard } from "./active-order-card";
@@ -43,14 +43,7 @@ export function OrdersView({ orders }: OrdersViewProps) {
             <h1 className="text-2xl font-bold">{t("myOrders")}</h1>
             <p className="text-sm text-muted-foreground mt-1">{t("trackOrdersDesc")}</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Search className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <SlidersHorizontal className="h-5 w-5" />
-            </Button>
-          </div>
+
         </div>
 
         <div className="overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">

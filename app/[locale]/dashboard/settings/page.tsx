@@ -257,9 +257,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="border border-stone-200 rounded-xl p-4 flex items-center justify-center relative bg-white h-[200px] overflow-hidden">
-              <div className="absolute top-3 right-3 bg-white border border-stone-200 shadow-sm rounded-md p-1.5 cursor-pointer hover:bg-stone-50 z-10">
-                <Pencil className="h-4 w-4 text-stone-600" />
-              </div>
+
               {formData.profileImage ? (
                 <img
                   src={formData.profileImage}
@@ -304,9 +302,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="border border-stone-200 rounded-xl overflow-hidden relative bg-stone-100 h-[200px] w-full">
-              <div className="absolute top-3 right-3 bg-white border border-stone-200 shadow-sm rounded-md p-1.5 cursor-pointer hover:bg-stone-50 z-10">
-                <Pencil className="h-4 w-4 text-stone-600" />
-              </div>
+
               {formData.coverImage ? (
                 <img
                   src={formData.coverImage}

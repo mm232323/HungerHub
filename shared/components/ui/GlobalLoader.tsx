@@ -3,8 +3,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Utensils } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function GlobalLoader() {
+  const t = useTranslations("Global");
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
       <div className="relative flex items-center justify-center w-32 h-32">
@@ -30,7 +32,7 @@ export default function GlobalLoader() {
         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
         className="mt-6 text-stone-600 font-medium tracking-wide text-sm"
       >
-        Serving up something delicious...
+        {t("globalLoader")}
       </motion.p>
     </div>
   );

@@ -1,15 +1,16 @@
+"use client";
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Heart, Star, Users, ArrowUpRight } from "lucide-react";
-import { CustomerAnalytics } from "@/types";
+import { useGetCustomerAnalytics } from "@/apis";
 import { useTranslations } from "next-intl";
 
-function AnalysisCards({
-  analytics,
-}: {
-  analytics: CustomerAnalytics | undefined;
-}) {
+function AnalysisCards() {
   const t = useTranslations("Dashboard.Analytics");
+  const { data: analytics, isLoading } = useGetCustomerAnalytics({
+    query: { queryKey: ["/dashboard/analytics"] },
+  });
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -28,7 +29,7 @@ function AnalysisCards({
               {analytics?.totalCustomers || 0}
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              people
+              {t("people")}
             </p>
           </div>
           <div className="flex items-center text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
@@ -78,7 +79,7 @@ function AnalysisCards({
               {analytics?.newCustomers || 0}
             </div>
             <p className="text-sm text-gray-500 mt-1">
-              people
+              {t("people")}
             </p>
           </div>
           <div className="flex items-center text-sm font-medium text-rose-600 bg-rose-50 px-2 py-1 rounded-md">

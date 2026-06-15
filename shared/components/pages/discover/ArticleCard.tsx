@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { FeedPost } from "@/types";
 import ArticleTop from "./ArticleTop";
@@ -11,17 +12,20 @@ import { SendHorizontal } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useGetFeedPostComments, useCommentFeedPost } from "@/apis/feed";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@clerk/nextjs";
 
-export default function ArticleCard({ post, setFeed }: { post: FeedPost; setFeed: React.Dispatch<React.SetStateAction<FeedPost[]>> }) {
+export default function ArticleCard({ post, setFeed, onAuthRequired }: { post: FeedPost; setFeed: React.Dispatch<React.SetStateAction<FeedPost[]>>; onAuthRequired?: () => void }) {
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [commentText, setCommentText] = useState("");
   const queryClient = useQueryClient();
+  const { isSignedIn } = useAuth();
 
+  const toastT = useTranslations("Toasts");
   const { data: comments = [] } = useGetFeedPostComments(post.id);
   const commentMutation = useCommentFeedPost({
     mutation: {
       onSuccess: () => {
-        toast({ title: "Comment posted!" });
+        toast({ title: toastT("commentPosted") });
         queryClient.invalidateQueries({ queryKey: ["/feed/posts/comments", post.id] });
       }
     }
@@ -29,6 +33,10 @@ export default function ArticleCard({ post, setFeed }: { post: FeedPost; setFeed
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSignedIn) {
+      if (onAuthRequired) onAuthRequired();
+      return;
+    }
     if (!commentText.trim()) return;
     
     commentMutation.mutate({ id: post.id, data: { content: commentText } });
@@ -52,6 +60,7 @@ export default function ArticleCard({ post, setFeed }: { post: FeedPost; setFeed
           post={post} 
           setFeed={setFeed} 
           onCommentClick={() => setShowCommentBox(!showCommentBox)} 
+          onAuthRequired={onAuthRequired}
         />
         <ArticleComments post={post} comments={comments} />
         

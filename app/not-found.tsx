@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 export default function NotFound() {
   const router = useRouter();
   const params = useParams();
-  const locale = params.locale as string;
+  const locale = (params?.locale as string) || "en";
   const t = useTranslations("NotFound");
 
   const containerVariants = {

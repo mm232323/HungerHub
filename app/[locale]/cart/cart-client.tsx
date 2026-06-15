@@ -1,6 +1,7 @@
 'use client'
 
 import { useCreateOrder } from "@/apis";
+import { useTranslations } from "next-intl";
 import { useToast } from "@/hooks/use-toast";
 import CartItems from "@/shared/components/pages/cart/CartItems";
 import DeliveryDetails from "@/shared/components/pages/cart/DeliveryDetails";
@@ -10,11 +11,16 @@ import { Button } from "@/shared/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 export default function CartPageClient() {
   const router = useRouter();
+  const toastT = useTranslations("Toasts");
   const { toast } = useToast();
+  const { user } = useUser();
+  const { location } = useGeolocation();
   const [items, setItems] = useState<
     {
       id: number;
@@ -44,6 +50,13 @@ export default function CartPageClient() {
   }
 
   const [address, setAddress] = useState("");
+
+  useEffect(() => {
+    if (location && !address) {
+      setAddress(`Lat: ${location.lat}, Lng: ${location.lng}`);
+    }
+  }, [location]);
+
   const subtotal = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
@@ -53,11 +66,11 @@ export default function CartPageClient() {
   const createOrder = useCreateOrder({
     mutation: {
       onSuccess: (order) => {
-        toast({ title: "Order placed successfully!" });
+        toast({ title: toastT("orderPlaced") });
         router.push(`/track/${order.id}`);
       },
       onError: () => {
-        toast({ title: "Order submitted via WhatsApp (Demo Fallback)" });
+        toast({ title: toastT("orderWhatsApp") });
         router.push(`/track/123`);
       },
     },
@@ -66,7 +79,8 @@ export default function CartPageClient() {
   const handleCheckout = () => {
     if (!address) {
       toast({
-        title: "Please enter a delivery address",
+        title: toastT("orderFailed"),
+        description: toastT("enterAddress"),
         variant: "destructive",
       });
       return;
@@ -82,7 +96,9 @@ export default function CartPageClient() {
           quantity: item.quantity,
         })),
         address,
-        paymentMethod: "card",
+        paymentMethod: "cash",
+        customerName: user?.fullName || undefined,
+        customerPhone: user?.primaryPhoneNumber?.phoneNumber || undefined,
       },
     });
   };

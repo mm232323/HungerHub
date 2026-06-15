@@ -22,16 +22,15 @@ import {
 } from "recharts";
 import { useTranslations } from "next-intl";
 import { CustomerAnalytics } from "@/types";
-import { useGetRevenueChart, useGetTopProducts } from "@/apis";
+import { useGetRevenueChart, useGetTopProducts, useGetCustomerAnalytics } from "@/apis";
 import { Skeleton } from "../../alerts/skeleton";
 import { CircleDot, Target, Search } from "lucide-react";
 
-function AnalysisCharts({
-  analytics,
-}: {
-  analytics: CustomerAnalytics | undefined;
-}) {
+function AnalysisCharts() {
   const t = useTranslations("Dashboard.Analytics");
+  const { data: analytics, isLoading: isLoadingAnalytics } = useGetCustomerAnalytics({
+    query: { queryKey: ["/dashboard/analytics"] },
+  });
   const { data: revenueData, isLoading: isLoadingRevenue } = useGetRevenueChart({
     query: { queryKey: ["/dashboard/revenue"] },
   });
@@ -54,7 +53,7 @@ function AnalysisCharts({
         {/* Audience reach (Revenue over time) */}
         <Card className="lg:col-span-2 overflow-hidden bg-white/60 backdrop-blur-xl border border-white/40 shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">Orders Over Time</CardTitle>
+            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">{t("ordersOverTime")}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
             <div className="h-[250px] w-full mt-2">
@@ -80,7 +79,7 @@ function AnalysisCharts({
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#9ca3af" }} />
                     <Tooltip
                       contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", background: "#ffffff" }}
-                      formatter={(value: number) => [`${value}`, "Orders"]}
+                      formatter={(value: number) => [`${value}`, t("orders")]}
                       labelFormatter={(label) => new Date(label).toLocaleDateString()}
                     />
                     <Area type="monotone" dataKey="orders" stroke="#60a5fa" strokeWidth={2} fillOpacity={1} fill="url(#colorOrders)" />
@@ -97,7 +96,7 @@ function AnalysisCharts({
         <Card className="overflow-hidden bg-white/60 backdrop-blur-xl border border-white/40 shadow-sm relative">
            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100/40 rounded-full blur-2xl pointer-events-none" />
           <CardHeader className="pb-2">
-            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">Top Products</CardTitle>
+            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">{t("topProducts")}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0 relative flex flex-col items-center">
             <div className="h-[200px] w-full relative flex items-center justify-center">
@@ -130,7 +129,7 @@ function AnalysisCharts({
                     <span className="text-2xl font-bold text-gray-800">
                       {topProducts.reduce((sum, p) => sum + p.totalSold, 0)}
                     </span>
-                    <span className="text-xs text-gray-500">Total Sold</span>
+                    <span className="text-xs text-gray-500">{t("totalSold")}</span>
                   </div>
                 </>
               ) : (
@@ -145,7 +144,7 @@ function AnalysisCharts({
                         <div className="w-2 h-2 rounded-full" style={{ background: COLORS[i] }} />
                         <span className="text-gray-600 truncate max-w-[100px]">{p.name}</span>
                     </div>
-                    <span className="font-medium text-gray-800">{p.totalSold} items</span>
+                    <span className="font-medium text-gray-800">{p.totalSold} {t("items")}</span>
                   </div>
                 ))}
             </div>
@@ -158,9 +157,9 @@ function AnalysisCharts({
         {/* Gender / Age (Orders by Hour) */}
         <Card className="lg:col-span-2 overflow-hidden bg-white/60 backdrop-blur-xl border border-white/40 shadow-sm">
           <CardHeader className="flex flex-row justify-between items-center pb-2">
-            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">Orders by Hour</CardTitle>
+            <CardTitle className="text-base sm:text-lg font-semibold text-gray-700">{t("ordersByHour")}</CardTitle>
             <div className="flex items-center gap-4 text-xs font-medium text-gray-500">
-                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-300" /> Orders</div>
+                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-300" /> {t("orders")}</div>
             </div>
           </CardHeader>
           <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0">
@@ -198,9 +197,12 @@ function AnalysisCharts({
                 <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 transition-transform group-hover:scale-110">
                     <Search className="w-5 h-5" />
                 </div>
-                <div>
-                    <p className="text-xs text-gray-500">Search Discovery</p>
-                    <p className="text-sm font-semibold text-gray-800">Organic Traffic</p>
+                <div className="flex-1 flex justify-between items-center">
+                  <div>
+                      <p className="text-xs text-gray-500">{t("searchDiscovery")}</p>
+                      <p className="text-sm font-semibold text-gray-800">{t("organicTraffic")}</p>
+                  </div>
+                  <span className="font-bold text-gray-700">{analytics?.organicTrafficPercentage || 0}%</span>
                 </div>
               </div>
               <div className="h-[1px] bg-gray-100 w-full my-1" />
@@ -208,9 +210,12 @@ function AnalysisCharts({
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 transition-transform group-hover:scale-110">
                     <Target className="w-5 h-5" />
                 </div>
-                <div>
-                    <p className="text-xs text-gray-500">Social Campaign</p>
-                    <p className="text-sm font-semibold text-gray-800">Direct Link</p>
+                <div className="flex-1 flex justify-between items-center">
+                  <div>
+                      <p className="text-xs text-gray-500">{t("socialCampaign")}</p>
+                      <p className="text-sm font-semibold text-gray-800">{t("directLink")}</p>
+                  </div>
+                  <span className="font-bold text-gray-700">{analytics?.socialTrafficPercentage || 0}%</span>
                 </div>
               </div>
             </CardContent>
@@ -228,10 +233,12 @@ function AnalysisCharts({
                        </svg>
                        <span className="absolute text-xs font-bold text-gray-700">{analytics?.retentionRate || 0}%</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-700">Retention</span>
+                    <span className="text-sm font-semibold text-gray-700">{t("retention")}</span>
                 </div>
-                <div className="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
-                    +15%
+                <div className={`text-xs font-bold px-2 py-1 rounded-md ${
+                    (analytics?.retentionDelta || 0) >= 0 ? "text-purple-600 bg-purple-50" : "text-rose-600 bg-rose-50"
+                }`}>
+                    {(analytics?.retentionDelta || 0) > 0 ? "+" : ""}{analytics?.retentionDelta || 0}%
                 </div>
              </CardContent>
           </Card>

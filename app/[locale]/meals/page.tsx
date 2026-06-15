@@ -15,8 +15,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default async function MealsPage() {
-  const categories = await getCategories();
-  const products = await getProducts();
+  const [categories, products] = await Promise.all([
+    getCategories(),
+    getProducts(),
+  ]);
 
   return (
     <div className="min-h-screen bg-stone-50 pb-24 md:pb-8">
