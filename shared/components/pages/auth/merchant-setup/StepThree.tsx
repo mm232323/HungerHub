@@ -11,30 +11,7 @@ export function StepThree({ form, set, errors }: { form: FormData, set: any, err
 
   return (
     <>
-      <div className="mb-4">
-        <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">
-          <div className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" /> {t("countryLabel")}{" "}
-            <span className="text-red-400">*</span>
-          </div>
-        </Label>
-        <select
-          value={form.country}
-          onChange={(e) => set("country", e.target.value)}
-          className="w-full h-12 px-3 text-[15px] rounded-xl border-stone-200 border bg-white focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20"
-        >
-          <option value="" disabled>{t("countryPlaceholder")}</option>
-          <option value="United States">United States</option>
-          <option value="United Kingdom">United Kingdom</option>
-          <option value="Canada">Canada</option>
-          <option value="Australia">Australia</option>
-          <option value="Saudi Arabia">Saudi Arabia</option>
-          <option value="United Arab Emirates">United Arab Emirates</option>
-          <option value="Egypt">Egypt</option>
-          <option value="Other">Other</option>
-        </select>
-        <FieldError message={errors.country} />
-      </div>
+
 
       <div>
         <Label className="text-sm font-semibold text-stone-700 mb-1.5 block">

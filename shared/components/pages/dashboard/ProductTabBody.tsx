@@ -22,11 +22,30 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
   const [uploadMode, setUploadMode] = useState<'file' | 'url'>('url');
   const [isUploading, setIsUploading] = useState(false);
   const t = useTranslations("Dashboard.Products");
+  const tSetup = useTranslations("MerchantSetup.Steps.step2");
   const toastT = useTranslations("Toasts");
   const locale = useLocale();
   const { data: categories } = useListCategories({
     query: { queryKey: ["/categories"] }
   });
+
+  const parseTags = (tags: any): string => {
+    if (!tags) return '';
+    if (Array.isArray(tags)) return tags.join(', ');
+    if (typeof tags === 'string') {
+      let cleaned = tags.trim();
+      if (cleaned.startsWith('{') && cleaned.endsWith('}')) {
+        cleaned = cleaned.slice(1, -1);
+      } else if (cleaned.startsWith('[') && cleaned.endsWith(']')) {
+        try {
+          const parsed = JSON.parse(cleaned);
+          if (Array.isArray(parsed)) return parsed.join(', ');
+        } catch { /* ignore */ }
+      }
+      return cleaned;
+    }
+    return '';
+  };
 
   const [formData, setFormData] = useState({
     name: product.name || '',
@@ -35,8 +54,8 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
     image: product.image || '',
     category: product.category || '',
     preparationTime: product.preparationTime?.toString() || '',
-    dietaryTags: product.dietaryTags?.join(', ') || '',
-    customizations: product.customizations?.join(', ') || '',
+    dietaryTags: parseTags(product.dietaryTags),
+    customizations: parseTags(product.customizations),
     facebookUrl: product.facebookUrl || '',
     instagramUrl: product.instagramUrl || '',
     isAvailable: product.isAvailable ?? true,
@@ -51,8 +70,8 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
         image: product.image || '',
         category: product.category || '',
         preparationTime: product.preparationTime?.toString() || '',
-        dietaryTags: product.dietaryTags?.join(', ') || '',
-        customizations: product.customizations?.join(', ') || '',
+        dietaryTags: parseTags(product.dietaryTags),
+        customizations: parseTags(product.customizations),
         facebookUrl: product.facebookUrl || '',
         instagramUrl: product.instagramUrl || '',
         isAvailable: product.isAvailable ?? true,
@@ -243,6 +262,71 @@ function EditProductModal({ product, onUpdated }: { product: Product, onUpdated?
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-stone-500 uppercase tracking-wider">{t("details") || "Details"}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2"><Clock className="h-3 w-3 text-stone-400"/> {t("prepTimeLabel") || "Preparation Time"}</Label>
+                  <Input 
+                    value={formData.preparationTime} 
+                    onChange={e => updateFormData('preparationTime', e.target.value)} 
+                    type="number" 
+                    placeholder={t("prepTimePlaceholder") || "e.g. 15"} 
+                    className="bg-stone-50/50" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2"><Tag className="h-3 w-3 text-stone-400"/> {t("dietaryTagsLabel") || "Dietary Tags"} (Max 5)</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      "Spicy",
+                      "Vegan-friendly",
+                      "Gluten-free",
+                      "Family meals",
+                      "Late night",
+                      "Lunch specials",
+                      "Organic",
+                      "Street food",
+                      "Fine dining",
+                      "Quick bites",
+                    ].map((tag) => {
+                      const tags = formData.dietaryTags ? formData.dietaryTags.split(',').map(t=>t.trim()).filter(Boolean) : [];
+                      const isSelected = tags.includes(tag);
+                      return (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              updateFormData('dietaryTags', tags.filter(t => t !== tag).join(', '));
+                            } else if (tags.length < 5) {
+                              updateFormData('dietaryTags', [...tags, tag].join(', '));
+                            }
+                          }}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                            isSelected
+                              ? "bg-stone-900 text-white border-stone-900"
+                              : "bg-white text-stone-600 border-stone-200 hover:border-stone-400"
+                          }`}
+                        >
+                          {tSetup(`tags.${tag}`)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="flex items-center gap-2"><PlusCircle className="h-3 w-3 text-stone-400"/> {t("customizationsLabel") || "Customizations"}</Label>
+                  <Input 
+                    value={formData.customizations} 
+                    onChange={e => updateFormData('customizations', e.target.value)} 
+                    placeholder={t("customizationsPlaceholder") || "Extra cheese, No onions"} 
+                    className="bg-stone-50/50" 
+                  />
                 </div>
               </div>
             </div>

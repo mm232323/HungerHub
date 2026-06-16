@@ -395,7 +395,7 @@
       "createPromotion": "إنشاء عرض",
       "campaignTitle": "عنوان الحملة",
       "campaignTitlePlaceholder": "مثال: عرض الصيف 20%",
-      "promoCode": "كود الخصم (اختياري)",
+      "promoCode": "كود الخصم",
       "promoCodePlaceholder": "SUMMER20",
       "discountValue": "قيمة الخصم",
       "discountValuePlaceholder": "20",
@@ -426,7 +426,11 @@
       "creating": "جاري الإنشاء...",
       "marketingDesc": "قم بإنشاء كوبونات وحملات خصم لعملائك.",
       "impressions": "المشاهدات",
-      "clicks": "النقرات"
+      "clicks": "النقرات",
+      "editPromotion": "تعديل الحملة",
+      "isActive": "الحملة نشطة",
+      "saveChanges": "حفظ التغييرات",
+      "saving": "جاري الحفظ..."
     },
     "Analytics": {
       "title": "تحليلات العملاء",
@@ -678,7 +682,8 @@
       "back": "رجوع",
       "continue": "متابعة",
       "creating": "جاري إنشاء المتجر...",
-      "launch": "إطلاق المتجر"
+      "launch": "إطلاق المتجر",
+      "loading": "جاري التحميل..."
     },
     "Validation": {
       "nameReq": "اسم المطعم مطلوب",
@@ -704,7 +709,20 @@
         "desc": "ساعد العملاء في العثور على ما يشتهونه.",
         "cuisineLabel": "نوع المطبخ الأساسي",
         "cuisinePlaceholder": "اختر المطبخ",
-        "tagsLabel": "العلامات الشائعة (حتى 5)"
+        "tagsLabel": "العلامات الشائعة (حتى 5)",
+        "loadingCategories": "جاري تحميل الفئات...",
+        "tags": {
+          "Spicy": "حار",
+          "Vegan-friendly": "نباتي",
+          "Gluten-free": "خالي من الجلوتين",
+          "Family meals": "وجبات عائلية",
+          "Late night": "وقت متأخر من الليل",
+          "Lunch specials": "عروض الغداء",
+          "Organic": "عضوي",
+          "Street food": "طعام الشارع",
+          "Fine dining": "طعام فاخر",
+          "Quick bites": "وجبات سريعة"
+        }
       },
       "step3": {
         "title": "العمليات",
@@ -760,6 +778,7 @@
     "bannerSize": "الحجم الموصى به: 1920x600 بكسل<br/>صيغة PNG، JPG حتى 5 ميغابايت",
     "infoTitle": "معلومات المطعم",
     "nameLabel": "اسم المطعم",
+    "deliveryFeeLabel": "رسوم التوصيل",
     "taglineLabel": "شعار المطعم (Tagline)",
     "taglineHelper": "عبارة قصيرة تصف مطعمك",
     "descLabel": "الوصف",
@@ -957,6 +976,8 @@
     "orderId": "رقم طلبك هو {id}",
     "somethingWentWrong": "حدث خطأ ما.",
     "addedToCart": "تمت الإضافة للسلة",
-    "addedToCartDesc": "تمت إضافة {quantity}x {productName} إلى سلتك."
+    "addedToCartDesc": "تمت إضافة {quantity}x {productName} إلى سلتك.",
+    "promoUpdated": "تم تحديث الحملة بنجاح",
+    "promoUpdateFailed": "فشل في تحديث العرض"
   }
 }

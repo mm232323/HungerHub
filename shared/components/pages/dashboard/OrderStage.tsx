@@ -40,7 +40,7 @@ function OrderStage({
   return (
     <div
       key={stage.id}
-      className={`flex flex-col min-h-0 rounded-2xl border bg-white overflow-hidden shadow-sm`}
+      className={`flex flex-col w-[280px] sm:w-[320px] shrink-0 min-h-0 rounded-2xl border bg-white overflow-hidden shadow-sm`}
     >
       {/* Column header */}
       <div

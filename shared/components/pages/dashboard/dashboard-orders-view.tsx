@@ -44,8 +44,8 @@ export function DashboardOrdersView() {
         />
 
         {/* ── Kanban board ── fills remaining height ── */}
-        <div className="flex-1 overflow-hidden p-3 sm:p-5 min-h-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 h-full">
+        <div className="flex-1 overflow-x-auto overflow-y-hidden p-3 sm:p-5 min-h-0">
+          <div className="flex gap-3 sm:gap-4 h-full pb-2">
             {STAGES.map((stage) => {
               const stageOrders =
                 orders?.filter((o) => o.status === stage.id) ?? [];

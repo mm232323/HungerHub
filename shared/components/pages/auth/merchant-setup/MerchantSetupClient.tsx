@@ -72,10 +72,11 @@ export function MerchantSetupClient() {
         queryClient.invalidateQueries({ queryKey: ["/dashboard/merchant"] });
         router.push("/dashboard");
       },
-      onError: () => {
+      // @ts-ignore
+      onError: (err: any) => {
         toast({
-          title: tClient("toastErrorTitle"),
-          description: tClient("toastErrorDesc"),
+          title: tClient("toastErrorTitle") || "Something went wrong",
+          description: err?.data?.error || err?.message || tClient("toastErrorDesc"),
           variant: "destructive",
         });
       },
@@ -107,7 +108,6 @@ export function MerchantSetupClient() {
       if (!form.cuisineType) errs.cuisineType = tVal("cuisineReq");
     }
     if (s === 3) {
-      if (!form.country) errs.country = tVal("countryReq");
       if (!form.address.trim()) errs.address = tVal("addressReq");
       if (!form.deliveryFee || isNaN(Number(form.deliveryFee)))
         errs.deliveryFee = tVal("feeInvalid");

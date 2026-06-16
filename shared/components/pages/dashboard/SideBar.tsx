@@ -142,7 +142,7 @@ function SideBar() {
         </div>
 
         {/* Nav */}
-        <div className="flex-1 overflow-y-auto px-2 sm:px-3 py-3 sm:py-4 min-h-0">
+        <div className="flex-1 overflow-y-auto px-2 sm:px-3 py-3 sm:py-4 min-h-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {/* Restaurant section */}
           <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/25 px-2 sm:px-3 mb-2">
             {t("myRestaurant")}

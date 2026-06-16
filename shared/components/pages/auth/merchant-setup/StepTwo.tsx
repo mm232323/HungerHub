@@ -19,7 +19,7 @@ export function StepTwo({ form, set, errors, toggleTag }: { form: FormData, set:
         </Label>
         {isLoading ? (
           <div className="flex items-center justify-center py-6 text-stone-400 text-sm">
-            Loading categories...
+            {t("loadingCategories")}
           </div>
         ) : (
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
@@ -75,7 +75,7 @@ export function StepTwo({ form, set, errors, toggleTag }: { form: FormData, set:
                   : "bg-white text-stone-600 border-stone-200 hover:border-stone-400"
               }`}
             >
-              {tag}
+              {t(`tags.${tag}`)}
             </button>
           ))}
         </div>

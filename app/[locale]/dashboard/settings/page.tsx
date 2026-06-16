@@ -37,6 +37,7 @@ import {
   UploadCloud,
   Youtube,
   AlignLeft,
+  DollarSign,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -64,22 +65,22 @@ export default function SettingsPage() {
   });
 
   const [formData, setFormData] = useState({
-    name: "Delicio Restaurant",
-    tagline: "Good Food, Good Mood",
-    description:
-      "At Delicio, we serve delicious food made with fresh ingredients and lots of love. Our mission is to provide an unforgettable dining experience.",
-    cuisineType: "Italian, Continental",
-    establishedYear: "2018",
-    phone: "+1 234 567 8900",
-    email: "info@delicio.com",
-    address: "123 Food Street, Flavor Town, New York, NY 10001, USA",
-    website: "www.delicio.com",
-    openingHours: "Mon - Sun  9:00 AM - 10:00 PM",
+    name: "",
+    tagline: "",
+    description: "",
+    cuisineType: "",
+    establishedYear: "",
+    phone: "",
+    email: "",
+    address: "",
+    website: "",
+    openingHours: "",
     profileImage: "",
     coverImage: "",
     onlineOrdering: true,
     tableReservation: false,
     showReviews: true,
+    deliveryFee: 0,
     additionalShowed: [] as string[],
     facebook: "",
     instagram: "",
@@ -91,23 +92,24 @@ export default function SettingsPage() {
     if (profile) {
       setFormData((prev) => ({
         ...prev,
-        name: profile.name || prev.name,
-        description: profile.bio || prev.description,
-        cuisineType: profile.cuisineType || prev.cuisineType,
-        address: profile.address || prev.address,
-        profileImage: profile.profileImage || prev.profileImage,
-        coverImage: profile.coverImage || prev.coverImage,
-        phone: profile.phone || prev.phone,
-        email: profile.email || prev.email,
-        website: profile.website || prev.website,
-        facebook: profile.facebook || prev.facebook,
-        instagram: profile.instagram || prev.instagram,
-        twitter: profile.twitter || prev.twitter,
-        youtube: profile.youtube || prev.youtube,
-        openingHours: profile.openingHours || prev.openingHours,
+        name: profile.name || "",
+        description: profile.bio || "",
+        cuisineType: profile.cuisineType || "",
+        address: profile.address || "",
+        profileImage: profile.profileImage || "",
+        coverImage: profile.coverImage || "",
+        phone: profile.phone || "",
+        email: profile.email || "",
+        website: profile.website || "",
+        facebook: profile.facebook || "",
+        instagram: profile.instagram || "",
+        twitter: profile.twitter || "",
+        youtube: profile.youtube || "",
+        openingHours: profile.openingHours || "",
+        deliveryFee: profile.deliveryFee || 0,
         additionalShowed: profile.additionalShowed
           ? profile.additionalShowed.split(",")
-          : prev.additionalShowed,
+          : [],
       }));
     }
   }, [profile]);
@@ -193,6 +195,7 @@ export default function SettingsPage() {
         twitter: formData.twitter,
         youtube: formData.youtube,
         openingHours: formData.openingHours,
+        deliveryFee: Number(formData.deliveryFee),
         additionalShowed: formData.additionalShowed.join(","),
       },
     });
@@ -360,20 +363,7 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-sm font-semibold text-stone-700">
-                {t("taglineLabel")}
-              </Label>
-              <div className="relative">
-                <Input
-                  value={formData.tagline}
-                  onChange={(e) => updateField("tagline", e.target.value)}
-                  className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700"
-                />
-                <Tag className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
-              </div>
-              <p className="text-xs text-stone-400">{t("taglineHelper")}</p>
-            </div>
+
 
             <div className="space-y-1.5">
               <Label className="text-sm font-semibold text-stone-700">
@@ -433,19 +423,21 @@ export default function SettingsPage() {
 
             <div className="space-y-1.5">
               <Label className="text-sm font-semibold text-stone-700">
-                {t("yearLabel")}
+                {t("deliveryFeeLabel") || "Delivery Fee"}
               </Label>
               <div className="relative">
                 <Input
-                  value={formData.establishedYear}
-                  onChange={(e) =>
-                    updateField("establishedYear", e.target.value)
-                  }
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={formData.deliveryFee}
+                  onChange={(e) => updateField("deliveryFee", e.target.value)}
                   className="pr-10 rtl:pr-3 rtl:pl-10 h-10 border-stone-200 text-stone-700"
                 />
-                <CalendarDays className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
+                <DollarSign className="absolute right-3 rtl:right-auto rtl:left-3 top-2.5 h-4 w-4 text-orange-500 opacity-60" />
               </div>
             </div>
+
           </div>
         </div>
 
@@ -517,14 +509,82 @@ export default function SettingsPage() {
               <Label className="text-sm font-semibold text-stone-700">
                 {t("hoursLabel")}
               </Label>
-              <div className="relative flex items-center bg-white border border-stone-200 rounded-md px-3 h-10 overflow-hidden">
-                <Clock className="h-4 w-4 text-orange-500 opacity-60 mr-3 rtl:mr-0 rtl:ml-3 shrink-0" />
-                <Input
-                  value={formData.openingHours}
-                  onChange={(e) => updateField("openingHours", e.target.value)}
-                  className="border-0 p-0 h-full shadow-none focus-visible:ring-0 text-stone-700 font-medium"
+              <div className="flex flex-wrap items-center gap-2">
+                <Select 
+                  value={(() => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    return match ? match[1] : "Mon";
+                  })()} 
+                  onValueChange={(val) => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    const toDay = match ? match[2] : "Sun";
+                    const fromTime = match ? match[3] : "09:00";
+                    const toTime = match ? match[4] : "22:00";
+                    updateField("openingHours", `${val} - ${toDay} ${fromTime} - ${toTime}`);
+                  }}
+                >
+                  <SelectTrigger className="w-24 h-10 bg-white"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                
+                <span className="text-stone-500">-</span>
+                
+                <Select 
+                  value={(() => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    return match ? match[2] : "Sun";
+                  })()} 
+                  onValueChange={(val) => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    const fromDay = match ? match[1] : "Mon";
+                    const fromTime = match ? match[3] : "09:00";
+                    const toTime = match ? match[4] : "22:00";
+                    updateField("openingHours", `${fromDay} - ${val} ${fromTime} - ${toTime}`);
+                  }}
+                >
+                  <SelectTrigger className="w-24 h-10 bg-white"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+
+                <Clock className="h-4 w-4 text-stone-400 mx-1" />
+
+                <Input 
+                  type="time" 
+                  value={(() => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+)\s*-\s*([\d:]+)/i);
+                    return match ? match[3] : "09:00";
+                  })()} 
+                  onChange={e => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    const fromDay = match ? match[1] : "Mon";
+                    const toDay = match ? match[2] : "Sun";
+                    const toTime = match ? match[4] : "22:00";
+                    updateField("openingHours", `${fromDay} - ${toDay} ${e.target.value} - ${toTime}`);
+                  }} 
+                  className="w-32 h-10 bg-white" 
                 />
-                <Pencil className="h-4 w-4 text-orange-500 opacity-60 ml-3 rtl:ml-0 rtl:mr-3 shrink-0 cursor-pointer" />
+                
+                <span className="text-stone-500">-</span>
+                
+                <Input 
+                  type="time" 
+                  value={(() => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+)\s*-\s*([\d:]+)/i);
+                    return match ? match[4] : "22:00";
+                  })()} 
+                  onChange={e => {
+                    const match = formData.openingHours.match(/([a-zA-Z]+)\s*-\s*([a-zA-Z]+)\s+([\d:]+(?:\s*[APM]+)?)\s*-\s*([\d:]+(?:\s*[APM]+)?)/i);
+                    const fromDay = match ? match[1] : "Mon";
+                    const toDay = match ? match[2] : "Sun";
+                    const fromTime = match ? match[3] : "09:00";
+                    updateField("openingHours", `${fromDay} - ${toDay} ${fromTime} - ${e.target.value}`);
+                  }} 
+                  className="w-32 h-10 bg-white" 
+                />
               </div>
             </div>
           </div>

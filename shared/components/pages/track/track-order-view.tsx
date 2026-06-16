@@ -127,6 +127,27 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
   const currentStatus = getStatusInfo(orderData.status);
   const StatusIcon = currentStatus.icon;
 
+  const [readableAddress, setReadableAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!orderData.address) return;
+    
+    const match = orderData.address.match(/Lat:\s*([\d.-]+),\s*Lng:\s*([\d.-]+)/i);
+    if (match) {
+      const lat = match[1];
+      const lng = match[2];
+      
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.display_name) {
+            setReadableAddress(data.display_name);
+          }
+        })
+        .catch(err => console.error("Geocoding failed:", err));
+    }
+  }, [orderData.address]);
+
   return (
     <div className="min-h-screen bg-muted/30 pb-20">
       <header className="bg-background border-b px-4 h-16 flex items-center justify-between sticky top-0 z-50">
@@ -235,7 +256,7 @@ export function TrackOrderView({ orderId, order }: TrackOrderViewProps) {
               <h3 className="font-semibold text-sm text-muted-foreground">
                 {t("deliveryAddress")}
               </h3>
-              <p className="font-medium mt-1">{orderData.address}</p>
+              <p className="font-medium mt-1">{readableAddress || orderData.address}</p>
             </div>
           </div>
         </div>

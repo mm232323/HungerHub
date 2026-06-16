@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,10 +7,12 @@ import {
   CardTitle,
 } from "../../ui/card";
 import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 import { Promotion } from "@/types";
 import { Skeleton } from "../../alerts/skeleton";
-import { Percent, Ticket, Truck } from "lucide-react";
+import { Percent, Ticket, Truck, Edit } from "lucide-react";
 import { useTranslations } from "next-intl";
+import PromotionFormModal from "./PromotionFormModal";
 
 function CardsContainer({
   //   isLoading,
@@ -20,6 +22,7 @@ function CardsContainer({
   promotions?: Promotion[];
 }) {
   const t = useTranslations("Dashboard.Marketing");
+  const [editingPromo, setEditingPromo] = useState<Promotion | null>(null);
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -31,19 +34,16 @@ function CardsContainer({
         return <Ticket className="h-5 w-5" />;
     }
   };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-        {/* {isLoading
-          ? Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-48 rounded-xl" />
-            )) : */}
         {promotions?.map((promo) => (
           <Card
             key={promo.id}
-            className={
+            className={`group relative ${
               promo.isActive ? "border-primary/50 shadow-sm" : "opacity-60"
-            }
+            }`}
           >
             <CardHeader className="pb-2 flex flex-row items-start justify-between space-y-0">
               <div>
@@ -58,10 +58,20 @@ function CardsContainer({
                   )}
                 </CardDescription>
               </div>
-              <div
-                className={`p-2 rounded-lg ${promo.isActive ? "bg-primary/10 text-primary" : "bg-muted"}`}
-              >
-                {getIcon(promo.type)}
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={() => setEditingPromo(promo)}
+                >
+                  <Edit className="h-4 w-4 text-muted-foreground" />
+                </Button>
+                <div
+                  className={`p-2 rounded-lg ${promo.isActive ? "bg-primary/10 text-primary" : "bg-muted"}`}
+                >
+                  {getIcon(promo.type)}
+                </div>
               </div>
             </CardHeader>
             <CardContent>
@@ -80,6 +90,11 @@ function CardsContainer({
           </Card>
         ))}
       </div>
+      <PromotionFormModal
+        isOpen={!!editingPromo}
+        setIsOpen={(open) => { if (!open) setEditingPromo(null) }}
+        promotionToEdit={editingPromo}
+      />
     </>
   );
 }

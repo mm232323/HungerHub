@@ -65,6 +65,7 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
     query: { queryKey: ["/categories"] }
   })
   const t = useTranslations("Dashboard.Products")
+  const tSetup = useTranslations("MerchantSetup.Steps.step2")
   const toastT = useTranslations("Toasts")
   const locale = useLocale()
 
@@ -304,13 +305,44 @@ function ProductActionHeader({ onSuccess }: { onSuccess: () => void }) {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2"><Tag className="h-3 w-3 text-stone-400"/> {t("dietaryTagsLabel")}</Label>
-                    <Input 
-                      value={formData.dietaryTags} 
-                      onChange={e => updateFormData('dietaryTags', e.target.value)} 
-                      placeholder={t("dietaryTagsPlaceholder")} 
-                      className="bg-stone-50/50" 
-                    />
+                    <Label className="flex items-center gap-2"><Tag className="h-3 w-3 text-stone-400"/> {t("dietaryTagsLabel")} (Max 5)</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        "Spicy",
+                        "Vegan-friendly",
+                        "Gluten-free",
+                        "Family meals",
+                        "Late night",
+                        "Lunch specials",
+                        "Organic",
+                        "Street food",
+                        "Fine dining",
+                        "Quick bites",
+                      ].map((tag) => {
+                        const tags = formData.dietaryTags ? formData.dietaryTags.split(',').map(t=>t.trim()).filter(Boolean) : [];
+                        const isSelected = tags.includes(tag);
+                        return (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              if (isSelected) {
+                                updateFormData('dietaryTags', tags.filter(t => t !== tag).join(', '));
+                              } else if (tags.length < 5) {
+                                updateFormData('dietaryTags', [...tags, tag].join(', '));
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                              isSelected
+                                ? "bg-stone-900 text-white border-stone-900"
+                                : "bg-white text-stone-600 border-stone-200 hover:border-stone-400"
+                            }`}
+                          >
+                            {tSetup(`tags.${tag}`)}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <Label className="flex items-center gap-2"><PlusCircle className="h-3 w-3 text-stone-400"/> {t("customizationsLabel")}</Label>

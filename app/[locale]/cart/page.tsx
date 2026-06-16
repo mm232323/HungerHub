@@ -12,6 +12,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useGetMerchant } from "@/apis/merchants";
 
 export default function CartPage() {
   const t = useTranslations("Cart");
@@ -28,6 +29,13 @@ export default function CartPage() {
   const [discount, setDiscount] = useState(0);
   const [promoMessage, setPromoMessage] = useState("");
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+
+  const merchantIdForQuery = items.length > 0 ? items[0].product.merchantId : null;
+  const { data: merchant } = useGetMerchant(merchantIdForQuery as number, {
+    query: { queryKey: ['getMerchant', merchantIdForQuery], enabled: !!merchantIdForQuery },
+  });
+  
+  const deliveryFee = merchant?.deliveryFee || 0;
 
   const createOrder = useCreateOrder({
     mutation: {
@@ -212,7 +220,7 @@ export default function CartPage() {
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>{t("deliveryFee") || "Delivery Fee"}</span>
-                <span>$2.99</span>
+                <span>${deliveryFee.toFixed(2)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600 font-medium">
@@ -222,7 +230,7 @@ export default function CartPage() {
               )}
               <div className="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
                 <span>{t("total") || "Total"}</span>
-                <span>${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}</span>
+                <span>${Math.max(0, cartTotal + deliveryFee - discount).toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -235,7 +243,7 @@ export default function CartPage() {
             {isProcessing ? (
               <Loader2 className="h-5 w-5 animate-spin mx-auto" />
             ) : (
-              `${t("checkout") || "Checkout"} • $${Math.max(0, cartTotal + 2.99 - discount).toFixed(2)}`
+              `${t("checkout") || "Checkout"} • $${Math.max(0, cartTotal + deliveryFee - discount).toFixed(2)}`
             )}
           </Button>
         </div>

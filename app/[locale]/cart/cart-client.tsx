@@ -11,7 +11,8 @@ import { Button } from "@/shared/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useGetMerchant } from "@/apis/merchants";
 import { useUser } from "@clerk/nextjs";
 import { useGeolocation } from "@/hooks/useGeolocation";
 
@@ -61,7 +62,13 @@ export default function CartPageClient() {
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
-  const deliveryFee = 3.99;
+
+  const merchantId = items.length > 0 ? items[0].merchantId : null;
+  const { data: merchant } = useGetMerchant(merchantId as number, {
+    query: { queryKey: ['getMerchant', merchantId], enabled: !!merchantId },
+  });
+
+  const deliveryFee = merchant?.deliveryFee || 0;
   const total = subtotal + deliveryFee;
   const createOrder = useCreateOrder({
     mutation: {

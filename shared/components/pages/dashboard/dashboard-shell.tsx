@@ -24,11 +24,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!userName && isLoaded && isSignedIn) {
-      router.push("/merchant-setup");
+      router.push("/auth/merchant-setup");
       return;
     }
     if (!isMerchantLoading && userName && merchants && merchants.length === 0) {
-      router.push("/merchant-setup");
+      router.push("/auth/merchant-setup");
     }
   }, [isMerchantLoading, userName, merchants, router, isLoaded, isSignedIn]);
 

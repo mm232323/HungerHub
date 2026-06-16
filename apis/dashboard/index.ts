@@ -314,6 +314,41 @@ export function useCreatePromotion<
   return useMutation({ mutationFn, ...options?.mutation });
 }
 
+export const updatePromotion = async (
+  id: number,
+  data: Partial<PromotionInput>,
+  options?: RequestInit,
+): Promise<Promotion> => {
+  return customFetch<Promotion>(`/dashboard/promotions/${id}`, {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(data),
+  });
+};
+
+export function useUpdatePromotion<
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updatePromotion>>,
+    TError,
+    { id: number, data: Partial<PromotionInput> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updatePromotion>>,
+  TError,
+  { id: number, data: Partial<PromotionInput> },
+  TContext
+> {
+  const mutationFn = ({ id, data }: { id: number, data: Partial<PromotionInput> }) =>
+    updatePromotion(id, data, options?.request);
+  return useMutation({ mutationFn, ...options?.mutation });
+}
+
 export const updateProduct = async (
   id: number,
   data: ProductInput,
@@ -321,7 +356,7 @@ export const updateProduct = async (
 ): Promise<Product> => {
   return customFetch<Product>(`/dashboard/products/${id}`, {
     ...options,
-    method: "PUT",
+    method: "PATCH",
     headers: { "Content-Type": "application/json", ...options?.headers },
     body: JSON.stringify(data),
   });

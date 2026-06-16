@@ -393,9 +393,13 @@
       "subtitle": "Run campaigns to attract and retain customers.",
       "newCampaign": "New Campaign",
       "createPromotion": "Create Promotion",
+      "editPromotion": "Edit Promotion",
+      "isActive": "Promotion is active",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
       "campaignTitle": "Campaign Title",
       "campaignTitlePlaceholder": "e.g. Summer Special 20%",
-      "promoCode": "Promo Code (Optional)",
+      "promoCode": "Promo Code",
       "promoCodePlaceholder": "SUMMER20",
       "discountValue": "Discount Value",
       "discountValuePlaceholder": "20",
@@ -678,7 +682,8 @@
       "back": "Back",
       "continue": "Continue",
       "creating": "Creating your store...",
-      "launch": "Launch My Store"
+      "launch": "Launch My Store",
+      "loading": "Loading..."
     },
     "Validation": {
       "nameReq": "Restaurant name is required",
@@ -704,7 +709,20 @@
         "desc": "Help customers find what they are craving.",
         "cuisineLabel": "Primary Cuisine Type",
         "cuisinePlaceholder": "Select a cuisine",
-        "tagsLabel": "Popular Tags (up to 5)"
+        "tagsLabel": "Popular Tags (up to 5)",
+        "loadingCategories": "Loading categories...",
+        "tags": {
+          "Spicy": "Spicy",
+          "Vegan-friendly": "Vegan-friendly",
+          "Gluten-free": "Gluten-free",
+          "Family meals": "Family meals",
+          "Late night": "Late night",
+          "Lunch specials": "Lunch specials",
+          "Organic": "Organic",
+          "Street food": "Street food",
+          "Fine dining": "Fine dining",
+          "Quick bites": "Quick bites"
+        }
       },
       "step3": {
         "title": "Operations",
@@ -760,6 +778,7 @@
     "bannerSize": "Recommended size: 1920x600px<br/>PNG, JPG up to 5MB",
     "infoTitle": "Restaurant Information",
     "nameLabel": "Restaurant Name",
+    "deliveryFeeLabel": "Delivery Fee",
     "taglineLabel": "Tagline",
     "taglineHelper": "A short tagline for your restaurant",
     "descLabel": "Description",
@@ -943,6 +962,7 @@
     "uploadFailed": "Upload Failed",
     "uploadError": "Upload Error",
     "promoCreated": "Promotion created successfully",
+    "promoUpdated": "Promotion updated successfully",
     "promoFailed": "Failed to create promotion",
     "fillFields": "Please fill all required fields",
     "orderUpdated": "Order updated",
@@ -957,6 +977,7 @@
     "orderId": "Your order ID is {id}",
     "somethingWentWrong": "Something went wrong.",
     "addedToCart": "Added to cart",
-    "addedToCartDesc": "{quantity}x {productName} added to your cart."
+    "addedToCartDesc": "{quantity}x {productName} added to your cart.",
+    "promoUpdateFailed": "Failed to update promotion"
   }
 }
