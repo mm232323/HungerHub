@@ -124,30 +124,7 @@ function RevenueCharts() {
       </Card>
 
       <div className="space-y-6">
-        {/* Quick Tips (Replaced AI Insights for now) */}
-        <Card className="border-amber-500/30 bg-amber-500/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Lightbulb className="h-5 w-5 text-amber-500" /> {t("quickTips")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="bg-background rounded-lg p-3 border">
-              <p>
-                <span className="font-semibold text-amber-600">
-                  {t("tipPromotions")}
-                </span>{" "}
-                {t("tipPromotionsDesc")}
-              </p>
-            </div>
-            <div className="bg-background rounded-lg p-3 border">
-              <p>
-                <span className="font-semibold text-amber-600">{t("tipPhotos")}</span>{" "}
-                {t("tipPhotosDesc")}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Top Products */}
         <Card>

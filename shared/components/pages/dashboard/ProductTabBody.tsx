@@ -396,10 +396,7 @@ function ProductTabBody({ filteredProducts, onUpdated }: { filteredProducts: Pro
           <Card key={product.id} className="overflow-hidden border border-stone-200 shadow-sm hover:shadow-md transition-shadow rounded-[24px] bg-white flex flex-col group">
             {/* Image section with full width and height mimicking the reference */}
             <div className="relative h-48 w-full bg-stone-50">
-              <div className="absolute top-4 left-4 z-10">
-                {/* Mock Checkbox */}
-                <div className="h-5 w-5 rounded-md bg-white border border-stone-300 shadow-sm opacity-80 group-hover:opacity-100 transition-opacity" />
-              </div>
+
               <img
                 src={product.image || "https://placehold.co/600x400?text=No+Image"}
                 alt={product.name}

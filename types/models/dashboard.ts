@@ -9,6 +9,8 @@ export interface DashboardStats {
   newCustomersThisWeek: number;
   avgOrderValue: number;
   growthRate: number;
+  ordersGrowthRate: number;
+  customersGrowthRate: number;
 }
 
 /** Single point on the revenue chart. */
@@ -43,6 +45,7 @@ export interface CustomerAnalytics {
   organicTrafficPercentage?: number;
   socialTrafficPercentage?: number;
   retentionDelta?: number;
+  newCustomersDelta?: number;
   topOrderTimes: CustomerAnalyticsTopOrderTimesItem[];
   orderHeatmap: CustomerAnalyticsOrderHeatmapItem[];
   demographics?: CustomerAnalyticsDemographicsItem[];

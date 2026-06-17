@@ -26,7 +26,7 @@ function StatsGrid() {
         title={t("todaysOrders")}
         value={stats?.todayOrders.toString() || ""}
         icon={<ShoppingBag className="h-4 w-4 text-muted-foreground" />}
-        trend={12.5}
+        trend={stats?.ordersGrowthRate}
         loading={isLoadingStats}
         t={t}
       />
@@ -42,7 +42,7 @@ function StatsGrid() {
         title={t("totalCustomers")}
         value={stats?.totalCustomers.toLocaleString() || ""}
         icon={<Users className="h-4 w-4 text-muted-foreground" />}
-        trend={4.3}
+        trend={stats?.customersGrowthRate}
         loading={isLoadingStats}
         t={t}
       />

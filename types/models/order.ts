@@ -70,6 +70,7 @@ export interface OrderInput {
   notes?: string | null;
   customerName?: string;
   customerPhone?: string;
+  deliveryFee?: number;
 }
 
 export type OrderStatusUpdateStatus =

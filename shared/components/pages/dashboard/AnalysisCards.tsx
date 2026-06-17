@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Heart, Star, Users, ArrowUpRight } from "lucide-react";
+import { Heart, Star, Users, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { useGetCustomerAnalytics } from "@/apis";
 import { useTranslations } from "next-intl";
 
@@ -32,9 +32,9 @@ function AnalysisCards() {
               {t("people")}
             </p>
           </div>
-          <div className="flex items-center text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
-            + {Math.min(100, Math.max(1, Math.round((analytics?.newCustomers || 0) / ((analytics?.totalCustomers || 1) - (analytics?.newCustomers || 0)) * 100)))}% 
-            <ArrowUpRight className="ml-1 h-3 w-3" />
+          <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-md ${analytics?.newCustomers && analytics?.totalCustomers && Math.round((analytics.newCustomers / (analytics.totalCustomers - analytics.newCustomers)) * 100) < 0 ? 'text-red-600 bg-red-50' : 'text-blue-600 bg-blue-50'}`}>
+            {analytics?.newCustomers && analytics?.totalCustomers && Math.round((analytics.newCustomers / (analytics.totalCustomers - analytics.newCustomers)) * 100) < 0 ? '' : '+'} {Math.min(100, Math.max(1, Math.round((analytics?.newCustomers || 0) / ((analytics?.totalCustomers || 1) - (analytics?.newCustomers || 0)) * 100)))}% 
+            {analytics?.newCustomers && analytics?.totalCustomers && Math.round((analytics.newCustomers / (analytics.totalCustomers - analytics.newCustomers)) * 100) < 0 ? <ArrowDownRight className="ml-1 h-3 w-3" /> : <ArrowUpRight className="ml-1 h-3 w-3" />}
           </div>
         </CardContent>
       </Card>
@@ -57,9 +57,9 @@ function AnalysisCards() {
               {t("repeatBuyersDesc")}
             </p>
           </div>
-          <div className="flex items-center text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
-            + 5% 
-            <ArrowUpRight className="ml-1 h-3 w-3" />
+          <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-md ${(analytics?.retentionDelta || 0) < 0 ? 'text-red-600 bg-red-50' : 'text-emerald-600 bg-emerald-50'}`}>
+            {(analytics?.retentionDelta || 0) > 0 ? "+" : ""}{analytics?.retentionDelta || 0}% 
+            {(analytics?.retentionDelta || 0) < 0 ? <ArrowDownRight className="ml-1 h-3 w-3" /> : <ArrowUpRight className="ml-1 h-3 w-3" />}
           </div>
         </CardContent>
       </Card>
@@ -82,9 +82,9 @@ function AnalysisCards() {
               {t("people")}
             </p>
           </div>
-          <div className="flex items-center text-sm font-medium text-rose-600 bg-rose-50 px-2 py-1 rounded-md">
-            + 12% 
-            <ArrowUpRight className="ml-1 h-3 w-3" />
+          <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-md ${(analytics?.newCustomersDelta || 0) < 0 ? 'text-red-600 bg-red-50' : 'text-rose-600 bg-rose-50'}`}>
+            {(analytics?.newCustomersDelta || 0) > 0 ? "+" : ""}{analytics?.newCustomersDelta || 0}% 
+            {(analytics?.newCustomersDelta || 0) < 0 ? <ArrowDownRight className="ml-1 h-3 w-3" /> : <ArrowUpRight className="ml-1 h-3 w-3" />}
           </div>
         </CardContent>
       </Card>

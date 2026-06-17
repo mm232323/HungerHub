@@ -119,6 +119,7 @@ export default function CartPage() {
         promoCode: appliedPromo || undefined,
         customerName,
         customerPhone,
+        deliveryFee,
       },
     });
   };
@@ -195,7 +196,7 @@ export default function CartPage() {
                   placeholder={t("enterPromo") || "Enter promo code"}
                   className="pl-9 bg-gray-50 border-transparent focus-visible:ring-orange-500 focus-visible:bg-white transition-all"
                   value={promoInput}
-                  onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                  onChange={(e) => setPromoInput(e.target.value.toLowerCase())}
                   disabled={isApplyingPromo}
                 />
               </div>

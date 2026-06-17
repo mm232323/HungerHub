@@ -58,8 +58,8 @@ export const clerkAppearance = {
       fontSize: "0.95rem",
     },
     socialButtons: {
-      display: "grid",
-      gridTemplateColumns: "repeat(2, 1fr)",
+      display: "flex",
+      flexDirection: "column",
       gap: "12px",
       width: "100%",
     },
@@ -70,7 +70,6 @@ export const clerkAppearance = {
       height: "50px",
       borderRadius: "12px",
       transition: "all 0.2s ease-in-out",
-      margin: 0, // override default margin
       "&:hover": {
         backgroundColor: "#F9FAFB",
         borderColor: "#F97316",

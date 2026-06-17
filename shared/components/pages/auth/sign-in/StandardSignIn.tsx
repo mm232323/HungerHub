@@ -1,6 +1,6 @@
 import { Role } from "@/types";
 import { SignIn } from "@clerk/nextjs";
-import { LayoutDashboard, ShoppingBag, Utensils } from "lucide-react";
+import { Utensils } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import React from "react";
@@ -11,10 +11,8 @@ import { getClerkLocalization } from "../sign-up/data";
 
 function StandardSignIn({
   role,
-  handleRoleChange,
 }: {
   role: Role;
-  handleRoleChange: (role: Role) => void;
 }) {
   const t = useTranslations("Auth.SignIn");
   const tShared = useTranslations("Auth.shared");
@@ -46,31 +44,7 @@ function StandardSignIn({
           </Link>
         </div>
 
-        {/* Role switcher */}
-        <div className="w-full max-w-[550px]">
-          <div className="flex relative p-1 bg-stone-100 rounded-xl w-fit">
-            {(["customer", "merchant"] as Role[]).map((r) => {
-              const isActive = role === r;
-              return (
-              <button
-                key={r}
-                onClick={() => handleRoleChange(r)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                  isActive
-                    ? "bg-[#F97316] text-white shadow"
-                    : "text-stone-400 hover:text-stone-700"
-                }`}
-              >
-                {r === "customer" ? (
-                  <ShoppingBag className="h-3.5 w-3.5" />
-                ) : (
-                  <LayoutDashboard className="h-3.5 w-3.5" />
-                )}
-                {r === "customer" ? t("roleCustomer") : t("roleMerchant")}
-              </button>
-            )})}
-          </div>
-        </div>
+
 
         <div className="w-full max-w-[550px]">
           <SignIn

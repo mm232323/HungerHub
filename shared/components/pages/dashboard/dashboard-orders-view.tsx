@@ -27,7 +27,7 @@ export function DashboardOrdersView() {
   );
 
 
-  const activeOrders = orders?.filter((o) => o.status !== "delivered") ?? [];
+  const activeOrders = orders?.filter((o) => o.status !== "delivered" && o.status !== "cancelled") ?? [];
   const totalActive = activeOrders.length;
 
   return (
