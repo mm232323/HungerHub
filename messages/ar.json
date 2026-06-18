@@ -384,7 +384,10 @@
       "notes": "الملاحظات",
       "payment": {
         "cash": "نقدي",
-        "card": "بطاقة"
+        "card": "بطاقة",
+        "Cash on Delivery": "الدفع عند الاستلام",
+        "Card / POS": "بطاقة / نقاط البيع",
+        "Online Transfer": "تحويل عبر الإنترنت"
       }
     },
     "Marketing": {
@@ -848,8 +851,17 @@
     "checkout": "الدفع",
     "item": "عنصر",
     "items": "عناصر",
-    "continueShopping": "مواصلة التسوق",
-    "goToCart": "الذهاب إلى العربة"
+    "continueShopping": "متابعة التسوق",
+    "goToCart": "الذهاب إلى العربة",
+    "checkoutDetails": "تفاصيل الدفع",
+    "customerName": "الاسم الكامل",
+    "phoneNumber": "رقم الهاتف",
+    "addressOrderType": "عنوان التوصيل",
+    "paymentMethod": "طريقة الدفع",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "notesOptional": "ملاحظات (اختياري)",
+    "missingInfo": "معلومات ناقصة",
+    "pleaseFillAllFields": "يرجى ملء جميع الحقول المطلوبة (الاسم، الهاتف، العنوان)"
   },
   "ProductDetail": {
     "backToStore": "العودة للمتجر",

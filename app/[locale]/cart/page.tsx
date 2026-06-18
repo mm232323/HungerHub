@@ -13,6 +13,9 @@ import { useTranslations } from "next-intl";
 import { useUser } from "@clerk/nextjs";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import { useGetMerchant } from "@/apis/merchants";
+import { Label } from "@/shared/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
+import { Textarea } from "@/shared/components/ui/textarea";
 
 export default function CartPage() {
   const t = useTranslations("Cart");
@@ -30,6 +33,12 @@ export default function CartPage() {
   const [promoMessage, setPromoMessage] = useState("");
   const [isApplyingPromo, setIsApplyingPromo] = useState(false);
 
+  const [customerName, setCustomerName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
+  const [notes, setNotes] = useState("");
+
   const merchantIdForQuery = items.length > 0 ? items[0].product.merchantId : null;
   const { data: merchant } = useGetMerchant(merchantIdForQuery as number, {
     query: { queryKey: ['getMerchant', merchantIdForQuery], enabled: !!merchantIdForQuery },
@@ -46,7 +55,11 @@ export default function CartPage() {
         });
         clearCart();
         setIsProcessing(false);
-        router.push("/track"); // Or redirect to home/dashboard
+        if (user) {
+          router.push("/track");
+        } else {
+          router.push("/");
+        }
       },
       onError: (error: any) => {
         toast({
@@ -98,6 +111,18 @@ export default function CartPage() {
 
   const handleCheckout = () => {
     if (items.length === 0) return;
+    
+    if (!user) {
+      if (!customerName || !customerPhone || !address) {
+        toast({
+          title: t("missingInfo") || "Missing Information",
+          description: t("pleaseFillAllFields") || "Please fill in all required fields (Name, Phone, Address)",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     setIsProcessing(true);
 
     const merchantId = items[0].product.merchantId;
@@ -106,19 +131,21 @@ export default function CartPage() {
       quantity: item.quantity,
     }));
 
-    const customerName = user?.fullName || user?.firstName || undefined;
-    const customerPhone = user?.primaryPhoneNumber?.phoneNumber || undefined;
-    const addressStr = location ? `Lat: ${location.lat}, Lng: ${location.lng}` : "Home Address";
+    const finalCustomerName = user?.fullName || user?.firstName || customerName;
+    const finalCustomerPhone = user?.primaryPhoneNumber?.phoneNumber || customerPhone;
+    const finalAddress = !user ? address : (location ? `Lat: ${location.lat}, Lng: ${location.lng}` : "Home Address");
+    const finalPaymentMethod = !user ? paymentMethod : "cash";
 
     createOrder.mutate({
       data: {
         merchantId,
         items: orderItems,
-        address: addressStr,
-        paymentMethod: "cash",
+        address: finalAddress,
+        paymentMethod: finalPaymentMethod,
         promoCode: appliedPromo || undefined,
-        customerName,
-        customerPhone,
+        customerName: finalCustomerName,
+        customerPhone: finalCustomerPhone,
+        notes: !user ? notes : undefined,
         deliveryFee,
       },
     });
@@ -235,6 +262,42 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+
+          {!user && (
+            <div className="bg-white rounded-2xl shadow-sm p-4 space-y-4">
+              <h3 className="text-lg font-semibold text-gray-900">{t("checkoutDetails") || "Checkout Details"}</h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>{t("customerName") || "Full Name"} *</Label>
+                  <Input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="John Doe" />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("phoneNumber") || "Phone Number"} *</Label>
+                  <Input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="+1 234 567 8900" />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("addressOrderType") || "Delivery Address"} *</Label>
+                  <Input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="123 Main St, Apt 4B" />
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("paymentMethod") || "Payment Method"}</Label>
+                  <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Cash on Delivery">{t("cashOnDelivery") || "Cash on Delivery"}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 mt-1">Card payments are available for registered users only.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label>{t("notesOptional") || "Notes (Optional)"}</Label>
+                  <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any special instructions?" className="resize-none h-20" />
+                </div>
+              </div>
+            </div>
+          )}
 
           <Button
             className="w-full h-14 rounded-full text-lg font-bold bg-orange-500 hover:bg-orange-600 shadow-lg text-white"

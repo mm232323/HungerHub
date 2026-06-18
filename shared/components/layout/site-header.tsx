@@ -161,9 +161,7 @@ export function SiteHeader() {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-2">
           <LanguageToggle />
-          <Show when="signed-in">
-            <CartDrawer />
-          </Show>
+          <CartDrawer />
 
           {/* Signed out: Login + Sign up */}
           <Show when="signed-out">
@@ -196,9 +194,7 @@ export function SiteHeader() {
         {/* Mobile: cart + hamburger */}
         <div className="flex md:hidden items-center gap-1">
           <LanguageToggle />
-          <Show when="signed-in">
-            <CartDrawer />
-          </Show>
+          <CartDrawer />
           <Button
             variant="ghost"
             size="icon"
@@ -223,10 +219,10 @@ export function SiteHeader() {
             <MobileNavLink href="/meals" icon={<Utensils className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
               {t("linkMeals")}
             </MobileNavLink>
+            <MobileNavLink href="/cart" icon={<ShoppingBag className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
+              {t("linkCart")}
+            </MobileNavLink>
             <Show when="signed-in">
-              <MobileNavLink href="/cart" icon={<ShoppingBag className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
-                {t("linkCart")}
-              </MobileNavLink>
               <MobileNavLink href="/track" icon={<Package className="h-4 w-4" />} onClick={() => setMobileOpen(false)}>
                 {t("linkOrders")}
               </MobileNavLink>

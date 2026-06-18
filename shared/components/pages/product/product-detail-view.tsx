@@ -39,10 +39,6 @@ export function ProductDetailView({ product, initialReviews = [] }: ProductDetai
   }
 
   const handleAddToCart = () => {
-    if (!isSignedIn) {
-      setShowAuthModal(true);
-      return;
-    }
     addToCart(product, quantity);
     toast({
       title: t("addedToCartTitle"),

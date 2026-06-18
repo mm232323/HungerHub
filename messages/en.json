@@ -384,7 +384,10 @@
       "notes": "Notes",
       "payment": {
         "cash": "Cash",
-        "card": "Card"
+        "card": "Card",
+        "Cash on Delivery": "Cash on Delivery",
+        "Card / POS": "Card / POS",
+        "Online Transfer": "Online Transfer"
       }
     },
     "Marketing": {
@@ -849,7 +852,16 @@
     "item": "item",
     "items": "items",
     "continueShopping": "Continue Shopping",
-    "goToCart": "Go to Cart"
+    "goToCart": "Go to Cart",
+    "checkoutDetails": "Checkout Details",
+    "customerName": "Full Name",
+    "phoneNumber": "Phone Number",
+    "addressOrderType": "Delivery Address",
+    "paymentMethod": "Payment Method",
+    "cashOnDelivery": "Cash on Delivery",
+    "notesOptional": "Notes (Optional)",
+    "missingInfo": "Missing Information",
+    "pleaseFillAllFields": "Please fill in all required fields (Name, Phone, Address)"
   },
   "ProductDetail": {
     "backToStore": "Back to Store",
