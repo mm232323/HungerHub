@@ -433,7 +433,9 @@
       "creating": "Creating...",
       "marketingDesc": "Create coupons and discount campaigns for your customers.",
       "impressions": "Impressions",
-      "clicks": "Clicks"
+      "clicks": "Clicks",
+      "viewOffer": "View Offer",
+      "share": "Share"
     },
     "Analytics": {
       "title": "Customer Analytics",

@@ -433,7 +433,9 @@
       "editPromotion": "تعديل الحملة",
       "isActive": "الحملة نشطة",
       "saveChanges": "حفظ التغييرات",
-      "saving": "جاري الحفظ..."
+      "saving": "جاري الحفظ...",
+      "viewOffer": "عرض العرض",
+      "share": "مشاركة"
     },
     "Analytics": {
       "title": "تحليلات العملاء",

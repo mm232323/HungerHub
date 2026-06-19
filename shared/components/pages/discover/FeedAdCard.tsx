@@ -124,7 +124,7 @@ export default function FeedAdCard({ ad, onAuthRequired }: { ad: FeedAd; onAuthR
             <div className="pt-2">
               <Link href={`/product/${ad.providedProduct}`} className="block">
                 <Button variant="default" className="w-full rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-md transition-all flex items-center justify-center gap-2 h-12">
-                  View Offer <ExternalLink className="h-4 w-4" />
+                  {t("viewOffer") || "View Offer"} <ExternalLink className="h-4 w-4" />
                 </Button>
               </Link>
             </div>
@@ -177,7 +177,7 @@ export default function FeedAdCard({ ad, onAuthRequired }: { ad: FeedAd; onAuthR
               }}
             >
               <Share2 className="h-5 w-5" />
-              <span className="font-semibold text-sm hidden sm:inline">Share</span>
+              <span className="font-semibold text-sm hidden sm:inline">{t("share") || "Share"}</span>
             </Button>
           </div>
         </div>
